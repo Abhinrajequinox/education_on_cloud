@@ -30,7 +30,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
       body: Container(
         padding: const EdgeInsets.only(bottom: 70),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
               child: PageView(
@@ -40,15 +40,17 @@ class _OnboardScreenState extends State<OnboardScreen> {
                     isLastPage = value == 2;
                   });
                 },
-                children:   [
-                  OnboardFirstScreen(pageController: controller,),
+                children: [
+                  OnboardFirstScreen(
+                    pageController: controller,
+                  ),
                   OnboardSecondScreen(pageController: controller),
-                 const OnboardThirdScreen(),
+                  const OnboardThirdScreen(),
                 ],
               ),
             ),
-          
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -62,52 +64,88 @@ class _OnboardScreenState extends State<OnboardScreen> {
                       activeDotColor: primarycolour,
                     ),
                     onDotClicked: (index) => controller.animateToPage(index,
-                        duration: const Duration(seconds: 1), curve: Curves.linear),
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.linear),
                   ),
-                ), Container(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  isLastPage
-                      ? GestureDetector(
-               child: Container(height: 42,width: 200,decoration:const BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo,Colors.blue]),borderRadius: BorderRadius.all(Radius.circular(50))),
-               child:Padding(
-                 padding: const EdgeInsets.all(8.0),
-                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                   children: [CustomText(text: 'Get Started',textStyle: GoogleFonts.mulish(fontSize: 18,color: Colors.white,fontWeight: FontWeight.w800),),
-                     const Icon(Icons.arrow_circle_right,color: Colors.white,),
-                   ],
-                 ),
-               ),),
-
-                          onTap: () {
-                            // Uncomment and navigate to Sign up screen
-                            // Navigator.pushAndRemoveUntil(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => const SignupScreen(),
-                            //     ),
-                            //     (route) => false);
-                          },
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            controller.nextPage(
-                              duration: const Duration(seconds: 1),
-                              curve: Curves.easeIn,
-                            );
-                          },
-                          child: Container(height: 50,width: 50,decoration:const BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo,Colors.blue]),borderRadius: BorderRadius.all(Radius.circular(50))),child:const Icon(Icons.arrow_forward_sharp,color: Colors.white,),),
-                        ),
-                ],
-              ),
-            ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  height: 50,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      isLastPage
+                          ? GestureDetector(
+                              child: Container(
+                                height: 42,
+                                width: 200,
+                                decoration: const BoxDecoration(
+                                    gradient: LinearGradient(colors: [
+                                      Color.fromRGBO(0, 56, 255, 1),
+                                      Color.fromRGBO(0, 224, 255, 1)
+                                    ]),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50))),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      CustomText(
+                                        text: 'Get Started',
+                                        textStyle: GoogleFonts.mulish(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                      const Icon(
+                                        Icons.arrow_circle_right,
+                                        color: Colors.white,
+                                        size: 29,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                // Uncomment and navigate to Sign up screen
+                                // Navigator.pushAndRemoveUntil(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //       builder: (context) => const SignupScreen(),
+                                //     ),
+                                //     (route) => false);
+                              },
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                controller.nextPage(
+                                  duration: const Duration(seconds: 1),
+                                  curve: Curves.easeIn,
+                                );
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: const BoxDecoration(
+                                    gradient: LinearGradient(colors: [
+                                      Color.fromRGBO(0, 56, 255, 1),
+                                      Color.fromRGBO(0, 224, 255, 1)
+                                    ]),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50))),
+                                child: const Icon(
+                                  Icons.arrow_forward_sharp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            // Next or Sign Up button at the bottom
-           
           ],
         ),
       ),

@@ -1,3 +1,3 @@
 import 'dart:ui';
 
-const primarycolour =Color.fromARGB(255, 28, 56, 193);
+const primarycolour =Color.fromRGBO(9, 97, 245, 1);
