@@ -38,6 +38,8 @@ dependencies:
   video_player: ^2.9.1
   flick_video_player: ^0.9.0
   wakelock_plus: ^1.2.8
+  smooth_page_indicator: ^1.2.0+3
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +66,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib\Assets\Onboard\splashvideo.mp4
+    - lib\Assets\Onboard\onboardfist.png
+    - lib\Assets\Onboard\image.png
+    - lib\Assets\Onboard\onboardsecond.png
+    - lib\Views\Pages\Onboarding\onboardthird.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

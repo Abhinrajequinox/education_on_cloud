@@ -1,3 +1,4 @@
+import 'package:education_on_cloud/Views/Pages/Onboarding/onboard.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -10,21 +11,69 @@ class Splashvideo extends StatefulWidget {
   State<Splashvideo> createState() => _SplashvideoState();
 }
 
-class _SplashvideoState extends State<Splashvideo> {    
+class _SplashvideoState extends State<Splashvideo> {
   late FlickManager flickManager;
+
   @override
   void initState() {
     super.initState();
-    flickManager=FlickManager(videoPlayerController: VideoPlayerController.asset('lib/Assets/Onboard/splashvideo.mp4'));
-  // WakelockPlus.enable();
+
+    flickManager = FlickManager(
+      videoPlayerController: VideoPlayerController.asset(
+        'lib/Assets/Onboard/splashvideo.mp4'
+      )
+    );
+
+
+    WakelockPlus.enable();
+
+    flickManager.flickVideoManager?.videoPlayerController?.addListener(() {
+      if (flickManager.flickVideoManager?.videoPlayerController?.value.isInitialized ?? false) {
+        if (flickManager.flickVideoManager!.videoPlayerController!.value.position >=
+            flickManager.flickVideoManager!.videoPlayerController!.value.duration) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) =>const OnboardScreen()), 
+          );
+        }
+      }
+    });
   }
-@override
+
+  @override
   void dispose() {
+    WakelockPlus.disable();
     flickManager.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: AspectRatio(aspectRatio: 16/9,child: FlickVideoPlayer(flickManager: flickManager),),),);
+    return Padding(
+      padding: const EdgeInsets.all(60),
+      child: Scaffold(
+        body: Center(
+      child: FittedBox(
+        fit: BoxFit.fill,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Transform.rotate(
+            angle: 1.5708,
+            child: FlickVideoPlayer(
+              flickManager: flickManager,
+              flickVideoWithControls:const FlickVideoWithControls(
+                controls:  null
+              )
+            )
+          )
+        )
+      )
+        )
+      )
+    );
+
   }
 }
+
+
