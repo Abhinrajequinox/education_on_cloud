@@ -40,6 +40,8 @@ dependencies:
   wakelock_plus: ^1.2.8
   smooth_page_indicator: ^1.2.0+3
   google_fonts: ^6.2.1
+  country_flags: ^3.0.0
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,8 @@ flutter:
     - lib\Assets\Onboard\image.png
     - lib\Assets\Onboard\onboardsecond.png
     - lib\Views\Pages\Onboarding\onboardthird.png
+    - lib\Assets\titlelogo.png
+    - lib\Assets\indianflag.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

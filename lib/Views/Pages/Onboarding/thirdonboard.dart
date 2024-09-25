@@ -1,6 +1,5 @@
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OnboardThirdScreen extends StatelessWidget {
   const OnboardThirdScreen({super.key});

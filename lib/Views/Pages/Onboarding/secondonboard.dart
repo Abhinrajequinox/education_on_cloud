@@ -9,13 +9,13 @@ class OnboardSecondScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions for responsiveness
+     
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.02), // 2% of screen width
+        padding: EdgeInsets.all(screenWidth * 0.02),  
         child: Column(
           children: [
             Row(
@@ -23,8 +23,8 @@ class OnboardSecondScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                    top: screenHeight * 0.1, // 10% of screen height
-                    right: screenWidth * 0.05, // 5% of screen width
+                    top: screenHeight * 0.1,  
+                    right: screenWidth * 0.05,  
                   ),
                   child: TextButton(
                     onPressed: () {
@@ -38,7 +38,7 @@ class OnboardSecondScreen extends StatelessWidget {
                       text: 'Skip',
                       textStyle: GoogleFonts.mulish(
                         fontWeight: FontWeight.w600,
-                        fontSize: screenWidth * 0.04, // 4% of screen width
+                        fontSize: screenWidth * 0.04,  
                       ),
                     ),
                   ),
@@ -46,7 +46,7 @@ class OnboardSecondScreen extends StatelessWidget {
               ],
             ),
             SizedBox(
-              height: screenHeight * 0.02, // 2% of screen height
+              height: screenHeight * 0.02,
             ),
             SizedBox(
               height: screenHeight * 0.47,  
