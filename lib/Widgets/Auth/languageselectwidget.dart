@@ -21,10 +21,9 @@ class LanguageSelectWidget {
                   language["code"];
           return GestureDetector(
             onTap: () {
-              log('before tapped');
               languageController.changeLanguage(
                   language["code"]!, language["country"]!);
-              log('after tapped');
+
               log(languageController.currentLocale.value.toString());
             },
             child: Padding(
@@ -33,14 +32,13 @@ class LanguageSelectWidget {
                 height: 36,
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    color: isSelected
-                        ? const Color.fromARGB(255, 9, 97, 245)
-                        : Colors.grey,
-                    width: 1.5,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                    border: Border.all(
+                      color: isSelected
+                          ? const Color.fromARGB(255, 9, 97, 245)
+                          : Colors.grey,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -83,7 +81,7 @@ class LanguageSelectWidget {
 
   Widget modeList(List<Map<String, String>> modes) {
     return SizedBox(
-      height: 330,
+      height: 500,
       child: ListView.builder(
         padding: const EdgeInsets.all(0),
         itemCount: modes.length,
@@ -93,10 +91,7 @@ class LanguageSelectWidget {
               languageController.currentMode.value == mode["mode"];
           return GestureDetector(
             onTap: () {
-              log('before tapped');
               languageController.changeMode(mode["mode"]!);
-              log('after tapped');
-              log(languageController.currentMode.value.toString());
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),

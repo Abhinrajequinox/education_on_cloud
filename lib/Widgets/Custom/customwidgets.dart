@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -25,4 +28,20 @@ final TextStyle? textStyle;
       style:  textStyle ?? TextStyle(fontSize: fontSize,fontWeight: fontWeight,color: color),
     );
   }
+}
+
+// 
+
+ customeSnakBar(String title,message,IconData icon) {
+  Get.snackbar(
+    title,            
+    message, 
+    snackPosition: SnackPosition.BOTTOM,  
+    backgroundColor: Colors.blueAccent,   
+    colorText: Colors.white,             
+    borderRadius: 10,                    
+    margin:const EdgeInsets.all(10),          
+    duration:const Duration(seconds: 4),       
+    icon: Icon(icon, color: Colors.white), 
+  );
 }

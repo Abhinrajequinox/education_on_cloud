@@ -5,6 +5,10 @@ class AppThemes {
     brightness: Brightness.light,
     primaryColor: Colors.blue,
     hintColor: Colors.blueAccent,
+    colorScheme: const ColorScheme.light(
+      primary: Colors.blue,          // Primary color
+      secondary: Colors.green,       // Secondary color
+    ),
     // Define other light theme properties here
   );
 
@@ -12,34 +16,53 @@ class AppThemes {
     brightness: Brightness.dark,
     primaryColor: Colors.black,
     hintColor: Colors.redAccent,
-    // Define other dark theme properties here
+    colorScheme: const ColorScheme.dark(
+      primary: Colors.black,        
+      secondary: Colors.redAccent,   
+    ),
   );
 
   static final ThemeData summerTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.yellow,
     hintColor: Colors.orange,
-    // Define other summer theme properties here
+    colorScheme: const ColorScheme.light(
+      primary: Colors.yellow,        
+      secondary: Colors.orangeAccent,  
+    ),
+    
   );
 
   static final ThemeData winterTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.blueGrey,
     hintColor: Colors.white,
-    // Define other winter theme properties here
+    colorScheme: const ColorScheme.light(
+      primary: Colors.blueGrey,       
+      secondary: Colors.cyanAccent,  
+    ),
+    
   );
 
   static final ThemeData autumnTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.orange,
     hintColor: Colors.brown,
-    // Define other autumn theme properties here
+    colorScheme: const ColorScheme.light(
+      primary: Colors.orange,        
+      secondary: Colors.deepOrangeAccent,  
+    ),
+     
   );
 
   static final ThemeData rainyTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.blueAccent,
     hintColor: Colors.grey,
-    // Define other rainy theme properties here
+    colorScheme: const ColorScheme.light(
+      primary: Colors.blueAccent,     
+      secondary: Colors.lightBlue,  
+    ),
+    
   );
 }

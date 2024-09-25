@@ -67,7 +67,7 @@ Widget _body(BuildContext context) {
               text: languageController.currentLocale.value.languageCode == "en"
                   ? 'Start'
                   : 'Next',onTap: () {
-        // Uncomment and navigate to Sign up screen
+        
         Navigator.push(context, MaterialPageRoute(builder: (context) =>const ChooseModeScreen(),));
       },)
         ])
