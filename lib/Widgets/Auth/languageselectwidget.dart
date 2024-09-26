@@ -1,16 +1,17 @@
 import 'dart:developer';
-import 'package:education_on_cloud/Controller/Auth/languagecontroller.dart';
+import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LanguageSelectWidget {
   final LanguageController languageController = Get.find<LanguageController>();
 
-  Widget languageList(List<Map<String, String>> languages) {
+  Widget languageList(List<Map<String, String>> languages, BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return SizedBox(
-      height: 500,
+      height: screenHeight * 0.6, // 50% of the screen height
       child: ListView.builder(
         padding: const EdgeInsets.all(0),
         itemCount: languages.length,
@@ -23,81 +24,13 @@ class LanguageSelectWidget {
             onTap: () {
               languageController.changeLanguage(
                   language["code"]!, language["country"]!);
-
               log(languageController.currentLocale.value.toString());
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 1% of screen height
               child: Container(
-                height: 36,
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: isSelected
-                          ? const Color.fromARGB(255, 9, 97, 245)
-                          : Colors.grey,
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(8)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: CircleAvatar(
-                            radius: 10,
-                            backgroundColor: isSelected
-                                ? const Color.fromARGB(255, 9, 97, 245)
-                                : Colors.transparent,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      language["language"]!,
-                      style: GoogleFonts.lato(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget modeList(List<Map<String, String>> modes) {
-    return SizedBox(
-      height: 500,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(0),
-        itemCount: modes.length,
-        itemBuilder: (context, index) {
-          final mode = modes[index];
-          bool isSelected =
-              languageController.currentMode.value == mode["mode"];
-          return GestureDetector(
-            onTap: () {
-              languageController.changeMode(mode["mode"]!);
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Container(
-                height: 36,
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                height: screenHeight * 0.045, // 5% of screen height
+                padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.02), // 2% of screen height
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: isSelected
@@ -111,10 +44,10 @@ class LanguageSelectWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
+                      padding: EdgeInsets.only(right: screenHeight * 0.02), // 2% of screen height
                       child: Container(
-                        width: 20,
-                        height: 20,
+                        width: screenHeight * 0.025, // 2.5% of screen height
+                        height: screenHeight * 0.025, // 2.5% of screen height
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -123,9 +56,9 @@ class LanguageSelectWidget {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(2),
+                          padding: EdgeInsets.all(screenHeight * 0.005), // 0.5% of screen height
                           child: CircleAvatar(
-                            radius: 10,
+                            radius: screenHeight * 0.0125, // 1.25% of screen height
                             backgroundColor: isSelected
                                 ? const Color.fromARGB(255, 9, 97, 245)
                                 : Colors.transparent,
@@ -134,14 +67,85 @@ class LanguageSelectWidget {
                       ),
                     ),
                     Text(
-                      mode["mode"]!,
-                      style: GoogleFonts.lato(fontSize: 16),
+                      language["language"]!,
+                      style: GoogleFonts.lato(fontSize: screenHeight * 0.02), // 2% of screen height
                     ),
                   ],
                 ),
               ),
             ),
           );
+        },
+      ),
+    );
+  }
+
+  Widget modeList(List<Map<String, String>> modes, BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    return SizedBox(
+      height: screenHeight * 0.5, // 50% of the screen height
+      child: ListView.builder(
+        padding: const EdgeInsets.all(0),
+        itemCount: modes.length,
+        itemBuilder: (context, index) {
+          final mode = modes[index];
+          return Obx(() {
+            bool isSelected = languageController.currentMode.value == mode["mode"];
+            return GestureDetector(
+              onTap: () {
+                languageController.changeMode(mode["mode"]!); // Change the mode
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 1% of screen height
+                child: Container(
+                  height: screenHeight * 0.05, // 5% of screen height
+                  padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.02), // 2% of screen height
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isSelected
+                          ? const Color.fromARGB(255, 9, 97, 245)
+                          : Colors.grey,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: screenHeight * 0.02), // 2% of screen height
+                        child: Container(
+                          width: screenHeight * 0.025, // 2.5% of screen height
+                          height: screenHeight * 0.025, // 2.5% of screen height
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(screenHeight * 0.005), // 0.5% of screen height
+                            child: CircleAvatar(
+                              radius: screenHeight * 0.0125, // 1.25% of screen height
+                              backgroundColor: isSelected
+                                  ? const Color.fromARGB(255, 9, 97, 245)
+                                  : Colors.transparent,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        mode["mode"]!,
+                        style: GoogleFonts.lato(fontSize: screenHeight * 0.02), // 2% of screen height
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
         },
       ),
     );

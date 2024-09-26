@@ -43,6 +43,9 @@ dependencies:
   country_flags: ^3.0.0
   get: ^4.6.6
   translator: ^1.0.0
+  get_storage: ^2.1.1
+  shared_preferences: ^2.3.2
+  email_auth: ^2.0.0
 
 dev_dependencies:
   flutter_test:

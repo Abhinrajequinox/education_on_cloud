@@ -1,4 +1,8 @@
+import 'package:education_on_cloud/Controller/AuthController/country_controller.dart';
+import 'package:get/get.dart';
+
 class ValidationAuth {
+final CountryController countryController = Get.put(CountryController());
 
   String? validatePhoneNumber(String? value) {
   if (value == null || value.isEmpty) {
@@ -22,6 +26,20 @@ String? validateforname(String? value) {
     return 'Enter your Email';
   } else if (!_emailregexp.hasMatch(value)) {
     return 'Please enter a valid email address';
+  }
+  return null;
+}
+
+String? validateforCountry(String? value) {
+  if (countryController.selectedCountry.value.isEmpty||value==null||value.isEmpty) {
+    return 'Choose your Country';
+  }
+  return null;
+}
+
+String? validateforState(String? value) {
+  if (countryController.selectedState.value.isEmpty||value==null||value.isEmpty) {
+    return 'Choose your State';
   }
   return null;
 }

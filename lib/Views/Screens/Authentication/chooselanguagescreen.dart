@@ -1,4 +1,4 @@
-import 'package:education_on_cloud/Controller/Auth/languagecontroller.dart';
+import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Auth/languageselectwidget.dart';
@@ -37,39 +37,67 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
 }
 
 Widget _body(BuildContext context) {
+  // Get screen width and height
+  final double screenWidth = MediaQuery.of(context).size.width;
+  final double screenHeight = MediaQuery.of(context).size.height;
+
   return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
+    padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         Padding(
-            padding: const EdgeInsets.only(top: 72.01, bottom: 16),
-            child: CustomText(
-                text: 'Select Preferred Language',
-                textStyle: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: const Color.fromRGBO(24, 32, 53, 1)))),
+          padding: EdgeInsets.only(top: screenHeight * 0.1, bottom: 16), // 10% of screen height
+          child: CustomText(
+            text: 'Select Preferred Language',
+            textStyle: GoogleFonts.inter(
+              fontSize: screenWidth * 0.045, // 4.5% of screen width
+              fontWeight: FontWeight.w700,
+              color: const Color.fromRGBO(24, 32, 53, 1),
+            ),
+          ),
+        ),
         Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               SizedBox(
-                width: 27.04,
-                height: 18.03,
+                width: screenWidth * 0.07, // 7% of screen width
+                height: screenHeight * 0.04, // 4% of screen height
                 child: Image.asset('lib/Assets/indianflag.png'),
               ),
               CustomText(
-                  text: 'INDIA',
-                  textStyle: GoogleFonts.lato(
-                      fontSize: 18, fontWeight: FontWeight.w500))
-            ])),
-        languageSelectWidget.languageList(_languages),
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          CustomAuthButton(width: 138,
+                text: 'INDIA',
+                textStyle: GoogleFonts.lato(
+                  fontSize: screenWidth * 0.045, // 4.5% of screen width
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            ],
+          ),
+        ),
+        languageSelectWidget.languageList(_languages,context),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            CustomAuthButton(
+              width: screenWidth * 0.35, // 35% of screen width
               text: languageController.currentLocale.value.languageCode == "en"
                   ? 'Start'
-                  : 'Next',onTap: () {
-        
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>const ChooseModeScreen(),));
-      },)
-        ])
-      ]));
+                  : 'Next',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ChooseModeScreen(),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      ],
+    ),
+  );
 }

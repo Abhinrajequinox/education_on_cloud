@@ -1,14 +1,12 @@
 import 'dart:developer';
-
-import 'package:education_on_cloud/Controller/Auth/country_controller.dart';
+import 'package:education_on_cloud/Controller/AuthController/country_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Authservices/auth_serivices.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/otp_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/vlidation_auth.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
-import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -22,6 +20,8 @@ final ValidationAuth validationAuth = ValidationAuth();
 final TextEditingController namecontroller = TextEditingController();
 final TextEditingController phoneController = TextEditingController();
 final TextEditingController mailController = TextEditingController();
+AuthServices authServices = AuthServices();
+
 final formKey = GlobalKey<FormState>();
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -34,8 +34,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 }
 
 Widget _signUpBody(BuildContext context) {
+  final double screenHeight = MediaQuery.of(context).size.height;
+  final double screenWidth = MediaQuery.of(context).size.width;
+
   return Padding(
-    padding: const EdgeInsets.all(16),
+    padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
     child: SingleChildScrollView(
       child: Form(
         key: formKey,
@@ -43,10 +46,12 @@ Widget _signUpBody(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 117, bottom: 50),
+              padding: EdgeInsets.only(
+                  top: screenHeight * 0.1,
+                  bottom: screenHeight * 0.05), // 10% and 5% of screen height
               child: SizedBox(
-                height: 90,
-                width: 184.29,
+                height: screenHeight * 0.1, // 10% of screen height
+                width: screenWidth * 0.5, // 50% of screen width
                 child: Image.asset('lib/Assets/titlelogo.png'),
               ),
             ),
@@ -58,16 +63,19 @@ Widget _signUpBody(BuildContext context) {
               validator: validationAuth.validateforname,
             ),
             CustomTextFeild(
-                textCapitalization: TextCapitalization.none,
-                text: 'Enter Your Phone number',
-                keybordtype: TextInputType.phone,
-                iconData: Icons.phone_outlined,
-                validator: validationAuth.validatePhoneNumber,
-                controller: phoneController),
+              textCapitalization: TextCapitalization.none,
+              text: 'Enter Your Phone number',
+              keybordtype: TextInputType.phone,
+              iconData: Icons.phone_outlined,
+              validator: validationAuth.validatePhoneNumber,
+              controller: phoneController,
+            ),
             Obx(() {
               return Padding(
-                padding: const EdgeInsets.only(top: 7.5, bottom: 7.5),
+                padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.02), // 2% of screen height
                 child: DropdownButtonFormField<String>(
+                  validator: validationAuth.validateforCountry,
                   decoration: InputDecoration(
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -86,8 +94,10 @@ Widget _signUpBody(BuildContext context) {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
+                    contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: screenHeight *
+                            0.015), // Responsive vertical padding
                   ),
                   value: countryController.selectedCountry.value.isEmpty
                       ? null
@@ -100,8 +110,9 @@ Widget _signUpBody(BuildContext context) {
                   }).toList(),
                   onChanged: (String? newValue) {
                     countryController.changeCountry(newValue!);
-                    newValue=='India'?countryController.visibleFeild(true):countryController.visibleFeild(false);
-
+                    newValue == 'India'
+                        ? countryController.visibleFeild(true)
+                        : countryController.visibleFeild(false);
                   },
                   icon: const Icon(Icons.arrow_drop_down),
                   iconSize: 24,
@@ -109,55 +120,56 @@ Widget _signUpBody(BuildContext context) {
                 ),
               );
             }),
-            Obx(() => 
-                Visibility(
+            Obx(
+              () => Visibility(
                 visible: countryController.satateFeils.value,
                 child: Obx(() {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 7.5, bottom: 7.5),
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.red),
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.02), // 2% of screen height
+                    child: DropdownButtonFormField<String>(
+                      validator: validationAuth.validateforState,
+                      decoration: InputDecoration(
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: primarycolour),
+                        ),
+                        prefixIcon: const Icon(Icons.location_on_outlined),
+                        hintText: "Select State",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: screenHeight * 0.015),
                       ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(color: primarycolour),
-                      ),
-                      prefixIcon: const Icon(Icons.location_on_outlined),
-                      hintText: "Select State",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 15),
+                      value: countryController.selectedState.value.isEmpty
+                          ? null
+                          : countryController.selectedState.value,
+                      items: countryController.indianStates.map((String state) {
+                        return DropdownMenuItem<String>(
+                          value: state,
+                          child: Text(state),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        countryController.changeState(newValue!);
+                      },
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconSize: 24,
+                      isExpanded: true,
                     ),
-                    value: countryController.selectedState.value.isEmpty
-                        ? null
-                        : countryController.selectedState.value,
-                    items: countryController.indianStates.map((String country) {
-                      return DropdownMenuItem<String>(
-                        value: country,
-                        child: Text(country),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      countryController.changeState(newValue!);
-                    },
-                    icon: const Icon(Icons.arrow_drop_down),
-                    iconSize: 24,
-                    isExpanded: true,
-                  ),
-                );
-              }),
+                  );
+                }),
               ),
             ),
-
             CustomTextFeild(
               textCapitalization: TextCapitalization.none,
               text: 'Enter Your Gmail',
@@ -166,19 +178,49 @@ Widget _signUpBody(BuildContext context) {
               keybordtype: TextInputType.emailAddress,
               validator: validationAuth.validateformail,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.02), // 2% of screen height
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CustomAuthButton(width: 138,
+                CustomAuthButton(
+                  width: screenWidth * 0.3, // 50% of screen width
                   text: 'Log In',
                   onTap: () {
-                    if (formKey.currentState!.validate()) {
-                      log('its okeyyy');
-                      Navigator.push(context, MaterialPageRoute(builder:  (context) => OtpScreen(phoneNumber: phoneController.text,),));
-                    } else {
-                      customeSnakBar(
-                          'Oops..', "Fill All The Details", Icons.info);
+                    if (formKey.currentState!.validate() &&
+                        countryController.selectedCountry.value.isNotEmpty) {
+                      if (countryController.selectedCountry.value != 'India') {
+                        log('its okeyyy');
+                        authServices.sendEmailOtp(mailController.text);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OtpScreen(
+                                    phoneNumber: phoneController.text,
+                                    userMail: mailController.text,
+                                    userCountry:
+                                        countryController.selectedCountry.value,
+                                  )),
+                        );
+                      } else if (countryController
+                          .selectedState.value.isNotEmpty) {
+                        authServices.sendEmailOtp(mailController.text);
+
+                        Navigator.push(
+                          
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OtpScreen(
+                                  phoneNumber: phoneController.text,
+                                  userMail: mailController.text,
+                                  userCountry:
+                                      countryController.selectedCountry.value)),
+                        );
+                      } else {
+                        // customeSnakBar('Choose State', "", Icons.info);
+                      }
+                    } else if (countryController
+                        .selectedCountry.value.isEmpty) {
+                      // customeSnakBar('Choose Country', "", Icons.info);
                     }
                   },
                 )

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:education_on_cloud/Theme/appthemes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageController extends GetxController {
 
@@ -15,13 +18,17 @@ class LanguageController extends GetxController {
   }
 
 
-var currentMode = 'Light Mode'.obs; 
+Rx<ThemeData> currentTheme = AppThemes.lightTheme.obs; 
+  RxString currentMode = 'Light Mode'.obs;
 
-  Rx<ThemeData> currentTheme = AppThemes.lightTheme.obs; 
+@override
+  void onInit() {
+    super.onInit();
+    _loadThemeFromPrefs(); // Load theme when the controller is initialized
+  }
 
-  
-  void changeMode(String mode) {
-    print('Changing mode to: $mode');
+  void changeMode(String mode) async{
+    log('Changing mode to: $mode');
     currentMode.value = mode; 
     switch (mode) {
       case 'Light Mode':
@@ -42,9 +49,25 @@ var currentMode = 'Light Mode'.obs;
       case 'Rainy Mode':
         currentTheme.value = AppThemes.rainyTheme;
         break;
-    }print('Changing mode to: $mode');
+    }
     Get.changeTheme(currentTheme.value);
+  await _saveThemeToPrefs(mode); // Save the selected mode to SharedPreferences
+  }
+  // Load theme from SharedPreferences
+ Future<void> _loadThemeFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedMode = prefs.getString('selectedMode');
+    if (savedMode != null) {
+      changeMode(savedMode); // Apply saved mode
+    }
+  }
+  
+   // Save the selected theme mode to SharedPreferences
+  Future<void> _saveThemeToPrefs(String mode) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedMode', mode);
   }
 
-}
+
+  }
 

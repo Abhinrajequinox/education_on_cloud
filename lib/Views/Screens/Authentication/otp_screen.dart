@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:education_on_cloud/Controller/Services/Authservices/auth_serivices.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber;
-  const OtpScreen({super.key, required this.phoneNumber});
+  final String userMail;
+  final String userCountry;
+  const OtpScreen({super.key, required this.phoneNumber, required this.userMail, required this.userCountry});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -18,18 +21,20 @@ final TextEditingController _firstOpt = TextEditingController();
 final TextEditingController _secOpt = TextEditingController();
 final TextEditingController _thirdtOpt = TextEditingController();
 final TextEditingController _fourOpt = TextEditingController();
+AuthServices authServices = AuthServices();
+
 final _formKey=GlobalKey<FormState>();
 
 class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _body(widget.phoneNumber, context),
+      body: _body(widget.phoneNumber, widget.userMail,widget.userCountry,context),
     );
   }
 }
 
-Widget _body(String userNumber, BuildContext context) {
+Widget _body(String userNumber, userMail,userCountry,BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(12),
     child: SingleChildScrollView(
@@ -42,9 +47,15 @@ Widget _body(String userNumber, BuildContext context) {
               width: 184.29,
               child: Image.asset('lib/Assets/titlelogo.png'),
             ),
-          ),
+          ),userCountry=='India'?
           CustomText(
               text: 'Enter the code from the sms we sent to $userNumber',
+              textStyle: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+              textalign: TextAlign.center): CustomText(
+              text: 'Enter the code we sent to your mail $userMail',
               textStyle: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -108,7 +119,7 @@ Widget _body(String userNumber, BuildContext context) {
                   if (_formKey.currentState!.validate()) {
                     log('okeyy');
                   }else{
-                    
+
                   }
                 },
               ),
