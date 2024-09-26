@@ -77,7 +77,7 @@ Widget _body(BuildContext context) {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            CustomAuthButton(
+            CustomAuthButton(width: 138,
               text: 'Next',
               onTap: () {
                 Navigator.push(

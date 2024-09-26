@@ -6,9 +6,7 @@ class LanguageController extends GetxController {
 
   var currentLocale = const Locale('en', 'US').obs;
 
-  var currentMode = 'Light Mode'.obs; 
-
-  Rx<ThemeData> currentTheme = AppThemes.lightTheme.obs;  // Observable for theme
+   // Observable for theme
 
   void changeLanguage(String code, String country) {
     var locale = Locale(code, country);
@@ -16,7 +14,14 @@ class LanguageController extends GetxController {
     Get.updateLocale(locale);
   }
 
-  void changeMode(String mode) {print('Changing mode to: $mode');
+
+var currentMode = 'Light Mode'.obs; 
+
+  Rx<ThemeData> currentTheme = AppThemes.lightTheme.obs; 
+
+  
+  void changeMode(String mode) {
+    print('Changing mode to: $mode');
     currentMode.value = mode; 
     switch (mode) {
       case 'Light Mode':

@@ -63,7 +63,7 @@ Widget _body(BuildContext context) {
             ])),
         languageSelectWidget.languageList(_languages),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          CustomAuthButton(
+          CustomAuthButton(width: 138,
               text: languageController.currentLocale.value.languageCode == "en"
                   ? 'Start'
                   : 'Next',onTap: () {

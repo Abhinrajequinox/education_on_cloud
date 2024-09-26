@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:education_on_cloud/Controller/Auth/country_controller.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
+import 'package:education_on_cloud/Views/Screens/Authentication/otp_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/vlidation_auth.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -27,12 +28,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _signUpBody(),
+      body: _signUpBody(context),
     );
   }
 }
 
-Widget _signUpBody() {
+Widget _signUpBody(BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(16),
     child: SingleChildScrollView(
@@ -169,11 +170,12 @@ Widget _signUpBody() {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CustomAuthButton(
+                CustomAuthButton(width: 138,
                   text: 'Log In',
                   onTap: () {
                     if (formKey.currentState!.validate()) {
                       log('its okeyyy');
+                      Navigator.push(context, MaterialPageRoute(builder:  (context) => OtpScreen(phoneNumber: phoneController.text,),));
                     } else {
                       customeSnakBar(
                           'Oops..', "Fill All The Details", Icons.info);
