@@ -1,10 +1,14 @@
 import 'package:education_on_cloud/Controller/AuthController/apptraslation.dart';
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/chooselanguagescreen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   Get.put(LanguageController());
   runApp(const MyApp());
 }
@@ -14,10 +18,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
-    final LanguageController languageController = Get.find<LanguageController>();
-
-    return Obx(() { 
+    final LanguageController languageController =
+        Get.find<LanguageController>();
+    return Obx(() {
       return GetMaterialApp(
         translations: AppTranslations(),
         locale: languageController.currentLocale.value,
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'Education On Cloud',
         theme: languageController.currentTheme.value,
         debugShowCheckedModeBanner: false,
-        home: const ChooseLanguageScreen(),
+        home: const HomeBottomNavigationBar(),
       );
     });
   }

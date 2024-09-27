@@ -1,30 +1,54 @@
-import 'dart:developer';
-
-import 'package:email_auth/email_auth.dart';
+// import 'dart:developer';
+import 'dart:math';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class AuthServices {
-  final EmailAuth emailAuth;
+  // Method to send OTP to the provided email address
+  Future<String> sendEmailOtp(String email) async {
+    // Generate a random OTP
+    String otp = generateOtp();
 
-  AuthServices() : emailAuth = EmailAuth(sessionName: "mail otp");
+    // Define the SMTP server (using Gmail as an example)
+    String username = 'abhinraj8086@gmail.com'; // Your email
+    String password = '8592943588abhin'; // Your password or App Password
 
-  Future<void> sendEmailOtp(String email) async {
-    emailAuth.config({
-      "sender": "abhinraj8086@gmail.com"
-    });
+    // Create the SMTP server
+    final smtpServer = gmail(username, password);
 
-    // Send OTP
-    var response = await emailAuth.sendOtp(recipientMail: email, otpLength: 4);
+    // Create the message
+    final message = Message()
+      ..from = Address(username)
+      ..recipients.add(email)
+      ..subject = 'Education On Cloud'
+      ..text = 'OTP for Sign In Education On Cloud is: $otp';
 
-    if (response) {
-      log("OTP sent successfully");
-    } else {
-      log("Failed to send OTP");
+    try {
+      // Send the email
+      await send(message, smtpServer);
+      
+      print("OTP sent successfully to $email");
+      return otp;
+    } catch (e) {
+      print("Failed to send OTP: $e");
+      return otp;
     }
   }
 
-  // Method to verify the OTP
-  bool verifyOtp(String email, String otp) {
-    var response = emailAuth.validateOtp(recipientMail: email, userOtp: otp);
-    return response; // Returns true if the OTP is valid, false otherwise
+  // Method to generate a random OTP
+  String generateOtp({int length = 4}) {
+    final random = Random();
+    String otp = '';
+    for (int i = 0; i < length; i++) {
+      otp += random.nextInt(10).toString();
+    }
+    return otp;
   }
+
+  // Method to verify the OTP (implement your own logic)
+  bool verifyOtp(String enteredOtp, String actualOtp) {
+    return enteredOtp == actualOtp; // Simple comparison, implement better logic as needed
+  }
+
+  
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191228497266",
+    "project_id": "thelearnyn-app",
+    "storage_bucket": "thelearnyn-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191228497266:android:2b12899f85157c8a01e1eb",
+        "android_client_info": {
+          "package_name": "com.education_on.cloud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDpsYsjgLU2ACpiu3V4GYYFtttscVU56Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

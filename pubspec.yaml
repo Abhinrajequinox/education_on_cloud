@@ -46,6 +46,9 @@ dependencies:
   get_storage: ^2.1.1
   shared_preferences: ^2.3.2
   email_auth: ^2.0.0
+  firebase_core: ^3.6.0
+  mailer: ^6.2.0
+  pinput: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +81,9 @@ flutter:
     - lib\Views\Pages\Onboarding\onboardthird.png
     - lib\Assets\titlelogo.png
     - lib\Assets\indianflag.png
+    - lib\Assets\Icons\book-icon-black.png
+    - lib\Assets\Icons\home-icon-black.png
+    - lib\Assets\Icons\person-icon-black.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

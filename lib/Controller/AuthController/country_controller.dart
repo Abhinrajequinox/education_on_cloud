@@ -1,24 +1,21 @@
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class CountryController extends GetxController {
-  // List of countries
+
+  // country selecting
+
   final List<String> countries = ['United States', 'India', 'Canada', 'Australia', 'Germany'];
-
-  // The currently selected country (observable)
   var selectedCountry = ''.obs;
-
-  // Function to change the selected country
   void changeCountry(String newCountry) {
     selectedCountry.value = newCountry;
   }
 
-var satateFeils=false.obs;
+// state selecting and visibling
 
+var satateFeils=false.obs;
 void visibleFeild(bool val){
   satateFeils.value=val;
 }
-
 List<String> indianStates = [
   'Andhra Pradesh',
   'Arunachal Pradesh',
@@ -57,8 +54,6 @@ List<String> indianStates = [
   'Ladakh',
   'Jammu and Kashmir'
 ];
-
-// The currently selected country (observable)
   var selectedState = ''.obs;
 
   // Function to change the selected country
