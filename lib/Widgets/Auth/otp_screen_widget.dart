@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/AuthController/otp_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Authservices/auth_serivices.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -9,7 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpScreenWidget {
-  final OtpScreenController otpScreenController=OtpScreenController();
+  final OtpScreenController otpScreenController = OtpScreenController();
+  final AuthServices authServices = AuthServices();
 
   Widget logoImage() {
     return Padding(
@@ -36,7 +38,7 @@ class OtpScreenWidget {
 
   Widget piputBox() {
     return Obx(
-      ()=> Pinput(
+      () => Pinput(
           length: 4, // OTP length is 4
           onChanged: (value) {
             otpScreenController.changeOtpCheck(false);
@@ -53,7 +55,7 @@ class OtpScreenWidget {
               height: 53,
               textStyle: TextStyle(
                   fontSize: 24,
-                  color: otpScreenController.otpCheck.value==false
+                  color: otpScreenController.otpCheck.value == false
                       ? Colors.black
                       : Colors.red),
               decoration: BoxDecoration(
@@ -95,16 +97,24 @@ class OtpScreenWidget {
     ]);
   }
 
-  Widget submitButton(BuildContext context) {
+  Widget submitButton(BuildContext context, String userNumber) {
     return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       CustomAuthButton(
           text: 'SUBMIT',
           width: 142,
-          onTap: () {
-            if (otpScreenController.enterdVal.value == '8592') {
+          onTap: () async {
+            var otpVal = await authServices.checkGetOtp(
+                userNumber, otpScreenController.enterdVal.value);
+            if (otpScreenController.enterdVal.value == otpVal) {
               otpScreenController.changeOtpCheck(false);
               log('enterd otp is correct');
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>const HomeBottomNavigationBar(),), (route) => false,);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeBottomNavigationBar(),
+                ),
+                (route) => false,
+              );
             } else {
               otpScreenController.changeOtpCheck(true);
             }

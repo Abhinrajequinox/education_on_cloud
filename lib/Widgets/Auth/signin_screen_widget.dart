@@ -4,8 +4,10 @@ import 'package:education_on_cloud/Controller/AuthController/country_controller.
 import 'package:education_on_cloud/Controller/Services/Authservices/auth_serivices.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/otp_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Authentication/signupscreen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/vlidation_auth.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
+import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -49,9 +51,11 @@ class SigninScreenWidget {
               value: countryController.selectedCountry.value.isEmpty
                   ? null
                   : countryController.selectedCountry.value,
-              items: countryController.countries.map((String country) {
+              items: countryController.countries.map((country) {
                 return DropdownMenuItem<String>(
-                    value: country, child: Text(country));
+                  value: country['name'],
+                  child: Text(country['name']!),
+                );
               }).toList(),
               onChanged: (String? newValue) {
                 countryController.changeCountry(newValue!);
@@ -114,33 +118,51 @@ class SigninScreenWidget {
           width: screenWidth * 0.3,
           text: 'Log In',
           onTap: () async {
+            String phoneNumberWithCountryCode =
+                '${countryController.selectedCountryCode.value}${phoneController.text}';
             if (formKey.currentState!.validate() &&
                 countryController.selectedCountry.value.isNotEmpty) {
               if (countryController.selectedCountry.value != 'India') {
                 log('its okeyyy');
-                String otp = await authServices.sendEmailOtp(mail);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => OtpScreen(
-                          otp: otp,
-                          phoneNumber: phone,
-                          userMail: mail,
-                          userCountry:
-                              countryController.selectedCountry.value)),
-                );
+                bool sucess = await authServices.submitRequest(
+                    name: namecontroller.text,
+                    number: phoneController.text,
+                    country: countryController.selectedCountry.value,
+                    state: countryController.selectedState.value,
+                    email: mailController.text);
+                if (sucess) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OtpScreen(
+                              phoneNumber: phoneNumberWithCountryCode,
+                              userMail: mail,
+                              userCountry:
+                                  countryController.selectedCountry.value)));
+                } else {
+                  customeSnakBar(
+                      'Submission failed. Please try again.', "", Icons.error);
+                }
               } else if (countryController.selectedState.value.isNotEmpty) {
-                String otp = await authServices.sendEmailOtp(mail);
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => OtpScreen(
-                            otp: otp,
-                            phoneNumber: phone,
-                            userMail: mail,
-                            userCountry:
-                                countryController.selectedCountry.value)));
+                bool sucess = await authServices.submitRequest(
+                    name: namecontroller.text,
+                    number: phoneController.text,
+                    country: countryController.selectedCountry.value,
+                    state: countryController.selectedState.value,
+                    email: mailController.text);
+                if (sucess) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OtpScreen(
+                              phoneNumber: phoneNumberWithCountryCode,
+                              userMail: mail,
+                              userCountry:
+                                  countryController.selectedCountry.value)));
+                } else {
+                  customeSnakBar(
+                      'Submission failed. Please try again.', "", Icons.error);
+                }
               } else {
                 // customeSnakBar('Choose State', "", Icons.info);
               }

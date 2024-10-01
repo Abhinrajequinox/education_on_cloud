@@ -1,54 +1,114 @@
 // import 'dart:developer';
-import 'dart:math';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:education_on_cloud/Apis/apis.dart';
+import 'package:http/http.dart' as http;
 
 class AuthServices {
-  // Method to send OTP to the provided email address
-  Future<String> sendEmailOtp(String email) async {
-    // Generate a random OTP
-    String otp = generateOtp();
-
-    // Define the SMTP server (using Gmail as an example)
-    String username = 'abhinraj8086@gmail.com'; // Your email
-    String password = '8592943588abhin'; // Your password or App Password
-
-    // Create the SMTP server
-    final smtpServer = gmail(username, password);
-
-    // Create the message
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.add(email)
-      ..subject = 'Education On Cloud'
-      ..text = 'OTP for Sign In Education On Cloud is: $otp';
+  Future<bool> submitRequest({
+    required String name,
+    required String number,
+    required String country,
+    required String state,
+    required String email,
+  }) async {
+    log('the phone number in the sumbmit request is $number');
+    log('the phone number in the sumbmit request is $email');
 
     try {
-      // Send the email
-      await send(message, smtpServer);
-      
-      print("OTP sent successfully to $email");
-      return otp;
+      final response = await http.post(
+        Uri.parse(signinPostApi),
+        body: {
+          'user_name': name,
+          'country': country == 'India' ? '0' : '1',
+          'mobile_num': '91$number',
+          'state': state,
+          'emai': email,
+          'username': name
+        },
+      );
+
+      // Log the raw response for debugging
+      log('Response body: ${response.body}');
+
+      // Extract the JSON part of the response
+      String jsonResponseString =
+          response.body.substring(response.body.indexOf('{'));
+
+      // Attempt to decode the extracted JSON
+      var jsonResponse = json.decode(jsonResponseString);
+
+      switch (response.statusCode) {
+        case 200:
+          log('Sign-in successful: $jsonResponse');
+          return true; // Indicate success
+        case 400:
+          log('Bad request: $jsonResponse');
+          return false; // Indicate failure
+        case 401:
+          log('Unauthorized: $jsonResponse');
+          return false; // Indicate failure
+        case 403:
+          log('Forbidden: $jsonResponse');
+          return false; // Indicate failure
+        case 404:
+          log('Not found: $jsonResponse');
+          return false; // Indicate failure
+        case 500:
+          log('Server error: $jsonResponse');
+          return false; // Indicate failure
+        default:
+          log('Unexpected error: ${response.statusCode} $jsonResponse');
+          return false; // Indicate failure
+      }
     } catch (e) {
-      print("Failed to send OTP: $e");
-      return otp;
+      log('Error: $e');
+      return false; // Indicate failure on exception
     }
   }
 
-  // Method to generate a random OTP
-  String generateOtp({int length = 4}) {
-    final random = Random();
-    String otp = '';
-    for (int i = 0; i < length; i++) {
-      otp += random.nextInt(10).toString();
+  Future<bool> checkGetOtp(String mobile, otp) async {
+    try {
+      final response = await http
+          .post(Uri.parse(otpGetApi), body: {'mobile_num': mobile, 'otp': otp});
+
+      // Log the raw response for debugging
+      log('Response status code: ${response.statusCode}');
+      log('Response body: ${response.body}');
+
+      switch (response.statusCode) {
+        case 200:
+          // Successful response
+          log('OTP retrieval successful');
+          return true; // Return the body as a string
+
+        case 400:
+          log('Bad request: ${response.body}');
+          return false; // Indicate failure
+
+        case 401:
+          log('Unauthorized: ${response.body}');
+          return false; // Indicate failure
+
+        case 403:
+          log('Forbidden: ${response.body}');
+          return false; // Indicate failure
+
+        case 404:
+          log('Not found: ${response.body}');
+          return false; // Indicate failure
+
+        case 500:
+          log('Server error: ${response.body}');
+          return false; // Indicate failure
+
+        default:
+          log('Unexpected error: ${response.statusCode} ${response.body}');
+          return false; // Indicate failure
+      }
+    } catch (e) {
+      log('Error occurred while checking OTP: $e');
+      return false; // Indicate failure on exception
     }
-    return otp;
   }
-
-  // Method to verify the OTP (implement your own logic)
-  bool verifyOtp(String enteredOtp, String actualOtp) {
-    return enteredOtp == actualOtp; // Simple comparison, implement better logic as needed
-  }
-
-  
 }

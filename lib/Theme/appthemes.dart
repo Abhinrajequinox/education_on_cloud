@@ -35,17 +35,17 @@ class AppThemes {
 
   static final ThemeData summerTheme = ThemeData(
     brightness: Brightness.light,
-    primaryColor: Colors.yellow,
-    scaffoldBackgroundColor: Colors.yellow[100]!,  // Soft light yellow
-    colorScheme: const ColorScheme.light(primary: Colors.yellow),
+    primaryColor: Colors.black,
+    scaffoldBackgroundColor:const Color.fromRGBO(26, 26, 26, 1),  // Soft light yellow
+    colorScheme: const ColorScheme.light(primary: Color.fromRGBO(26, 26, 26, 1)),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.yellow,  // Summer theme app bar
-      iconTheme: IconThemeData(color: Colors.black),  // Black icons for contrast
+      backgroundColor: Colors.black,  // Summer theme app bar
+      iconTheme: IconThemeData(color: Colors.white),  // Black icons for contrast
     ),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.black),
-      bodyMedium: TextStyle(color: Colors.black),
-      displayLarge: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+      bodyLarge: TextStyle(color: Colors.white),
+      bodyMedium: TextStyle(color: Colors.white),
+      displayLarge: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
     ),
   );
 
@@ -68,10 +68,10 @@ class AppThemes {
   static final ThemeData autumnTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.orange,
-    scaffoldBackgroundColor: Colors.orange[50]!,  // Soft light orange
+    scaffoldBackgroundColor:const Color.fromRGBO(245, 222, 179, 1),  // Soft light orange
     colorScheme: const ColorScheme.light(primary: Colors.orange),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.orange,  // Autumn theme app bar
+      backgroundColor: Color.fromRGBO(245, 222, 179, 1),  // Autumn theme app bar
       iconTheme: IconThemeData(color: Colors.black),  // Black icons for contrast
     ),
     textTheme: const TextTheme(

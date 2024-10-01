@@ -7,13 +7,12 @@ class OtpScreen extends StatefulWidget {
   final String phoneNumber;
   final String userMail;
   final String userCountry;
-  final String otp;
+
   const OtpScreen(
       {super.key,
       required this.phoneNumber,
       required this.userMail,
-      required this.userCountry,
-      required this.otp});
+      required this.userCountry,});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -50,6 +49,6 @@ Widget _body(String userNumber, userMail, userCountry, BuildContext context) {
         otpScreenWidget.resendMail(),
         const SizedBox(height: 30),
         // submit button session
-        otpScreenWidget.submitButton(context)
+        otpScreenWidget.submitButton(context, userNumber)
       ])));
 }

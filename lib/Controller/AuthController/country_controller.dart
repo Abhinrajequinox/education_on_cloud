@@ -4,10 +4,21 @@ class CountryController extends GetxController {
 
   // country selecting
 
-  final List<String> countries = ['United States', 'India', 'Canada', 'Australia', 'Germany'];
+final List<Map<String, String>> countries = [
+    {'name': 'United States', 'code': '+1'},
+    {'name': 'India', 'code': '+91'},
+    {'name': 'Canada', 'code': '+1'},
+    {'name': 'Australia', 'code': '+61'},
+    {'name': 'Germany', 'code': '+49'},
+  ];
+
   var selectedCountry = ''.obs;
+  var selectedCountryCode = ''.obs;
+
   void changeCountry(String newCountry) {
     selectedCountry.value = newCountry;
+    selectedCountryCode.value = countries
+        .firstWhere((country) => country['name'] == newCountry)['code']!;
   }
 
 // state selecting and visibling
