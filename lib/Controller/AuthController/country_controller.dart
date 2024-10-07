@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 
 class CountryController extends GetxController {
@@ -5,11 +7,11 @@ class CountryController extends GetxController {
   // country selecting
 
 final List<Map<String, String>> countries = [
-    {'name': 'United States', 'code': '+1'},
-    {'name': 'India', 'code': '+91'},
-    {'name': 'Canada', 'code': '+1'},
-    {'name': 'Australia', 'code': '+61'},
-    {'name': 'Germany', 'code': '+49'},
+    {'name': 'India', 'code': '0'},
+    {'name': 'Nepal', 'code': '1'},
+    {'name': 'Sri lanka', 'code': '2'},
+    {'name': 'Bangladesh', 'code': '3'},
+    {'name': 'Bhutan', 'code': '4'},
   ];
 
   var selectedCountry = ''.obs;
@@ -19,6 +21,13 @@ final List<Map<String, String>> countries = [
     selectedCountry.value = newCountry;
     selectedCountryCode.value = countries
         .firstWhere((country) => country['name'] == newCountry)['code']!;
+         if (selectedCountry.value == 'India') {
+      visibleMailFeild(true);
+      visibleFeild(true);
+    } else {
+      visibleMailFeild(false);
+      visibleFeild(false);
+    }
   }
 
 // state selecting and visibling
@@ -26,6 +35,12 @@ final List<Map<String, String>> countries = [
 var satateFeils=false.obs;
 void visibleFeild(bool val){
   satateFeils.value=val;
+  log("satateFeils updated: $satateFeils");
+}
+var emailFeils=false.obs;
+void visibleMailFeild(bool val){
+  emailFeils.value=val;
+  log("email feilds updated: $emailFeils");
 }
 List<String> indianStates = [
   'Andhra Pradesh',

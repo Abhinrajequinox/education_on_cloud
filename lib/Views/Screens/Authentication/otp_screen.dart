@@ -7,12 +7,13 @@ class OtpScreen extends StatefulWidget {
   final String phoneNumber;
   final String userMail;
   final String userCountry;
+  final String logOrSingin;
 
   const OtpScreen(
       {super.key,
       required this.phoneNumber,
       required this.userMail,
-      required this.userCountry,});
+      required this.userCountry, required this.logOrSingin,});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -26,11 +27,11 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: _body(
-            widget.phoneNumber, widget.userMail, widget.userCountry, context));
+            widget.phoneNumber, widget.userMail, widget.userCountry,widget.logOrSingin, context));
   }
 }
 
-Widget _body(String userNumber, userMail, userCountry, BuildContext context) {
+Widget _body(String userNumber, userMail, userCountry,logOrSingin, BuildContext context) {
   return Padding(
       padding: const EdgeInsets.all(12),
       child: SingleChildScrollView(
@@ -49,6 +50,6 @@ Widget _body(String userNumber, userMail, userCountry, BuildContext context) {
         otpScreenWidget.resendMail(),
         const SizedBox(height: 30),
         // submit button session
-        otpScreenWidget.submitButton(context, userNumber)
+        otpScreenWidget.submitButton(context, userNumber,logOrSingin)
       ])));
 }

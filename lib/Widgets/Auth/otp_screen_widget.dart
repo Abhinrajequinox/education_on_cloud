@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/AuthController/otp_screen_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Authservices/auth_serivices.dart';
+import 'package:education_on_cloud/Controller/Services/Auth/auth_serivices.dart';
+import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -12,6 +13,7 @@ import 'package:pinput/pinput.dart';
 class OtpScreenWidget {
   final OtpScreenController otpScreenController = OtpScreenController();
   final AuthServices authServices = AuthServices();
+  final LoginServices loginServices = LoginServices();
 
   Widget logoImage() {
     return Padding(
@@ -23,14 +25,14 @@ class OtpScreenWidget {
   }
 
   Widget otpDetails(String userCountry, userNumber, userMail) {
-    return userCountry == 'India'
+    return userCountry != 'India'
         ? CustomText(
-            text: 'Enter the code from the sms we sent to $userNumber',
+            text: 'Enter the code we sent to your mail $userMail',
             textStyle:
                 GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w400),
             textalign: TextAlign.center)
         : CustomText(
-            text: 'Enter the code we sent to your mail $userMail',
+            text: 'Enter the code from the sms we sent to $userNumber',
             textStyle:
                 GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w400),
             textalign: TextAlign.center);
@@ -97,24 +99,54 @@ class OtpScreenWidget {
     ]);
   }
 
-  Widget submitButton(BuildContext context, String userNumber) {
+  Widget submitButton(BuildContext context, String userNumber, logOrSingin) {
     return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       CustomAuthButton(
           text: 'SUBMIT',
           width: 142,
           onTap: () async {
-            var otpVal = await authServices.checkGetOtp(
-                userNumber, otpScreenController.enterdVal.value);
-            if (otpScreenController.enterdVal.value == otpVal) {
-              otpScreenController.changeOtpCheck(false);
-              log('enterd otp is correct');
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomeBottomNavigationBar(),
-                ),
-                (route) => false,
-              );
+            // var otpVal = await authServices.checkGetOtp(mobile:
+            //     userNumber,otp:  otpScreenController.enterdVal.value);
+            if (otpScreenController.enterdVal.value != '') {
+              if (logOrSingin == 'SignIn') {
+                otpScreenController.changeOtpCheck(false);
+
+                var sucesscheckgetotp = await authServices.checkGetOtp(
+                    mobile: userNumber,
+                    otp: otpScreenController.enterdVal.value);
+                if (sucesscheckgetotp) {
+                  log('enterd otp is correct');
+                  loginServices.saveLoginStatus(true);
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeBottomNavigationBar(),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  otpScreenController.changeOtpCheck(true);
+                }
+              } else {
+                otpScreenController.changeOtpCheck(false);
+
+                var sucessoneTimeloginOtp = await authServices.oneTimeloginOtp(
+                    mobile: userNumber,
+                    otp: otpScreenController.enterdVal.value);
+                if (sucessoneTimeloginOtp) {
+                  log('enterd otp is correct');
+                  loginServices.saveLoginStatus(true);
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeBottomNavigationBar(),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  otpScreenController.changeOtpCheck(true);
+                }
+              }
             } else {
               otpScreenController.changeOtpCheck(true);
             }

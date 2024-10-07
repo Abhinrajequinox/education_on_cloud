@@ -91,6 +91,39 @@ flutter:
     - lib\Assets\Icons\home-icon-black.png
     - lib\Assets\Icons\person-icon-black.png
     - lib\Assets\Others\plan-img-eg.png
+    - lib\Assets\Home\plan199.png
+    - lib\Assets\Home\plan799.png
+    - lib\Assets\Home\plan999.png
+    - lib\Assets\Home\plan-effortless.png
+    - lib\Assets\Home\statitics-bg.png
+    - lib\Assets\Home\statitics-video.png
+    - lib\Assets\Home\statitics-exam.png
+    - lib\Assets\Home\statitics-graduate.png
+    - lib\Assets\Home\statitics-google.png
+    - lib\Assets\Others\studing-img.png
+    - lib\Assets\Home\Category\cataimg-1.png
+    - lib\Assets\Home\Category\cataimg-2.png
+    - lib\Assets\Home\Category\cataimg-3.png
+    - lib\Assets\Home\Category\cataimg-4.png
+    - lib\Assets\Home\Category\cataimg-5.png
+    - lib\Assets\Home\Category\cataimg-6.png
+    - lib\Assets\Icons\arrow-circle-left.png
+    - lib/Assets/Home/Course-session/west-bengal.png
+    - lib/Assets/Home/Course-session/uttar-pradesh.png
+    - lib/Assets/Home/Course-session/tamilnadu.png
+    - lib/Assets/Home/Course-session/rajasthan-board.png
+    - lib/Assets/Home/Course-session/punjab-board.png
+    - lib/Assets/Home/Course-session/navodaya.png
+    - lib/Assets/Home/Course-session/maharastra.png
+    - lib/Assets/Home/Course-session/madhya-pradesh.png
+    - lib/Assets/Home/Course-session/kendriyavidalaya.png
+    - lib/Assets/Home/Course-session/karnataka.png
+    - lib/Assets/Home/Course-session/icse-board.png
+    - lib/Assets/Home/Course-session/haryana-board.png
+    - lib/Assets/Home/Course-session/gujarat-board.png
+    - lib/Assets/Home/Course-session/cbse-board.png
+    - lib/Assets/Home/Course-session/andhra-pradesh.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -1,6 +1,7 @@
 import 'package:education_on_cloud/Controller/AuthController/apptraslation.dart';
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Controller/Services/NotificationServices/notification_services.dart';
+import 'package:education_on_cloud/Views/Pages/auth_check.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/signupscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         title: 'Education On Cloud',
         theme: languageController.currentTheme.value,
         debugShowCheckedModeBanner: false,
-        home: const SignUpScreen(),
+        home: const AuthCheckPage(),
       );
     });
   }

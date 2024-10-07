@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:education_on_cloud/Controller/AuthController/country_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Authservices/auth_serivices.dart';
+import 'package:education_on_cloud/Controller/Services/Auth/auth_serivices.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
+import 'package:education_on_cloud/Views/Screens/Authentication/login_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/otp_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/signupscreen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/vlidation_auth.dart';
@@ -10,6 +11,7 @@ import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SigninScreenWidget {
   final CountryController countryController = Get.put(CountryController());
@@ -59,10 +61,16 @@ class SigninScreenWidget {
               }).toList(),
               onChanged: (String? newValue) {
                 countryController.changeCountry(newValue!);
-                formKey.currentState?.validate();
-                newValue == 'India'
-                    ? countryController.visibleFeild(true)
-                    : countryController.visibleFeild(false);
+                // formKey.currentState?.validate();
+                // if (newValue == 'India') {
+                //    countryController.visibleFeild(true);
+                //    countryController.visibleMailFeild(true);
+                // }else{
+                //   countryController.visibleFeild(false);
+                //   countryController.visibleMailFeild(false);
+                // }
+                
+                   
               },
               icon: const Icon(Icons.arrow_drop_down),
               iconSize: 24,
@@ -103,7 +111,7 @@ class SigninScreenWidget {
                   }).toList(),
                   onChanged: (String? newValue) {
                     countryController.changeState(newValue!);
-                    formKey.currentState?.validate();
+                    // formKey.currentState?.validate();
                   },
                   icon: const Icon(Icons.arrow_drop_down),
                   iconSize: 24,
@@ -118,8 +126,8 @@ class SigninScreenWidget {
           width: screenWidth * 0.3,
           text: 'Log In',
           onTap: () async {
-            String phoneNumberWithCountryCode =
-                '${countryController.selectedCountryCode.value}${phoneController.text}';
+            // String phoneNumberWithCountryCode =
+            //     '${countryController.selectedCountryCode.value}${phoneController.text}';
             if (formKey.currentState!.validate() &&
                 countryController.selectedCountry.value.isNotEmpty) {
               if (countryController.selectedCountry.value != 'India') {
@@ -135,7 +143,8 @@ class SigninScreenWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => OtpScreen(
-                              phoneNumber: phoneNumberWithCountryCode,
+                              logOrSingin: 'SignIn',
+                              phoneNumber: phoneController.text,
                               userMail: mail,
                               userCountry:
                                   countryController.selectedCountry.value)));
@@ -155,7 +164,8 @@ class SigninScreenWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => OtpScreen(
-                              phoneNumber: phoneNumberWithCountryCode,
+                              logOrSingin: 'SignIn',
+                              phoneNumber: phoneController.text,
                               userMail: mail,
                               userCountry:
                                   countryController.selectedCountry.value)));
@@ -167,9 +177,41 @@ class SigninScreenWidget {
                 // customeSnakBar('Choose State', "", Icons.info);
               }
             } else if (countryController.selectedCountry.value.isEmpty) {
+              formKey.currentState?.validate();
               // customeSnakBar('Choose Country', "", Icons.info);
             }
           })
     ]);
   }
+
+  // Widget alreadyHaveAccount(BuildContext context) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+       
+  //       CustomText(
+  //           text: 'Already have an Account?',
+  //           textStyle:
+  //               GoogleFonts.mulish(fontSize: 14, fontWeight: FontWeight.w700)),
+  //       const SizedBox(width: 5),
+  //       GestureDetector(
+  //         onTap: () {
+  //           Navigator.pushAndRemoveUntil(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => const LoginScreen(),
+  //             ),
+  //             (route) => false,
+  //           );
+  //         },
+  //         child: CustomText(
+  //             text: 'SIGN IN',
+  //             textStyle: GoogleFonts.mulish(
+  //                 fontSize: 14,
+  //                 fontWeight: FontWeight.w800,
+  //                 color: const Color.fromRGBO(9, 97, 245, 1))),
+  //       )
+  //     ],
+  //   );
+  // }
 }
