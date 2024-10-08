@@ -123,6 +123,12 @@ flutter:
     - lib/Assets/Home/Course-session/gujarat-board.png
     - lib/Assets/Home/Course-session/cbse-board.png
     - lib/Assets/Home/Course-session/andhra-pradesh.png
+    - lib\Assets\Home\pro-feature-img.png
+    - lib\Assets\Home\and-following-features-image.png
+    - lib\Assets\Home\profile-image.png
+    - lib\Assets\Flags\nepal-flag.png
+    - lib\Assets\Flags\butan-flag.png
+    - lib\Assets\Flags\bangladesh-flag.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

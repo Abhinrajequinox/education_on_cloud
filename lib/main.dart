@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         Get.find<LanguageController>();
     return Obx(() {
       return GetMaterialApp(
-        translations: AppTranslations(),
+        // translations: AppTranslations(),
         locale: languageController.currentLocale.value,
         fallbackLocale: const Locale('en', 'US'),
         title: 'Education On Cloud',

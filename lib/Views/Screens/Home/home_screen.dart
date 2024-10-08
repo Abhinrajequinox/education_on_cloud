@@ -4,6 +4,7 @@ import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/student_profile_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/home_screen_widgets.dart';
 import 'package:flutter/material.dart';
@@ -24,18 +25,22 @@ class _HomeScreenState extends State<HomeScreen> {
 //  late Future<List<CourseCategory>?> futureCategories;
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
-   _fetchCourses();
+    _fetchCourses();
   }
+
   void _fetchCourses() async {
-   homeScreenController.courseSessionList.clear(); // Clear previous data
+    homeScreenController.courseSessionList.clear(); // Clear previous data
     try {
-      var fetchedCourses = await homeScreenServices.fetchCoursesSection('0'); // Fetch courses
-      homeScreenController.changeCourseSessionList(fetchedCourses); // Update the controller with new data
+      var fetchedCourses =
+          await homeScreenServices.fetchCoursesSection('0'); // Fetch courses
+      homeScreenController.changeCourseSessionList(
+          fetchedCourses); // Update the controller with new data
     } catch (error) {
       log('Error fetching courses: $error'); // Log error if fetching fails
-    } }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +61,28 @@ AppBar _appBar(BuildContext context, double screenWidth) {
           languageController.currentTheme.value.scaffoldBackgroundColor,
       leading: Row(children: [
         SizedBox(width: screenWidth * 0.05),
-        const CircleAvatar(radius: 18),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudentProfileScreen(),
+                ));
+          },
+          child: CircleAvatar(
+            radius: 18,
+            backgroundColor:
+                Colors.transparent, // Make sure no background color interferes
+            child: ClipOval(
+              child: Image.asset(
+                'lib/Assets/Home/profile-image.png',
+                fit: BoxFit.cover,
+                width: 36, // Diameter of CircleAvatar = 2 * radius
+                height: 36,
+              ),
+            ),
+          ),
+        ),
         IconButton(
             onPressed: () {},
             icon: const Icon(Icons.notifications_none_outlined,
@@ -104,6 +130,14 @@ Widget _body(
       homeScreenWidgets.coursesAndBoardSession(screenWidth, screenHeight),
       homeScreenWidgets.listOfgridOfcoursesAndBoardSession(),
       homeScreenWidgets.ourProFeautureText(screenWidth, screenHeight),
+      homeScreenWidgets.andTheFollowingFeaturesSession(
+          screenWidth, screenHeight),
+      homeScreenWidgets.differentModeOfLearningSession(
+          screenWidth, screenHeight),
+      homeScreenWidgets.differentModeOfLearningBuilder(
+          screenHeight, screenWidth),
+      homeScreenWidgets.yourLearningYourLanguageSession(
+          screenHeight, screenWidth),homeScreenWidgets.countryBuilder(screenWidth, screenHeight)
     ]),
   );
 }

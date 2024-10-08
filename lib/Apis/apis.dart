@@ -9,7 +9,15 @@ const otpGetApi='https://educationoncloud.in/api/login_otp.php';
 
 
 ////////////////////////////////           API for Login at 1 Device at a time        /////////////////////////////////////
-const otp_login_one_device='https://educationoncloud.in/api/otp_login_one_device.php';
+const otp_login_one_device_Api='https://educationoncloud.in/api/otp_login_one_device.php';
+
+
+////////////////////////////////           API for Storing the Login Details Of the student        /////////////////////////////////////
+const store_sigin_details_Api='https://educationoncloud.in/api/learnyn_reg_app.php';
+
+
+////////////////////////////////           API for Storing the Login Details Of the student        /////////////////////////////////////
+const fetch_sigin_details_Api='https://educationoncloud.in/api/fetch_learnyn_reg_app.php';
 
 
 ////////////////////////////////           API for the Course session on category        /////////////////////////////////////

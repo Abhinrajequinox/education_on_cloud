@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
@@ -9,6 +10,7 @@ import 'package:education_on_cloud/Views/Screens/Home/course_category_screen.dar
 import 'package:education_on_cloud/Views/Screens/Home/course_session_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -206,49 +208,67 @@ class HomeScreenWidgets {
         return Padding(
           padding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.04), // 4% horizontal padding
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: LinearGradient(
-                    colors: [Colors.lightBlueAccent, Colors.blueGrey.shade100],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      EdgeInsets.all(screenWidth * 0.008), // Dynamic padding
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+          child: GestureDetector(
+            onTap: () async {
+              List<CourseSectionModel> _course_section =
+                  await homeScreenServices.fetchCoursesSection('0');
+              // log(_course_section.toString());
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                //  homeScreenController.changecategoryIndexForColor(100);
+                return CourseSessionScreen(
+                  courseSectionModel: _course_section,
+                  titleOfCourse: cata['categorytitle'],
+                );
+              }));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.lightBlueAccent,
+                        Colors.blueGrey.shade100
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        cata['categoryimage'],
-                        fit: BoxFit.cover,
-                        height: screenHeight * 0.12, // 12% of screen height
-                        width: screenHeight * 0.12, // 12% of screen height
+                  ),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.all(screenWidth * 0.008), // Dynamic padding
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          cata['categoryimage'],
+                          fit: BoxFit.cover,
+                          height: screenHeight * 0.12, // 12% of screen height
+                          width: screenHeight * 0.12, // 12% of screen height
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                child: CustomText(
-                  text: cata['categorytitle'],
-                  textalign: TextAlign.center,
-                  textStyle: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                      fontSize: screenHeight * 0.015), // 1.5% of screen height
-                ),
-              )
-            ],
+                Flexible(
+                  child: CustomText(
+                    text: cata['categorytitle'],
+                    textalign: TextAlign.center,
+                    textStyle: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        fontSize:
+                            screenHeight * 0.015), // 1.5% of screen height
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },
@@ -276,10 +296,7 @@ class HomeScreenWidgets {
               homeScreenController.changecategoryIndexForColor(index);
               List<CourseSectionModel> _course_section =
                   await homeScreenServices.fetchCoursesSection('0');
-              log(_course_section.toString());
-              Future.delayed(const Duration(milliseconds: 300), () {
-                homeScreenController.changecategoryIndexForColor(100);
-              });
+              // log(_course_section.toString());
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   //  homeScreenController.changecategoryIndexForColor(100);
@@ -289,6 +306,9 @@ class HomeScreenWidgets {
                   );
                 },
               ));
+              Future.delayed(const Duration(milliseconds: 300), () {
+                homeScreenController.changecategoryIndexForColor(100);
+              });
             },
             child: Obx(
               () => Card(
@@ -674,7 +694,8 @@ class HomeScreenWidgets {
             onTap: () async {
               homeScreenController.changecourseAndBoardIndexForColor(index);
               homeScreenController.courseSessionList.clear();
-              var fetchedCourses = await homeScreenServices.fetchCoursesSection('0');
+              var fetchedCourses =
+                  await homeScreenServices.fetchCoursesSection('0');
               homeScreenController.changeCourseSessionList(fetchedCourses);
             },
             child: Obx(
@@ -729,7 +750,7 @@ class HomeScreenWidgets {
 
   Widget listOfgridOfcoursesAndBoardSession() {
     return Obx(
-     ()=> ListView.builder(
+      () => ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
@@ -737,7 +758,8 @@ class HomeScreenWidgets {
           return GestureDetector(
             onTap: () async {
               List<CourseCategoryModel> courseCategoryModel =
-                  await homeScreenServices.fetchCoursesCategory(course.sectionId);
+                  await homeScreenServices
+                      .fetchCoursesCategory(course.sectionId);
               homeScreenController.changecategoryIndexForColor(index);
               Future.delayed(const Duration(milliseconds: 300), () {
                 homeScreenController.changecategoryIndexForColor(100);
@@ -752,16 +774,18 @@ class HomeScreenWidgets {
             },
             child: Obx(
               () => Padding(
-                padding: const EdgeInsets.only(left: 15,right: 15),
+                padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Card(
                   elevation: 3,
                   child: Container(
                     decoration: BoxDecoration(
-                        color: homeScreenController.categoryIndexForColor.value ==
-                                index
-                            ? Colors.blue
-                            : Colors.white,
-                        borderRadius: const BorderRadius.all(Radius.circular(12))),
+                        color:
+                            homeScreenController.categoryIndexForColor.value ==
+                                    index
+                                ? Colors.blue
+                                : Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12))),
                     padding: const EdgeInsets.all(8),
                     height: 60,
                     child: Row(
@@ -785,11 +809,11 @@ class HomeScreenWidgets {
                             textStyle: GoogleFonts.inter(
                                 fontWeight: FontWeight.w400, fontSize: 14),
                             maxline: 1,
-                            color:
-                                homeScreenController.categoryIndexForColor.value ==
-                                        index
-                                    ? Colors.white
-                                    : Colors.black,
+                            color: homeScreenController
+                                        .categoryIndexForColor.value ==
+                                    index
+                                ? Colors.white
+                                : Colors.black,
                           ),
                         ),
                         const Icon(Icons.arrow_forward_ios),
@@ -808,31 +832,416 @@ class HomeScreenWidgets {
 
   Widget ourProFeautureText(double screenWidth, double screenHeight) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.04, // 4% of screen width
-      ),
-      child: Row(
+      padding: EdgeInsets.only(
+          top: screenHeight * .03,
+          left: screenWidth * .04,
+          right: screenWidth * .04),
+      child: Column(
         children: [
-          Stack(
+          Row(
             children: [
-              CustomText(
-                text: 'Our Pro Features',
-                textStyle: GoogleFonts.inter(
-                  fontWeight: FontWeight.w700,
-                  fontSize: screenHeight * 0.02, // 2% of screen height
-                ),
+              Stack(
+                children: [
+                  CustomText(
+                    text: 'Our Pro Features',
+                    textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenHeight * 0.02, // 2% of screen height
+                    ),
+                  ),
+                  Positioned(
+                    left: screenWidth * 0.15, // Responsive positioning
+                    top: screenHeight * 0.025, // Responsive positioning
+                    child: SizedBox(
+                      width: screenWidth * 0.26, // Responsive width
+                      child: Image.asset('lib/Assets/Onboard/image.png'),
+                    ),
+                  ),
+                ],
               ),
-              Positioned(
-                left: screenWidth * 0.15, // Responsive positioning
-                top: screenHeight * 0.025, // Responsive positioning
-                child: SizedBox(
-                  width: screenWidth * 0.26, // Responsive width
-                  child: Image.asset('lib/Assets/Onboard/image.png'),
+            ],
+          ),
+          SizedBox(
+              height: screenHeight * .3,
+              child: Image.asset('lib/Assets/Home/pro-feature-img.png')),
+        ],
+      ),
+    );
+  }
+
+  Widget andTheFollowingFeaturesSession(double screenHeight, screenWidth) {
+    return Column(
+      children: [
+        Obx(
+          () => Padding(
+            padding: EdgeInsets.only(
+                left: screenWidth * .02, right: screenWidth * .02),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Stack(
+                  children: [
+                    CustomText(
+                      text: 'And The Following Features',
+                      textStyle: GoogleFonts.inter(
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenHeight * 0.04, // 2% of screen height
+                      ),
+                    ),
+                    Positioned(
+                      left: screenWidth * 0.15, // Responsive positioning
+                      top: screenHeight * 0.042, // Responsive positioning
+                      child: SizedBox(
+                        width: screenWidth * 0.15, // Responsive width
+                        child: Image.asset('lib/Assets/Onboard/image.png'),
+                      ),
+                    ),
+                  ],
                 ),
+                homeScreenController.andTheFollowingFeaturesListOrGrid.value
+                    ? IconButton(
+                        onPressed: () {
+                          homeScreenController
+                              .changeandTheFollowingFeaturesListOrGrid(false);
+                        },
+                        icon: const Icon(Icons.grid_view_outlined),
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          homeScreenController
+                              .changeandTheFollowingFeaturesListOrGrid(true);
+                        },
+                        icon: const Icon(Icons.list),
+                      ),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 14, right: 8, top: 8, bottom: 8),
+          child: SizedBox(
+            // height: screenHeight * .3,
+            child:
+                Image.asset('lib/Assets/Home/and-following-features-image.png'),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget differentModeOfLearningSession(double screenHeight, screenWidth) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: screenHeight * .03,
+          left: screenWidth * .02,
+          right: screenWidth * .02),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Stack(
+                children: [
+                  CustomText(
+                    text: 'Different Modes of Learning',
+                    textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenHeight * 0.04, // 2% of screen height
+                    ),
+                  ),
+                  Positioned(
+                    left: screenWidth * 0.15, // Responsive positioning
+                    top: screenHeight * 0.040, // Responsive positioning
+                    child: SizedBox(
+                      width: screenWidth * 0.15, // Responsive width
+                      child: Image.asset('lib/Assets/Onboard/image.png'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Future<List<dynamic>> _fetchModesOfLearning() async {
+    try {
+      final Map<String, dynamic> jsonData =
+          json.decode(differentModesOfLearningJson);
+      return jsonData['differentModes'];
+    } catch (e) {
+      throw Exception('Failed to load categories: $e');
+    }
+  }
+
+  Widget differentModeOfLearningBuilder(double screenHeight, screenWidth) {
+    return FutureBuilder<List<dynamic>>(
+      future: _fetchModesOfLearning(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          log(snapshot.error.toString());
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No Modes of Learning.'));
+        } else {
+          final modesOfLearning = snapshot.data!;
+          return SizedBox(
+            height: screenHeight * .4,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: modesOfLearning.length,
+              itemBuilder: (context, index) {
+                var learninMode = modesOfLearning[index];
+                return _cardForModeOfLearning(
+                    learninMode, screenHeight, screenWidth);
+              },
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _cardForModeOfLearning(
+      dynamic learninMode, double screenHeight, screenWidth) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        color: Colors.white,
+        elevation: 0,
+        child: Container(
+          decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(1, 1),
+                    blurRadius: 1,
+                    spreadRadius: 1,
+                    blurStyle: BlurStyle.outer)
+              ],
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(24))),
+          height: screenHeight * 3,
+          width: screenWidth * .57,
+          child: Padding(
+            padding: EdgeInsets.all(screenHeight * .02),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: screenHeight * .09,
+                  width: screenWidth * .3,
+                  child: Image.asset(
+                    learninMode['image'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(
+                  height: screenHeight * .02,
+                ),
+                CustomText(
+                    textalign: TextAlign.center,
+                    text: learninMode['title'],
+                    textStyle: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        decoration: TextDecoration.underline)),
+                SizedBox(
+                  height: screenHeight * .02,
+                ),
+                CustomText(
+                    maxline: 7,
+                    textalign: TextAlign.center,
+                    text: learninMode['describtion'],
+                    textStyle: GoogleFonts.inter(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 11,
+                        color: const Color.fromRGBO(87, 92, 116, 1))),
+                SizedBox(
+                  height: screenHeight * .015,
+                ),
+                Container(
+                  height: screenHeight * .028,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      gradient: LinearGradient(colors: [
+                        Color.fromRGBO(0, 56, 255, 1),
+                        Color.fromRGBO(0, 224, 255, 1)
+                      ])),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CustomText(
+                          text: learninMode['buttonText'],
+                          textStyle: GoogleFonts.mulish(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 12),
+                        ),
+                        Container(
+                            height: screenHeight * .023,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors
+                                    .white, // Set the border color to white
+                                width: 4, // Set the border width
+                              ),
+                            ),
+                            child: const CircleAvatar(
+                              radius: 8,
+                              child: Icon(
+                                Icons.play_arrow,
+                                size: 11,
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget yourLearningYourLanguageSession(double screenHeight, screenWidth) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: screenHeight * .03,
+          left: screenWidth * .02,
+          right: screenWidth * .02),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Stack(
+                children: [
+                  CustomText(
+                    text: 'Your Learning, Your Language',
+                    textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenHeight * 0.02, // 2% of screen height
+                    ),
+                  ),
+                  Positioned(
+                    left: screenWidth * 0.50, // Responsive positioning
+                    top: screenHeight * 0.023, // Responsive positioning
+                    child: SizedBox(
+                      width: screenWidth * 0.23, // Responsive width
+                      child: Image.asset('lib/Assets/Onboard/image.png'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: screenHeight * .03,
+          ),
+          CustomText(
+            text:
+                'Interactive recorded self-paced courses in multiple languages, with more coming soon!',
+            textStyle:
+                GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 12),
+            textalign: TextAlign.left,
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<List<dynamic>> _fetchCountryJson() async {
+    try {
+      final Map<String, dynamic> jsonData = json.decode(countriesJson);
+      return jsonData['countries'];
+    } catch (e) {
+      throw Exception('Failed to load categories: $e');
+    }
+  }
+
+  Widget countryBuilder(
+    double screenWidth,
+    double screenHeight,
+  ) {
+    return FutureBuilder<List<dynamic>>(
+      future: _fetchCountryJson(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          log(snapshot.error.toString());
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No country available.'));
+        } else {
+          final category = snapshot.data!;
+          return countyJsonCard(
+            category,
+            screenWidth,
+            screenHeight,
+          );
+        }
+      },
+    );
+  }
+
+//// Grid view Of the Fetched Categories
+
+////////////////   List view of the Fetched Categorires
+
+  Widget countyJsonCard(
+    List<dynamic> category,
+    double screenWidth,
+    double screenHeight,
+  ) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          var _country = category[index];
+          return Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.04), // 4% horizontal padding
+              child: GestureDetector(
+                onTap: () {},
+                child: Card(
+                  elevation: 0,
+                  child: Container(
+                    // width: screenWidth*0.2,
+                    // height: screenHeight * 0.05, // 9% of screen height
+                    decoration: BoxDecoration(
+                        border: Border.all(width: .002),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(6))),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            height: 59,
+                            width: 80,
+                            child: Image.asset(
+                              _country['image'],
+                              fit: BoxFit.cover,
+                            )),
+                        CustomText(
+                          text: _country['name'],
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                          textStyle: GoogleFonts.mulish(),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ));
+        },
+        itemCount: category.length,
       ),
     );
   }

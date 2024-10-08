@@ -22,10 +22,10 @@ class CustomAuthButton extends StatelessWidget {
             width: width,
             // width: 138,
             decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(0, 56, 255, 1),
-                  Color.fromRGBO(0, 224, 255, 1)
-                ]),
+                  gradient: LinearGradient(colors: [
+                    Color.fromRGBO(0, 56, 255, 1),
+                    Color.fromRGBO(0, 224, 255, 1)
+                  ]),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15),

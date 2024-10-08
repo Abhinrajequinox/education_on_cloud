@@ -33,4 +33,10 @@ void changeCourseSessionList(List<CourseSectionModel> _course_section) {
   courseSessionList.assignAll(_course_section);
 }
 
+RxBool andTheFollowingFeaturesListOrGrid=false.obs;
+
+  void changeandTheFollowingFeaturesListOrGrid(bool val){
+    andTheFollowingFeaturesListOrGrid.value=val;
+  }
+
 }
