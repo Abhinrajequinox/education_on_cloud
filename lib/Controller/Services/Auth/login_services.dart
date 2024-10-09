@@ -1,3 +1,4 @@
+import 'package:education_on_cloud/Views/Screens/Authentication/chooselanguagescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/signupscreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ Future<bool> getLoginStatus() async {
       );
     } else {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) =>const SignUpScreen()),
+        MaterialPageRoute(builder: (context) =>const ChooseLanguageScreen()),
       );
     }
   }

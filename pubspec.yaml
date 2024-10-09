@@ -55,6 +55,7 @@ dependencies:
   carousel_slider: ^5.0.0
   stacked_card_carousel: ^0.0.4
   http: ^1.2.2
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -129,6 +130,7 @@ flutter:
     - lib\Assets\Flags\nepal-flag.png
     - lib\Assets\Flags\butan-flag.png
     - lib\Assets\Flags\bangladesh-flag.png
+    - lib\Assets\Flags\srilanga-flag.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

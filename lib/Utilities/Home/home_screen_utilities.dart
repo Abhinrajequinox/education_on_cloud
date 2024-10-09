@@ -136,7 +136,7 @@ const String countriesJson = '''
     {
       "name": "Sri lanka",
       "code": "2",
-      "image": "lib/Assets/Flags/butan-flag.png"
+      "image": "lib/Assets/Flags/srilanka-flag.png"
     },
     {
       "name": "Bangladesh",

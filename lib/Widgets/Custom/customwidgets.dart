@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -45,5 +46,19 @@ customeSnakBar(String title, message, IconData icon) {
     margin: const EdgeInsets.all(10),
     duration: const Duration(seconds: 4),
     icon: Icon(icon, color: Colors.white),
+  );
+}
+Widget cusstomBuildShimmerEffect(double height) {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[300]!, // Base color of the shimmer
+    highlightColor: Colors.grey[100]!, // Highlight color of the shimmer
+    child: Container(
+      height: height, // Height of the shimmer effect
+      width: double.infinity, // Width of the shimmer effect
+      decoration: BoxDecoration(
+        color: Colors.white, // Background color
+        borderRadius: BorderRadius.circular(4), // Rounded corners
+      ),
+    ),
   );
 }

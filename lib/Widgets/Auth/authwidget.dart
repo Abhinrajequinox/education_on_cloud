@@ -11,7 +11,8 @@ class CustomAuthButton extends StatelessWidget {
       {super.key,
       required this.text,
       required this.onTap,
-      required this.width});
+      required this.width
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class CustomAuthButton extends StatelessWidget {
         onTap: onTap,
         child: Container(
             height: 35,
-            width: width,
+            // width: width,
             // width: 138,
             decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [

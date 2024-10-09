@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:country_flags/country_flags.dart';
+import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
 import 'package:education_on_cloud/Utilities/Home/home_screen_utilities.dart';
+import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Home/course_category_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/course_session_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -17,6 +19,7 @@ import 'package:google_fonts/google_fonts.dart';
 class HomeScreenWidgets {
   final HomeScreenController homeScreenController = HomeScreenController();
   final HomeScreenServices homeScreenServices = HomeScreenServices();
+  final LanguageController languageController = LanguageController();
 
   // Course Plans
 
@@ -750,83 +753,100 @@ class HomeScreenWidgets {
 
   Widget listOfgridOfcoursesAndBoardSession() {
     return Obx(
-      () => ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          var course = homeScreenController.courseSessionList[index];
-          return GestureDetector(
-            onTap: () async {
-              List<CourseCategoryModel> courseCategoryModel =
-                  await homeScreenServices
-                      .fetchCoursesCategory(course.sectionId);
-              homeScreenController.changecategoryIndexForColor(index);
-              Future.delayed(const Duration(milliseconds: 300), () {
-                homeScreenController.changecategoryIndexForColor(100);
-              });
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CourseCategoryScreen(
-                        titleOfCategory: course.sectionName,
-                        courseCategoryModel: courseCategoryModel),
-                  ));
-            },
-            child: Obx(
-              () => Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Card(
-                  elevation: 3,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color:
-                            homeScreenController.categoryIndexForColor.value ==
-                                    index
-                                ? Colors.blue
-                                : Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12))),
-                    padding: const EdgeInsets.all(8),
-                    height: 60,
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.grey,
-                          child: ClipOval(
-                            child: Image.network(
-                              course.img,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
+      () => homeScreenController.courseSessionList.isEmpty
+          ? const Center(
+              child: Text(
+                  'No courses available.')) // Show a message if the list is empty
+          : ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                var course = homeScreenController.courseSessionList[index];
+                return GestureDetector(
+                  onTap: () async {
+                    List<CourseCategoryModel> courseCategoryModel =
+                        await homeScreenServices
+                            .fetchCoursesCategory(course.sectionId);
+                    homeScreenController.changecategoryIndexForColor(index);
+                    Future.delayed(const Duration(milliseconds: 300), () {
+                      homeScreenController.changecategoryIndexForColor(100);
+                    });
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CourseCategoryScreen(
+                              titleOfCategory: course.sectionName,
+                              courseCategoryModel: courseCategoryModel),
+                        ));
+                  },
+                  child: Obx(
+                    () => Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: Card(
+                        elevation: 3,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: homeScreenController
+                                          .categoryIndexForColor.value ==
+                                      index
+                                  ? Colors.blue
+                                  : Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12))),
+                          padding: const EdgeInsets.all(8),
+                          height: 60,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                child: ClipOval(
+                                  child: Image.network(
+                                    course.img,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                              width: 270,
+                              child: FutureBuilder<String>(
+                                future: languageController.translateApiText(course.sectionName),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Text('Loading...'); // Placeholder while translating
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}'); // Error handling
+                                  } else {
+                                    // Successfully translated
+                                    return CustomText(
+                                      text: snapshot.data ?? 'course.sectionName', // Use original text if translation fails
+                                      textStyle: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                      ),
+                                      maxline: 1,
+                                      color: homeScreenController.categoryIndexForColor.value == index
+                                          ? Colors.white
+                                          : Colors.black,
+                                    );
+                                  }
+                                },
+                              ),
                             ),
+
+                              const Icon(Icons.arrow_forward_ios),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        SizedBox(
-                          width: 270,
-                          child: CustomText(
-                            text: course.sectionName,
-                            textStyle: GoogleFonts.inter(
-                                fontWeight: FontWeight.w400, fontSize: 14),
-                            maxline: 1,
-                            color: homeScreenController
-                                        .categoryIndexForColor.value ==
-                                    index
-                                ? Colors.white
-                                : Colors.black,
-                          ),
-                        ),
-                        const Icon(Icons.arrow_forward_ios),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
+              itemCount: homeScreenController.courseSessionList.length,
             ),
-          );
-        },
-        itemCount: homeScreenController.courseSessionList.length,
-      ),
     );
   }
 
@@ -1148,8 +1168,11 @@ class HomeScreenWidgets {
             text:
                 'Interactive recorded self-paced courses in multiple languages, with more coming soon!',
             textStyle:
-                GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 12),
+                GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 12),
             textalign: TextAlign.left,
+          ),
+          SizedBox(
+            height: screenHeight * .015,
           )
         ],
       ),
@@ -1201,7 +1224,7 @@ class HomeScreenWidgets {
     double screenHeight,
   ) {
     return SizedBox(
-      height: 200,
+      height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
@@ -1210,28 +1233,33 @@ class HomeScreenWidgets {
               padding: EdgeInsets.symmetric(
                   horizontal: screenWidth * 0.04), // 4% horizontal padding
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  _country['name'] == 'India'
+                      ? homeScreenController.changelanguageListVisibility(true)
+                      : homeScreenController
+                          .changelanguageListVisibility(false);
+                },
                 child: Card(
                   elevation: 0,
                   child: Container(
-                    // width: screenWidth*0.2,
-                    // height: screenHeight * 0.05, // 9% of screen height
-                    decoration: BoxDecoration(
-                        border: Border.all(width: .002),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(6))),
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6))),
                     child: Column(
                       children: [
                         SizedBox(
                             height: 59,
-                            width: 80,
-                            child: Image.asset(
-                              _country['image'],
-                              fit: BoxFit.cover,
+                            width: 69,
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12)),
+                              child: Image.asset(
+                                _country['image'],
+                                fit: BoxFit.cover,
+                              ),
                             )),
                         CustomText(
                           text: _country['name'],
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w900,
                           fontSize: 12,
                           textStyle: GoogleFonts.mulish(),
                         )
@@ -1242,6 +1270,93 @@ class HomeScreenWidgets {
               ));
         },
         itemCount: category.length,
+      ),
+    );
+  }
+
+  Widget homeScreenlanguageList(
+      BuildContext context, double screenHeight, screenWidth) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+      child: Obx(
+       ()=> Visibility(
+          visible: homeScreenController.languageListVisibility.value,
+          child: Card(
+            elevation: 3,
+            child: Container(
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(14))),
+                height: screenHeight * 0.2,
+                width: screenWidth * 0.8, // 50% of the screen height
+                child: ListView.builder(
+                    padding: const EdgeInsets.all(0),
+                    itemCount: indianLanguages.length,
+                    itemBuilder: (context, index) {
+                      final language = indianLanguages[index];
+                      bool isSelected =
+                          languageController.currentLocale.value.languageCode ==
+                              language["code"];
+                      return GestureDetector(
+                          onTap: () {
+                            languageController.changeLanguage(
+                                language["code"]!, language["country"]!);
+                            log(languageController.currentLocale.value
+                                .toString());
+                          },
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical:
+                                      screenHeight * 0.01), // 1% of screen height
+                              child: Container(
+                                  height:
+                                      screenHeight * 0.045, // 5% of screen height
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: screenHeight *
+                                          0.02), // 2% of screen height
+                                  decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? const Color.fromRGBO(239, 246, 255, 1)
+                                          : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                right: screenHeight *
+                                                    0.02), // 2% of screen height
+                                            child: Container(
+                                                width: screenHeight *
+                                                    0.025, // 2.5% of screen height
+                                                height: screenHeight *
+                                                    0.025, // 2.5% of screen height
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.black,
+                                                        width: 1)),
+                                                child: Padding(
+                                                    padding: EdgeInsets.all(
+                                                        screenHeight *
+                                                            0.005), // 0.5% of screen height
+                                                    child: CircleAvatar(
+                                                        radius: screenHeight *
+                                                            0.0125, // 1.25% of screen height
+                                                        backgroundColor: isSelected
+                                                            ? const Color
+                                                                .fromARGB(
+                                                                255, 9, 97, 245)
+                                                            : Colors
+                                                                .transparent)))),
+                                        Text(language["language"]!,
+                                            style: GoogleFonts.lato(
+                                                fontSize: screenHeight *
+                                                    0.02) // 2% of screen height
+                                            )
+                                      ]))));
+                    })),
+          ),
+        ),
       ),
     );
   }

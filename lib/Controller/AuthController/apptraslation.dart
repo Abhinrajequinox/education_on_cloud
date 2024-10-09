@@ -1,44 +1,20 @@
-import 'package:get/get_navigation/src/root/internacionalization.dart';
+import 'dart:developer';
 
-class AppTranslations extends Translations {
-  @override
-  Map<String, Map<String, String>> get keys => {
-    'en_US': {
-      'hello': 'Hello',
-      'select_language': 'Select Language',
-    },
-    'hi_IN': {
-      'hello': 'नमस्ते',
-      'select_language': 'भाषा चुनें',
-    },
-  'ta_IN': {
-    'hello': 'வணக்கம்',
-    'select_language': 'மொழியை தேர்வு செய்யவும்'
-  },
-  'kn_IN': {
-    'hello': 'ನಮಸ್ಕಾರ',
-    'select_language': 'ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ'
-  },
-  'te_IN': {
-    'hello': 'నమస్తే',
-    'select_language': 'భాషను ఎంచుకోండి'
-  },
-  'ml_IN': {
-    'hello': 'നമസ്കാരം',
-    'select_language': 'ഭാഷ തിരഞ്ഞെടുക്കുക'
-  },
-  'bn_IN': {
-    'hello': 'হ্যালো',
-    'select_language': 'ভাষা নির্বাচন করুন'
-  },
-  'gu_IN': {
-    'hello': 'નમસ્તે',
-    'select_language': 'ભાષા પસંદ કરો'
-  },
-  'mr_IN': {
-    'hello': 'नमस्कार',
-    'select_language': 'भाषा निवडा'
+import 'package:translator/translator.dart';
+
+class LanguageTranslations {
+  final GoogleTranslator translator = GoogleTranslator();
+  final Map<String, String> _dynamicTranslations = {};
+
+  Future<String> translateDynamicText(String text, String languageCode) async {
+    if (_dynamicTranslations.containsKey(text)) {
+      return _dynamicTranslations[text]!;
+    } else {
+      var translation = await translator.translate(text, to: languageCode);
+      _dynamicTranslations[text] = translation.text;
+      log(translation.text);
+      log(languageCode);
+      return translation.text;
+    }
   }
-
-  };
 }

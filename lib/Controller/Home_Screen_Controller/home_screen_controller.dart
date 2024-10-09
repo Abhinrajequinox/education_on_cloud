@@ -1,7 +1,12 @@
+import 'dart:developer';
+
+import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
 import 'package:get/get.dart';
 
 class HomeScreenController extends GetxController{
+
+  final HomeScreenServices homeScreenServices=HomeScreenServices();
 
   RxBool categoryListOrGrid=true.obs;
 
@@ -29,6 +34,13 @@ class HomeScreenController extends GetxController{
   }
  RxList<CourseSectionModel> courseSessionList = <CourseSectionModel>[].obs;
 
+Future<void> fetchCourses() async {
+  log('brfore fetching the coursesession');
+  List<CourseSectionModel> fetchedCourses = await homeScreenServices.fetchCoursesSection('0');
+  log('Fetched Courses: ${fetchedCourses.length}');
+  courseSessionList.value = fetchedCourses;  
+}   
+
 void changeCourseSessionList(List<CourseSectionModel> _course_section) {
   courseSessionList.assignAll(_course_section);
 }
@@ -37,6 +49,12 @@ RxBool andTheFollowingFeaturesListOrGrid=false.obs;
 
   void changeandTheFollowingFeaturesListOrGrid(bool val){
     andTheFollowingFeaturesListOrGrid.value=val;
+  }
+
+  RxBool languageListVisibility=false.obs;
+
+  void changelanguageListVisibility(bool val){
+    languageListVisibility.value=val;
   }
 
 }

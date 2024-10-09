@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'package:education_on_cloud/Views/Pages/auth_check.dart';
+import 'package:education_on_cloud/Views/Screens/Authentication/chooselanguagescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/student_profile_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -20,27 +23,18 @@ class HomeScreen extends StatefulWidget {
 final HomeScreenWidgets homeScreenWidgets = HomeScreenWidgets();
 final HomeScreenServices homeScreenServices = HomeScreenServices();
 final HomeScreenController homeScreenController = HomeScreenController();
+final LoginServices loginServices = LoginServices();
 
 class _HomeScreenState extends State<HomeScreen> {
-//  late Future<List<CourseCategory>?> futureCategories;
+  // @override
+  // void initState() {
+  //   super.initState();
+  // _fetchCourses();
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchCourses();
-  }
-
-  void _fetchCourses() async {
-    homeScreenController.courseSessionList.clear(); // Clear previous data
-    try {
-      var fetchedCourses =
-          await homeScreenServices.fetchCoursesSection('0'); // Fetch courses
-      homeScreenController.changeCourseSessionList(
-          fetchedCourses); // Update the controller with new data
-    } catch (error) {
-      log('Error fetching courses: $error'); // Log error if fetching fails
-    }
-  }
+  // void _fetchCourses() async {
+  //   await  homeScreenController.fetchCourses();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: _appBar(context, screenWidth),
-      body: _body(screenWidth, screenHeight),
+      body: _body(screenWidth, screenHeight, context),
     );
   }
 }
@@ -114,10 +108,7 @@ AppBar _appBar(BuildContext context, double screenWidth) {
       ]);
 }
 
-Widget _body(
-  double screenWidth,
-  screenHeight,
-) {
+Widget _body(double screenWidth, screenHeight, BuildContext context) {
   return SingleChildScrollView(
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       homeScreenWidgets.coursePlans(screenWidth, screenHeight),
@@ -137,7 +128,22 @@ Widget _body(
       homeScreenWidgets.differentModeOfLearningBuilder(
           screenHeight, screenWidth),
       homeScreenWidgets.yourLearningYourLanguageSession(
-          screenHeight, screenWidth),homeScreenWidgets.countryBuilder(screenWidth, screenHeight)
+          screenHeight, screenWidth),
+      homeScreenWidgets.countryBuilder(screenWidth, screenHeight),
+      homeScreenWidgets.homeScreenlanguageList(
+          context, screenHeight, screenWidth),
+      IconButton(
+          onPressed: () {
+            loginServices.logout();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ChooseLanguageScreen(),
+              ),
+              (route) => false,
+            );
+          },
+          icon: const Icon(Icons.exit_to_app))
     ]),
   );
 }
