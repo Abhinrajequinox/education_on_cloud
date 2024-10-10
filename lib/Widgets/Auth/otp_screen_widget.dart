@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:education_on_cloud/Controller/AuthController/otp_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Auth/auth_serivices.dart';
 import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
+import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
 import 'package:education_on_cloud/Widgets/Auth/authwidget.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -99,7 +100,15 @@ class OtpScreenWidget {
     ]);
   }
 
-  Widget submitButton(BuildContext context, String userNumber, logOrSingin) {
+  Widget submitButton(
+    BuildContext context,
+    String userNumber,
+    userMail,
+    userCountry,
+    userState,
+    userName,
+    logOrSingin,
+  ) {
     return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       CustomAuthButton(
           text: 'SUBMIT',
@@ -117,6 +126,12 @@ class OtpScreenWidget {
                 if (sucesscheckgetotp) {
                   log('enterd otp is correct');
                   loginServices.saveLoginStatus(true);
+                  saveUser(
+                      username: userName,
+                      phoneNumber: userNumber,
+                      country: userCountry,
+                      state: userState,
+                      email: userMail);
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

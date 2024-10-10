@@ -26,3 +26,7 @@ const course_category_Api='https://educationoncloud.in/api/course_category.php';
 
 ////////////////////////////////           API for the Course session on category        /////////////////////////////////////
 const course_section_Api='https://educationoncloud.in/api_temp/course_section.php';
+
+
+////////////////////////////////           API for the Course session on category        /////////////////////////////////////
+const faculity_Api='https://educationoncloud.in/api/faculties.php';

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
+import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
 import 'package:education_on_cloud/Views/Pages/auth_check.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/chooselanguagescreen.dart';
@@ -118,8 +119,19 @@ Widget _body(double screenWidth, screenHeight, BuildContext context) {
       homeScreenWidgets.ourStatisticsText(screenWidth, screenHeight),
       homeScreenWidgets.ourStatisticsSession(screenWidth, screenHeight),
       homeScreenWidgets.coursesBoardsAndGrid(screenWidth, screenHeight),
-      homeScreenWidgets.coursesAndBoardSession(screenWidth, screenHeight),
-      homeScreenWidgets.listOfgridOfcoursesAndBoardSession(),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: 3,
+          child: Column(
+            children: [
+              homeScreenWidgets.coursesAndBoardSession(
+                  screenWidth, screenHeight),
+              homeScreenWidgets.listOfgridOfcoursesAndBoardSession(),
+            ],
+          ),
+        ),
+      ),
       homeScreenWidgets.ourProFeautureText(screenWidth, screenHeight),
       homeScreenWidgets.andTheFollowingFeaturesSession(
           screenWidth, screenHeight),
@@ -132,9 +144,12 @@ Widget _body(double screenWidth, screenHeight, BuildContext context) {
       homeScreenWidgets.countryBuilder(screenWidth, screenHeight),
       homeScreenWidgets.homeScreenlanguageList(
           context, screenHeight, screenWidth),
+      homeScreenWidgets.continueWatching(screenHeight, screenWidth),
+      homeScreenWidgets.ourExpertsSession(screenHeight, screenWidth),
       IconButton(
           onPressed: () {
             loginServices.logout();
+            deleteUser();
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(

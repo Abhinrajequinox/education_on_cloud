@@ -5,6 +5,7 @@ import 'package:country_flags/country_flags.dart';
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
+import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
 import 'package:education_on_cloud/Utilities/Home/home_screen_utilities.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreenWidgets {
   final HomeScreenController homeScreenController = HomeScreenController();
@@ -28,7 +30,25 @@ class HomeScreenWidgets {
         future: _fetchPlans(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return CarouselSlider.builder(
+              itemCount: 3,
+              options: CarouselOptions(
+                height: screenHeight * 0.25, // 25% of screen height
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                enlargeCenterPage: false,
+                enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                viewportFraction: 1,
+                initialPage: 0,
+                scrollDirection: Axis.horizontal,
+              ),
+              itemBuilder: (context, index, realIndex) {
+                return customShimmer(
+                  width: screenWidth * 0.95,
+                  height: screenHeight * 0.2,
+                );
+              },
+            );
           } else if (snapshot.hasError) {
             log(snapshot.error.toString());
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -213,8 +233,21 @@ class HomeScreenWidgets {
               horizontal: screenWidth * 0.04), // 4% horizontal padding
           child: GestureDetector(
             onTap: () async {
+              Map<String, String?> userDetails = await getUser();
+              var flagId = ''.obs;
+              if (userDetails['country'] == 'India') {
+                flagId.value = '0';
+              } else if (userDetails['country'] == 'Nepal') {
+                flagId.value = '1';
+              } else if (userDetails['country'] == 'Sri lanka') {
+                flagId.value = '2';
+              } else if (userDetails['country'] == 'Bangladesh') {
+                flagId.value = '3';
+              } else if (userDetails['country'] == 'Bhutan') {
+                flagId.value = '4';
+              }
               List<CourseSectionModel> _course_section =
-                  await homeScreenServices.fetchCoursesSection('0');
+                  await homeScreenServices.fetchCoursesSection(flagId.value);
               // log(_course_section.toString());
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 //  homeScreenController.changecategoryIndexForColor(100);
@@ -615,44 +648,29 @@ class HomeScreenWidgets {
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.04, // 4% of screen width
       ),
-      child: Obx(
-        () => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Stack(
-              children: [
-                CustomText(
-                  text: 'Courses & Boards',
-                  textStyle: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700,
-                    fontSize: screenHeight * 0.02, // 2% of screen height
-                  ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Stack(
+            children: [
+              CustomText(
+                text: 'Courses & Boards',
+                textStyle: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  fontSize: screenHeight * 0.02, // 2% of screen height
                 ),
-                Positioned(
-                  left: screenWidth * 0.15, // Responsive positioning
-                  top: screenHeight * 0.025, // Responsive positioning
-                  child: SizedBox(
-                    width: screenWidth * 0.26, // Responsive width
-                    child: Image.asset('lib/Assets/Onboard/image.png'),
-                  ),
+              ),
+              Positioned(
+                left: screenWidth * 0.15, // Responsive positioning
+                top: screenHeight * 0.025, // Responsive positioning
+                child: SizedBox(
+                  width: screenWidth * 0.26, // Responsive width
+                  child: Image.asset('lib/Assets/Onboard/image.png'),
                 ),
-              ],
-            ),
-            homeScreenController.coursesBoardsListOrGrid.value
-                ? IconButton(
-                    onPressed: () {
-                      homeScreenController.changeCoursesBoardsListOrGrid(false);
-                    },
-                    icon: const Icon(Icons.grid_view_outlined),
-                  )
-                : IconButton(
-                    onPressed: () {
-                      homeScreenController.changeCoursesBoardsListOrGrid(true);
-                    },
-                    icon: const Icon(Icons.list),
-                  ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -671,7 +689,7 @@ class HomeScreenWidgets {
         } else {
           final category = snapshot.data!;
           return Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: gridOfcoursesAndBoardSession(
                 category, screenWidth, screenHeight),
           );
@@ -687,12 +705,12 @@ class HomeScreenWidgets {
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 1.5,
+        childAspectRatio: 1.8,
       ),
       itemBuilder: (context, index) {
         var cata = category[index];
         return Padding(
-          padding: const EdgeInsets.all(2),
+          padding: const EdgeInsets.all(0),
           child: GestureDetector(
             onTap: () async {
               homeScreenController.changecourseAndBoardIndexForColor(index);
@@ -753,101 +771,130 @@ class HomeScreenWidgets {
 
   Widget listOfgridOfcoursesAndBoardSession() {
     return Obx(
-      () => homeScreenController.courseSessionList.isEmpty
-          ? const Center(
-              child: Text(
-                  'No courses available.')) // Show a message if the list is empty
-          : ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                var course = homeScreenController.courseSessionList[index];
-                return GestureDetector(
-                  onTap: () async {
-                    List<CourseCategoryModel> courseCategoryModel =
-                        await homeScreenServices
-                            .fetchCoursesCategory(course.sectionId);
-                    homeScreenController.changecategoryIndexForColor(index);
-                    Future.delayed(const Duration(milliseconds: 300), () {
-                      homeScreenController.changecategoryIndexForColor(100);
-                    });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CourseCategoryScreen(
-                              titleOfCategory: course.sectionName,
-                              courseCategoryModel: courseCategoryModel),
-                        ));
-                  },
-                  child: Obx(
-                    () => Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: Card(
-                        elevation: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: homeScreenController
-                                          .categoryIndexForColor.value ==
-                                      index
-                                  ? Colors.blue
-                                  : Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(12))),
-                          padding: const EdgeInsets.all(8),
-                          height: 60,
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                child: ClipOval(
-                                  child: Image.network(
-                                    course.img,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: double.infinity,
+        () => homeScreenController.isLoadingOfcourseSessionList.value == false
+            ? ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  var course = homeScreenController.courseSessionList[index];
+
+                  return GestureDetector(
+                    onTap: () async {
+                      homeScreenController
+                          .changeIsLoadingcourseCategoryModel(true);
+                      log(homeScreenController
+                          .isLoadingcoursecategoryModel.value
+                          .toString());
+
+                      List<CourseCategoryModel> courseCategoryModel =
+                          await homeScreenServices
+                              .fetchCoursesCategory(course.sectionId);
+                      homeScreenController.changecategoryIndexForColor(index);
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        homeScreenController.changecategoryIndexForColor(100);
+                      });
+                      homeScreenController
+                          .changeIsLoadingcourseCategoryModel(false);
+                      log(homeScreenController
+                          .isLoadingcoursecategoryModel.value
+                          .toString());
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CourseCategoryScreen(
+                                titleOfCategory: course.sectionName,
+                                courseCategoryModel: courseCategoryModel),
+                          ));
+                      log('isLoadingcourseCategoryModel changed: ${homeScreenController.isLoadingcoursecategoryModel.value}');
+                    },
+                    child: Obx(
+                      () => Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Card(
+                          elevation: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: homeScreenController
+                                            .categoryIndexForColor.value ==
+                                        index
+                                    ? Colors.blue
+                                    : Colors.white,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(12))),
+                            padding: const EdgeInsets.all(8),
+                            height: 60,
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      course.img,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              SizedBox(
-                              width: 270,
-                              child: FutureBuilder<String>(
-                                future: languageController.translateApiText(course.sectionName),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return const Text('Loading...'); // Placeholder while translating
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}'); // Error handling
-                                  } else {
-                                    // Successfully translated
-                                    return CustomText(
-                                      text: snapshot.data ?? 'course.sectionName', // Use original text if translation fails
-                                      textStyle: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                      ),
-                                      maxline: 1,
-                                      color: homeScreenController.categoryIndexForColor.value == index
-                                          ? Colors.white
-                                          : Colors.black,
-                                    );
-                                  }
-                                },
-                              ),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  width: 260,
+                                  child: FutureBuilder<String>(
+                                    future: languageController
+                                        .translateApiText(course.sectionName),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Text(
+                                            'Loading...'); // Placeholder while translating
+                                      } else if (snapshot.hasError) {
+                                        return Text(
+                                            'Error: ${snapshot.error}'); // Error handling
+                                      } else {
+                                        // Successfully translated
+                                        return SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              CustomText(
+                                                text: snapshot.data ??
+                                                    'course.sectionName', // Use original text if translation fails
+                                                textStyle: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                ),
+                                                maxline: 1,
+                                                color: homeScreenController
+                                                            .categoryIndexForColor
+                                                            .value ==
+                                                        index
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                const Icon(Icons.arrow_forward_ios),
+                              ],
                             ),
-
-                              const Icon(Icons.arrow_forward_ios),
-                            ],
                           ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-              itemCount: homeScreenController.courseSessionList.length,
-            ),
-    );
+                  );
+                },
+                itemCount: homeScreenController.courseSessionList.length,
+              )
+            : customShimmerBuilder(
+                width: 350,
+                height: 60,
+                builderLength: 10) // Show a message if the list is empty
+
+        );
   }
 
   Widget ourProFeautureText(double screenWidth, double screenHeight) {
@@ -1061,24 +1108,36 @@ class HomeScreenWidgets {
                 SizedBox(
                   height: screenHeight * .02,
                 ),
-                CustomText(
-                    textalign: TextAlign.center,
-                    text: learninMode['title'],
-                    textStyle: GoogleFonts.inter(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        decoration: TextDecoration.underline)),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      CustomText(
+                          // textalign: TextAlign.center,
+                          text: learninMode['title'],
+                          textStyle: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              decoration: TextDecoration.underline)),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: screenHeight * .02,
                 ),
-                CustomText(
-                    maxline: 7,
-                    textalign: TextAlign.center,
-                    text: learninMode['describtion'],
-                    textStyle: GoogleFonts.inter(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 11,
-                        color: const Color.fromRGBO(87, 92, 116, 1))),
+                SizedBox(
+                  height: 110,
+                  child: SingleChildScrollView(
+                    child: CustomText(
+                        maxline: 9,
+                        textalign: TextAlign.center,
+                        text: learninMode['describtion'],
+                        textStyle: GoogleFonts.inter(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 11,
+                            color: const Color.fromRGBO(87, 92, 116, 1))),
+                  ),
+                ),
                 SizedBox(
                   height: screenHeight * .015,
                 ),
@@ -1279,7 +1338,7 @@ class HomeScreenWidgets {
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
       child: Obx(
-       ()=> Visibility(
+        () => Visibility(
           visible: homeScreenController.languageListVisibility.value,
           child: Card(
             elevation: 3,
@@ -1298,6 +1357,8 @@ class HomeScreenWidgets {
                               language["code"];
                       return GestureDetector(
                           onTap: () {
+                            homeScreenController
+                                .changelanguageListVisibility(false);
                             languageController.changeLanguage(
                                 language["code"]!, language["country"]!);
                             log(languageController.currentLocale.value
@@ -1305,21 +1366,23 @@ class HomeScreenWidgets {
                           },
                           child: Padding(
                               padding: EdgeInsets.symmetric(
-                                  vertical:
-                                      screenHeight * 0.01), // 1% of screen height
+                                  vertical: screenHeight *
+                                      0.01), // 1% of screen height
                               child: Container(
-                                  height:
-                                      screenHeight * 0.045, // 5% of screen height
+                                  height: screenHeight *
+                                      0.045, // 5% of screen height
                                   padding: EdgeInsets.symmetric(
                                       horizontal: screenHeight *
                                           0.02), // 2% of screen height
                                   decoration: BoxDecoration(
                                       color: isSelected
-                                          ? const Color.fromRGBO(239, 246, 255, 1)
+                                          ? const Color.fromRGBO(
+                                              239, 246, 255, 1)
                                           : Colors.transparent,
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Padding(
                                             padding: EdgeInsets.only(
@@ -1360,4 +1423,223 @@ class HomeScreenWidgets {
       ),
     );
   }
+
+  Widget continueWatching(double screenHeight, screenWidth) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Stack(
+                children: [
+                  CustomText(
+                    text: 'continue watching',
+                    textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenHeight * 0.02, // 2% of screen height
+                    ),
+                  ),
+                  Positioned(
+                    left: screenWidth * 0.20, // Responsive positioning
+                    top: screenHeight * 0.023, // Responsive positioning
+                    child: SizedBox(
+                      width: screenWidth * 0.23, // Responsive width
+                      child: Image.asset('lib/Assets/Onboard/image.png'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: screenHeight * .01,
+          ),
+          SizedBox(
+            height: screenHeight * .2,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Container(
+                    height: screenHeight * .2,
+                    width: 270,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        color: Colors.black),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget ourExpertsSession(double screenHeight, screenWidth) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Stack(
+                children: [
+                  CustomText(
+                    text: 'Our Experts',
+                    textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenHeight * 0.02, // 2% of screen height
+                    ),
+                  ),
+                  Positioned(
+                    left: screenWidth * 0.10, // Responsive positioning
+                    top: screenHeight * 0.023, // Responsive positioning
+                    child: SizedBox(
+                      width: screenWidth * 0.23, // Responsive width
+                      child: Image.asset('lib/Assets/Onboard/image.png'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: screenHeight * .01,
+          ),
+          SizedBox(
+            height: screenHeight * .241,
+            child: FutureBuilder<List<FacultyModel>>(
+              future: homeScreenServices.fetchFaculities(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // While the data is loading, show a loading indicator
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  // If there is an error, show an error message
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  // If no data is available
+                  return const Center(child: Text('No Experts Available'));
+                } else {
+                  // Once data is available, display the list
+                  List<FacultyModel> facultyList = snapshot.data!;
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: facultyList.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Gradient border
+                            Container(
+                              height: screenHeight *
+                                  .31, // Increased height for border
+                              width: 236, // Increased width for border
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromRGBO(0, 56, 255, 1),
+                                    Color.fromRGBO(0, 224, 255, 1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12)),
+                              ),
+                            ),
+                            // Original container
+                            Container(
+                              height: screenHeight * .225,
+                              width: 230,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12)),
+                              ),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 56,
+                                    backgroundColor:
+                                        const Color.fromRGBO(206, 211, 214, 1),
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        facultyList[index].photo ?? '',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Row(
+                                        children: [
+                                          CustomText(
+                                            text: facultyList[index]
+                                                    .facultyName ??
+                                                '',
+                                            textStyle: GoogleFonts.poppins(
+                                              color: const Color.fromRGBO(
+                                                  27, 73, 101, 1),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  CustomText(
+                                    text:
+                                        facultyList[index].qualification ?? '',
+                                    textStyle: GoogleFonts.poppins(
+                                      color: const Color.fromRGBO(
+                                          188, 189, 189, 1),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 8,
+                                    ),
+                                    textalign: TextAlign.center,
+                                  ),
+                                  CustomText(
+                                    text: facultyList[index].language ?? '',
+                                    textStyle: GoogleFonts.poppins(
+                                      color:
+                                          const Color.fromRGBO(27, 73, 101, 1),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+//  Future<List<FacultyModel>> fetchFaculity() async {
+//     List<FacultyModel> faculityList =
+//         await homeScreenServices.fetchFaculities();
+//         return faculityList;
+//   }
 }

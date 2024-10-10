@@ -76,7 +76,7 @@ Widget _signUpBody(BuildContext context) {
                     SizedBox(height: screenHeight * 0.02),
                     // Sigin Button
                     signinScreenWidget.siginButton(screenWidth, _formKey,
-                        context, mailController.text, phoneController.text),
+                        context, mailController.text, phoneController.text,),
                     const SizedBox(height: 20),
                     // signinScreenWidget.alreadyHaveAccount(context)
                   ]))));

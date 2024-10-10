@@ -69,8 +69,6 @@ class SigninScreenWidget {
                 //   countryController.visibleFeild(false);
                 //   countryController.visibleMailFeild(false);
                 // }
-                
-                   
               },
               icon: const Icon(Icons.arrow_drop_down),
               iconSize: 24,
@@ -143,6 +141,8 @@ class SigninScreenWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => OtpScreen(
+                              name: namecontroller.text,
+                              state: countryController.selectedState.value,
                               logOrSingin: 'SignIn',
                               phoneNumber: phoneController.text,
                               userMail: mail,
@@ -164,6 +164,8 @@ class SigninScreenWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => OtpScreen(
+                              name: namecontroller.text,
+                              state: countryController.selectedState.value,
                               logOrSingin: 'SignIn',
                               phoneNumber: phoneController.text,
                               userMail: mail,
@@ -188,7 +190,7 @@ class SigninScreenWidget {
   //   return Row(
   //     mainAxisAlignment: MainAxisAlignment.center,
   //     children: [
-       
+
   //       CustomText(
   //           text: 'Already have an Account?',
   //           textStyle:

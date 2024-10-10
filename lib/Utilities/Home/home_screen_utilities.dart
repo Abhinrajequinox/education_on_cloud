@@ -77,44 +77,23 @@ const String differentModesOfLearningJson = '''
   "differentModes": [
     {
       "title": "Digital Notes",
-      "image": "lib/Assets/Home/Category/cataimg-1.png",
+      "image": "lib/Assets/Home/Different-Mode-Of_Learning/digital-note.png",
       "describtion": "This section offers brief chapter summaries, detailed notes of all topics, and FAQs for each chapter. These features ensure clear understanding and effective revision.",
       "buttonText":"Get Your Notes",
       "videoLink": ""
     },
     {
-      "title": "Competitive  courses",
-      "image": "lib/Assets/Home/Category/cataimg-2.png",
-      "describtion": "This section offers brief chapter summaries, detailed notes of all topics, and FAQs for each chapter. These features ensure clear understanding and effective revision.",
-      "buttonText":"Get Your Classes",
+      "title": "Online Recorded Classes",
+      "image": "lib/Assets/Home/Different-Mode-Of_Learning/online-record-class.png",
+      "describtion": "This section has pre-recorded theory lessons, practical classes, and revision sessions for each chapter, along with quick tips for easy exam preparation. Users can bookmark videos in the...",
+      "buttonText":"Start Your Class",
       "videoLink": ""
     }, 
     {
-      "title": "Degree courses",
-      "image": "lib/Assets/Home/Category/cataimg-3.png",
-      "describtion": "This section offers brief chapter summaries, detailed notes of all topics, and FAQs for each chapter. These features ensure clear understanding and effective revision.",
-      "buttonText":"Get Your Notes",
-      "videoLink": ""
-    },
-    {
-      "title": "Technical courses",
-      "image": "lib/Assets/Home/Category/cataimg-4.png",
-      "describtion": "This section offers brief chapter summaries, detailed notes of all topics, and FAQs for each chapter. These features ensure clear understanding and effective revision.",
-      "buttonText":"Get Your Notes",
-      "videoLink": ""
-    },
-    {
-      "title": "Non Technical",
-      "image": "lib/Assets/Home/Category/cataimg-5.png",
-      "describtion": "This section offers brief chapter summaries, detailed notes of all topics, and FAQs for each chapter. These features ensure clear understanding and effective revision.",
-      "buttonText":"Get Your Notes",
-      "videoLink": ""
-    },
-    {
-      "title": "Vocational Courses",
-      "image": "lib/Assets/Home/Category/cataimg-6.png",
-      "describtion": "This section offers brief chapter summaries, detailed notes of all topics, and FAQs for each chapter. These features ensure clear understanding and effective revision.",
-      "buttonText":"Get Your Notes",
+      "title": "End Less Question Bank",
+      "image": "lib/Assets/Home/Different-Mode-Of_Learning/question-bank.png",
+      "describtion": "This section offers previous year’s question papers to help students understand exam patterns. It includes mock exams and practice tests with scorecards to assess preparation levels .",
+      "buttonText":"Take Your Test",
       "videoLink": ""
     }
   ]

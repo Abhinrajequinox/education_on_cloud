@@ -25,7 +25,8 @@ class CustomText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      textAlign: textalign,maxLines: maxline,
+      textAlign: textalign,
+      maxLines: maxline,
       overflow: maxline == null ? TextOverflow.visible : TextOverflow.ellipsis,
       style: textStyle ??
           TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color),
@@ -48,16 +49,60 @@ customeSnakBar(String title, message, IconData icon) {
     icon: Icon(icon, color: Colors.white),
   );
 }
-Widget cusstomBuildShimmerEffect(double height) {
+
+// Widget cusstomBuildShimmerEffect(double height) {
+//   return Shimmer.fromColors(
+//     baseColor: Colors.grey[300]!, // Base color of the shimmer
+//     highlightColor: Colors.grey[100]!, // Highlight color of the shimmer
+//     child: Container(
+//       height: height, // Height of the shimmer effect
+//       width: double.infinity, // Width of the shimmer effect
+//       decoration: BoxDecoration(
+//         color: Colors.white, // Background color
+//         borderRadius: BorderRadius.circular(4), // Rounded corners
+//       ),
+//     ),
+//   );
+// }
+
+Widget customShimmerBuilder(
+    {required double width,
+    required double height,
+    required int builderLength}) {
+  return ListView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) {
+      return customShimmer(width: width, height: height);
+    },
+    itemCount: builderLength,
+  );
+}
+
+Widget customShimmer({
+  required double width,
+  required double height,
+  double left = 0.0,
+  double right = 0.0,
+  double top = 0.0,
+  double bottom = 0.0,
+}) {
   return Shimmer.fromColors(
-    baseColor: Colors.grey[300]!, // Base color of the shimmer
-    highlightColor: Colors.grey[100]!, // Highlight color of the shimmer
-    child: Container(
-      height: height, // Height of the shimmer effect
-      width: double.infinity, // Width of the shimmer effect
-      decoration: BoxDecoration(
-        color: Colors.white, // Background color
-        borderRadius: BorderRadius.circular(4), // Rounded corners
+    baseColor: Colors.grey[300]!,
+    highlightColor: Colors.grey[100]!,
+    period: const Duration(seconds: 2),
+    direction: ShimmerDirection.ltr,
+    child: Padding(
+      padding: const EdgeInsets.all(15),
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          color: Colors.grey,
+        ),
+        width: width,
+        height: height, // Adjust height as needed
+        margin:
+            EdgeInsets.only(left: left, right: right, top: top, bottom: bottom),
       ),
     ),
   );

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
@@ -122,6 +124,7 @@ Widget _body(BuildContext context, String titleOfCourse, double screenWidth,
 }
 
 Widget listOfCourseSession(List<CourseCategoryModel> courseCategoryModel) {
+  log(homeScreenController.isLoadingcoursecategoryModel.value.toString());
   return ListView.builder(
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
@@ -156,21 +159,48 @@ Widget listOfCourseSession(List<CourseCategoryModel> courseCategoryModel) {
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
+                        // Handle image loading errors
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Icon(
+                            Icons
+                                .school_outlined, // Fallback icon (you can use any icon or widget here)
+                            size: 40, // Adjust the size if needed
+                            color: Colors.white, // Icon color
+                          );
+                        },
                       ),
                     ),
                   ),
                   const SizedBox(width: 10),
                   SizedBox(
                     width: 270,
-                    child: CustomText(
-                      text: course.categoryName,
-                      textStyle: GoogleFonts.inter(
-                          fontWeight: FontWeight.w400, fontSize: 14),
-                      maxline: 1,
-                      color: homeScreenController.categoryIndexForColor.value ==
-                              index
-                          ? Colors.white
-                          : Colors.black,
+                    child: FutureBuilder<String>(
+                      future: languageController
+                          .translateApiText(course.categoryName),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Text(
+                              'Loading...'); // Placeholder while translating
+                        } else if (snapshot.hasError) {
+                          return Text(
+                              'Error: ${snapshot.error}'); // Error handling
+                        } else {
+                          // Successfully translated
+                          return CustomText(
+                            text: snapshot.data??course.categoryName,
+                            textStyle: GoogleFonts.inter(
+                                fontWeight: FontWeight.w400, fontSize: 14),
+                            maxline: 1,
+                            color: homeScreenController
+                                        .categoryIndexForColor.value ==
+                                    index
+                                ? Colors.white
+                                : Colors.black,
+                          );
+                        }
+                      },
                     ),
                   ),
                   const Icon(Icons.arrow_forward_ios),

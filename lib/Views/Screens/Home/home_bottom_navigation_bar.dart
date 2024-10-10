@@ -57,7 +57,7 @@ Widget bottomNaviagtionBar(void Function(int) onTabTaped) {
                 label: 'Class Room'),
             BottomNavigationBarItem(
                 icon: ImageIcon(
-                    AssetImage('lib/Assets/Icons/person-icon-black.png'),
+                    AssetImage('lib/Assets/Icons/chat-bot-icon.png'),
                     size: 30),
                 label: 'Krish'),
           ]));

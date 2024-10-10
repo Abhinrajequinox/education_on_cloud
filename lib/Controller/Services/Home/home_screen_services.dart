@@ -25,7 +25,8 @@ class HomeScreenServices {
             // Return the list of CourseCategory objects
             log('Fetch successful: $jsonResponse');
             return jsonResponse
-                .map<CourseCategoryModel>((json) => CourseCategoryModel.fromJson(json))
+                .map<CourseCategoryModel>(
+                    (json) => CourseCategoryModel.fromJson(json))
                 .toList();
           } else {
             log('Unexpected response format: $jsonResponse');
@@ -72,7 +73,8 @@ class HomeScreenServices {
     }
   }
 
-  Future<List<CourseCategoryModel>> fetchCoursesCategory(String sessionId) async {
+  Future<List<CourseCategoryModel>> fetchCoursesCategory(
+      String sessionId) async {
     try {
       final response = await http.post(
         Uri.parse(course_category_Api),
@@ -88,6 +90,30 @@ class HomeScreenServices {
         // Convert the JSON response to a List<CourseSection>
         return jsonResponse
             .map((section) => CourseCategoryModel.fromJson(section))
+            .toList();
+      } else {
+        throw Exception('Failed to load courses');
+      }
+    } catch (e) {
+      print("Error fetching courses: $e");
+      return []; // Return an empty list on error
+    }
+  }
+
+  Future<List<FacultyModel>> fetchFaculities() async {
+    try {
+      final response = await http.post(
+        Uri.parse(faculity_Api),
+        body: {},
+      );
+
+      if (response.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON.
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+
+        // Convert the JSON response to a List<CourseSection>
+        return jsonResponse
+            .map((section) => FacultyModel.fromJson(section))
             .toList();
       } else {
         throw Exception('Failed to load courses');

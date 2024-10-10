@@ -62,17 +62,37 @@ class CourseSessionWidget {
                     const SizedBox(width: 10),
                     SizedBox(
                       width: 270,
-                      child: CustomText(
-                        text: course.sectionName,
-                        textStyle: GoogleFonts.inter(
-                            fontWeight: FontWeight.w400, fontSize: 14),
-                        maxline: 1,
-                        color:
-                            homeScreenController.categoryIndexForColor.value ==
-                                    index
-                                ? Colors.white
-                                : Colors.black,
-                      ),
+                      child: FutureBuilder<String>(
+                                    future: languageController
+                                        .translateApiText(course.sectionName),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Text(
+                                            'Loading...'); // Placeholder while translating
+                                      } else if (snapshot.hasError) {
+                                        return Text(
+                                            'Error: ${snapshot.error}'); // Error handling
+                                      } else {
+                                        // Successfully translated
+                                        return CustomText(
+                                          text: snapshot.data ??
+                                              course.sectionName, // Use original text if translation fails
+                                          textStyle: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                          ),
+                                          maxline: 1,
+                                          color: homeScreenController
+                                                      .categoryIndexForColor
+                                                      .value ==
+                                                  index
+                                              ? Colors.white
+                                              : Colors.black,
+                                        );
+                                      }
+                                    },
+                                  ),
                     ),
                     const Icon(Icons.arrow_forward_ios),
                   ],

@@ -4,57 +4,63 @@ import 'package:education_on_cloud/Controller/Services/Home/home_screen_services
 import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
 import 'package:get/get.dart';
 
-class HomeScreenController extends GetxController{
+class HomeScreenController extends GetxController {
+  final HomeScreenServices homeScreenServices = HomeScreenServices();
 
-  final HomeScreenServices homeScreenServices=HomeScreenServices();
+  RxBool categoryListOrGrid = true.obs;
 
-  RxBool categoryListOrGrid=true.obs;
-
-  void changecategoryListOrGrid(bool val){
-    categoryListOrGrid.value=val;
+  void changecategoryListOrGrid(bool val) {
+    categoryListOrGrid.value = val;
   }
 
-  RxBool coursesBoardsListOrGrid=false.obs;
+  RxBool coursesBoardsListOrGrid = false.obs;
 
-  void changeCoursesBoardsListOrGrid(bool val){
-    coursesBoardsListOrGrid.value=val;
+  void changeCoursesBoardsListOrGrid(bool val) {
+    coursesBoardsListOrGrid.value = val;
   }
 
-  
   var categoryIndexForColor = 100.obs; // Reactive observable
-  
+
   void changecategoryIndexForColor(int index) {
     categoryIndexForColor.value = index; // Update the reactive value
   }
 
-  var courseAndBoardIndexForColor=0.obs;
+  var courseAndBoardIndexForColor = 0.obs;
 
-  void changecourseAndBoardIndexForColor(int val){
-    courseAndBoardIndexForColor.value=val;
+  void changecourseAndBoardIndexForColor(int val) {
+    courseAndBoardIndexForColor.value = val;
   }
- RxList<CourseSectionModel> courseSessionList = <CourseSectionModel>[].obs;
 
-Future<void> fetchCourses() async {
-  log('brfore fetching the coursesession');
-  List<CourseSectionModel> fetchedCourses = await homeScreenServices.fetchCoursesSection('0');
-  log('Fetched Courses: ${fetchedCourses.length}');
-  courseSessionList.value = fetchedCourses;  
-}   
+  RxList<CourseSectionModel> courseSessionList = <CourseSectionModel>[].obs;
 
-void changeCourseSessionList(List<CourseSectionModel> _course_section) {
-  courseSessionList.assignAll(_course_section);
+  Future<void> fetchCourses() async {
+    log('brfore fetching the coursesession');
+    List<CourseSectionModel> fetchedCourses =
+        await homeScreenServices.fetchCoursesSection('0');
+    log('Fetched Courses: ${fetchedCourses.length}');
+    courseSessionList.value = fetchedCourses;
+  }
+
+  RxBool isLoadingOfcourseSessionList = true.obs;
+  void changeCourseSessionList(List<CourseSectionModel> _course_section) {
+    isLoadingOfcourseSessionList.value = true;
+    courseSessionList.assignAll(_course_section);
+    isLoadingOfcourseSessionList.value = false;
+  }
+
+  RxBool andTheFollowingFeaturesListOrGrid = false.obs;
+
+  void changeandTheFollowingFeaturesListOrGrid(bool val) {
+    andTheFollowingFeaturesListOrGrid.value = val;
+  }
+
+  RxBool languageListVisibility = false.obs;
+
+  void changelanguageListVisibility(bool val) {
+    languageListVisibility.value = val;
+  }
+RxBool isLoadingcoursecategoryModel=true.obs;
+changeIsLoadingcourseCategoryModel(bool val){
+  isLoadingcoursecategoryModel.value=val;
 }
-
-RxBool andTheFollowingFeaturesListOrGrid=false.obs;
-
-  void changeandTheFollowingFeaturesListOrGrid(bool val){
-    andTheFollowingFeaturesListOrGrid.value=val;
-  }
-
-  RxBool languageListVisibility=false.obs;
-
-  void changelanguageListVisibility(bool val){
-    languageListVisibility.value=val;
-  }
-
 }

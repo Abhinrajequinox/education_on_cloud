@@ -131,6 +131,11 @@ flutter:
     - lib\Assets\Flags\butan-flag.png
     - lib\Assets\Flags\bangladesh-flag.png
     - lib\Assets\Flags\srilanga-flag.png
+    - lib\Assets\Icons\chat-bot-icon.png
+    - lib/Assets/Home/Different-Mode-Of_Learning/question-bank.png
+    - lib/Assets/Home/Different-Mode-Of_Learning/online-record-class.png
+    - lib/Assets/Home/Different-Mode-Of_Learning/digital-note.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/AuthController/apptraslation.dart';
 import 'package:education_on_cloud/Theme/appthemes.dart';
@@ -8,17 +9,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LanguageController extends GetxController {
   final LanguageTranslations languageTranslations = LanguageTranslations();
   var currentLocale = const Locale('en', 'US').obs;
+  //  var translatedTexts = <String, String?>{}.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadLanguage();
-    _loadThemeFromPrefs(); // Load language when the controller is initialized
+    _loadThemeFromPrefs(); 
   }
+
+final StreamController<Locale> _languageController = StreamController<Locale>.broadcast();
+  Stream<Locale> get languageStream => _languageController.stream;
 
   Future<void> changeLanguage(String code, String country) async {
     var locale = Locale(code, country);
     currentLocale.value = locale;
+    _languageController.add(locale);
     log('the changed language code is ${currentLocale.value} ');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('languageCode', code);
@@ -26,6 +32,8 @@ class LanguageController extends GetxController {
     String? storedLang = prefs.getString('languageCode');
     log('Stored language code: $storedLang');
     Get.updateLocale(locale);
+    Get.forceAppUpdate();
+    
   }
 
   Future<String> translateApiText(String apiText) async {
@@ -39,39 +47,22 @@ class LanguageController extends GetxController {
     return translatedText;
   }
 
+
   Future<void> loadLanguage() async {
+     
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? languageCode =
-        prefs.getString('languageCode') ?? 'en'; // Default to 'en'
+        prefs.getString('languageCode') ?? 'en'; 
     String? countryCode =
-        prefs.getString('countryCode') ?? 'US'; // Default to 'US'
+        prefs.getString('countryCode') ?? 'US'; 
     currentLocale.value = Locale(languageCode, countryCode);
+    Get.updateLocale(Locale(languageCode, countryCode)); 
   }
 
-  // final GoogleTranslator translator = GoogleTranslator();
-
-  // // Function to fetch the language from SharedPreferences
-  // Future<String> getSelectedLanguage() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? languageCode = prefs.getString('languageCode') ?? 'en';  // Default to English
-  //   return languageCode;
-  // }
-
-  // Function to translate text based on the selected language
-  // Future<String> changeText(String text) async {
-  //   String languageCode = await getSelectedLanguage();  // Fetch language from SharedPreferences
-  //   var translated = await translator.translate(text, to: languageCode);
-  //   return translated.text;
-  // }
 
   Rx<ThemeData> currentTheme = AppThemes.lightTheme.obs;
   RxString currentMode = 'Light Mode'.obs;
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   _loadThemeFromPrefs(); // Load theme when the controller is initialized
-  // }
 
   void changeMode(String mode) async {
     log('Changing mode to: $mode');
