@@ -17,6 +17,7 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreenWidgets {
   final HomeScreenController homeScreenController = HomeScreenController();
@@ -858,18 +859,19 @@ class HomeScreenWidgets {
                                             children: [
                                               CustomText(
                                                 text: snapshot.data ??
-                                                    'course.sectionName', // Use original text if translation fails
+                                                    course
+                                                        .sectionName, // Use original text if translation fails
                                                 textStyle: GoogleFonts.inter(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 14,
+                                                  color: homeScreenController
+                                                              .categoryIndexForColor
+                                                              .value ==
+                                                          index
+                                                      ? Colors.white
+                                                      : Colors.black,
                                                 ),
                                                 maxline: 1,
-                                                color: homeScreenController
-                                                            .categoryIndexForColor
-                                                            .value ==
-                                                        index
-                                                    ? Colors.white
-                                                    : Colors.black,
                                               ),
                                             ],
                                           ),
@@ -1543,8 +1545,8 @@ class HomeScreenWidgets {
                               decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Color.fromRGBO(0, 56, 255, 1),
-                                    Color.fromRGBO(0, 224, 255, 1),
+                                    Color.fromRGBO(30, 117, 229, 1),
+                                    Color.fromRGBO(90, 203, 255, 1),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -1555,7 +1557,7 @@ class HomeScreenWidgets {
                             ),
                             // Original container
                             Container(
-                              height: screenHeight * .225,
+                              height: screenHeight * .227,
                               width: 230,
                               decoration: const BoxDecoration(
                                 color: Colors.white,
@@ -1564,6 +1566,9 @@ class HomeScreenWidgets {
                               ),
                               child: Column(
                                 children: [
+                                  SizedBox(
+                                    height: screenHeight * .005,
+                                  ),
                                   CircleAvatar(
                                     radius: 56,
                                     backgroundColor:
@@ -1572,6 +1577,17 @@ class HomeScreenWidgets {
                                       child: Image.network(
                                         facultyList[index].photo ?? '',
                                         fit: BoxFit.cover,
+                                        errorBuilder: (BuildContext context,
+                                            Object exception,
+                                            StackTrace? stackTrace) {
+                                          return const Icon(
+                                            Icons
+                                                .person_2_outlined, // Fallback icon (you can use any icon or widget here)
+                                            size:
+                                                40, // Adjust the size if needed
+                                            color: Colors.white, // Icon color
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),
@@ -1598,7 +1614,7 @@ class HomeScreenWidgets {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 3),
                                   CustomText(
                                     text:
                                         facultyList[index].qualification ?? '',
@@ -1637,9 +1653,278 @@ class HomeScreenWidgets {
     );
   }
 
-//  Future<List<FacultyModel>> fetchFaculity() async {
-//     List<FacultyModel> faculityList =
-//         await homeScreenServices.fetchFaculities();
-//         return faculityList;
-//   }
+  Widget successFullLeanersSession(
+      {required double screenHeight, required double screenWidth}) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Stack(
+                children: [
+                  CustomText(
+                    text: 'Success full Learner ',
+                    textStyle: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenHeight * 0.02, // 2% of screen height
+                    ),
+                  ),
+                  Positioned(
+                    left: screenWidth * 0.25, // Responsive positioning
+                    top: screenHeight * 0.023, // Responsive positioning
+                    child: SizedBox(
+                      width: screenWidth * 0.23, // Responsive width
+                      child: Image.asset('lib/Assets/Onboard/image.png'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(
+            height: screenHeight * .01,
+          ),
+          sucessFullLeanersBuilder(screenWidth, screenHeight)
+        ],
+      ),
+    );
+  }
+
+  Future<List<dynamic>> _fetchsucessFullLeanersJson() async {
+    try {
+      final Map<String, dynamic> jsonData = json.decode(sucessFullLeanersJson);
+      return jsonData['sucessFullLeaners'];
+    } catch (e) {
+      throw Exception('Failed to load categories: $e');
+    }
+  }
+
+  Widget sucessFullLeanersBuilder(
+    double screenWidth,
+    double screenHeight,
+  ) {
+    return FutureBuilder<List<dynamic>>(
+      future: _fetchsucessFullLeanersJson(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          log(snapshot.error.toString());
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No sucessfull Leaners available.'));
+        } else {
+          final sucessFullLeaners = snapshot.data!;
+          return sucessFullLeanersJsonCard(
+            sucessFullLeaners,
+            screenWidth,
+            screenHeight,
+          );
+        }
+      },
+    );
+  }
+
+////////////////   caard of sucessFullLeaners
+
+  Widget sucessFullLeanersJsonCard(
+    List<dynamic> sucessFullLeaners,
+    double screenWidth,
+    double screenHeight,
+  ) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          var sucessFullLeaner = sucessFullLeaners[index];
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(19),
+                    topLeft: Radius.circular(19),
+                    topRight: Radius.circular(19),
+                    bottomLeft: Radius.circular(3),
+                  ),
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromRGBO(155, 243, 255, 1),
+                      Color.fromRGBO(30, 117, 229, 1),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(
+                      3.0), // Padding for the gradient border
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white, // The content's background
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(1),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 280,
+                            child: CustomText(
+                              text: sucessFullLeaner['describtion'],
+                              textStyle: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,color: Colors.black
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenHeight * .03,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage:
+                                    AssetImage(sucessFullLeaner['image']),
+                                backgroundColor: Colors.transparent,
+                              ),
+                              SizedBox(
+                                width: screenWidth * 0.02,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text: sucessFullLeaner['name'],
+                                    textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  CustomText(
+                                    text: sucessFullLeaner['position'],
+                                    textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: const Color.fromRGBO(
+                                          108, 114, 117, 1),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        itemCount: sucessFullLeaners.length,
+      ),
+    );
+  }
+
+  Future<List<dynamic>> _fetchSocialMediasJson() async {
+    try {
+      final Map<String, dynamic> jsonData = json.decode(socialMediaJson);
+      return jsonData['socialMedia'];
+    } catch (e) {
+      throw Exception('Failed to load social medias: $e');
+    }
+  }
+
+  Widget socialMediasBuilder({
+    required double screenWidth,
+    required double screenHeight,
+  }) {
+    return FutureBuilder<List<dynamic>>(
+      future: _fetchSocialMediasJson(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          log(snapshot.error.toString());
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No social media available.'));
+        } else {
+          final socialMedias = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                socialMediaCard(socialMedias[0]),
+                socialMediaCard(socialMedias[1]),
+                socialMediaCard(socialMedias[2]),
+                socialMediaCard(socialMedias[3]),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget socialMediaCard(var socialMedia) {
+    return GestureDetector(
+      onTap: () {
+        var url = Uri.parse(socialMedia['link']);
+        launchUrl(url);
+      },
+      child: Card(
+        child: SizedBox(
+          height: 40,
+          width: 40,
+          child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(7)),
+              child: Image.asset(
+                socialMedia['image'],
+                fit: BoxFit.cover,
+              )),
+        ),
+      ),
+    );
+  }
+
+  Widget visitOutWebSiteText() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15, bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              var url = Uri.parse('https://www.thelearnyn.com');
+              launchUrl(url);
+            },
+            child: CustomText(
+              text: 'Also_Vist_Our_Website_www.Thelearnyn.Com',
+              textStyle: GoogleFonts.mulish(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 13,
+                  color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

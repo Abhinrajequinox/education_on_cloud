@@ -12,7 +12,10 @@ class AuthServices {
     required String state,
     required String email,
   }) async {
+    log('the phone number in the sumbmit request is $name');
     log('the phone number in the sumbmit request is $number');
+    log('the phone number in the sumbmit request is $country');
+    log('the phone number in the sumbmit request is $state');
     log('the phone number in the sumbmit request is $email');
 
     try {
@@ -23,7 +26,7 @@ class AuthServices {
           'country': country == 'India' ? '0' : '1',
           'mobile_num': number,
           'state': state,
-          'emai': email,
+          'email': email,
           'username': name
         },
       );

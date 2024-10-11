@@ -124,11 +124,9 @@ class SigninScreenWidget {
           width: screenWidth * 0.3,
           text: 'Log In',
           onTap: () async {
-            // String phoneNumberWithCountryCode =
-            //     '${countryController.selectedCountryCode.value}${phoneController.text}';
             if (formKey.currentState!.validate() &&
                 countryController.selectedCountry.value.isNotEmpty) {
-              if (countryController.selectedCountry.value != 'India') {
+              if (countryController.selectedCountry.value == 'India'&&countryController.selectedState.value.isNotEmpty) {
                 log('its okeyyy');
                 bool sucess = await authServices.submitRequest(
                     name: namecontroller.text,
@@ -152,12 +150,12 @@ class SigninScreenWidget {
                   customeSnakBar(
                       'Submission failed. Please try again.', "", Icons.error);
                 }
-              } else if (countryController.selectedState.value.isNotEmpty) {
+              } else if (countryController.selectedCountry.value != 'India') {
                 bool sucess = await authServices.submitRequest(
                     name: namecontroller.text,
                     number: phoneController.text,
                     country: countryController.selectedCountry.value,
-                    state: countryController.selectedState.value,
+                    state: '',
                     email: mailController.text);
                 if (sucess) {
                   Navigator.push(
@@ -176,7 +174,7 @@ class SigninScreenWidget {
                       'Submission failed. Please try again.', "", Icons.error);
                 }
               } else {
-                // customeSnakBar('Choose State', "", Icons.info);
+                customeSnakBar('Choose State', "", Icons.info);
               }
             } else if (countryController.selectedCountry.value.isEmpty) {
               formKey.currentState?.validate();

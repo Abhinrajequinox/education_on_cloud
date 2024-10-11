@@ -61,7 +61,7 @@ AppBar _appBar(BuildContext context, double screenWidth) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => StudentProfileScreen(),
+                  builder: (context) => const StudentProfileScreen(),
                 ));
           },
           child: CircleAvatar(
@@ -80,8 +80,10 @@ AppBar _appBar(BuildContext context, double screenWidth) {
         ),
         IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_none_outlined,
-                color: Colors.black),
+            icon: Icon(
+              Icons.notifications_none_outlined,
+              color: Theme.of(context).appBarTheme.iconTheme?.color,
+            ),
             iconSize: screenWidth * 0.09),
         GestureDetector(
           onTap: () {},
@@ -120,18 +122,14 @@ Widget _body(double screenWidth, screenHeight, BuildContext context) {
       homeScreenWidgets.ourStatisticsSession(screenWidth, screenHeight),
       homeScreenWidgets.coursesBoardsAndGrid(screenWidth, screenHeight),
       Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          elevation: 3,
-          child: Column(
-            children: [
-              homeScreenWidgets.coursesAndBoardSession(
-                  screenWidth, screenHeight),
-              homeScreenWidgets.listOfgridOfcoursesAndBoardSession(),
-            ],
-          ),
-        ),
-      ),
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+              elevation: 3,
+              child: Column(children: [
+                homeScreenWidgets.coursesAndBoardSession(
+                    screenWidth, screenHeight),
+                homeScreenWidgets.listOfgridOfcoursesAndBoardSession()
+              ]))),
       homeScreenWidgets.ourProFeautureText(screenWidth, screenHeight),
       homeScreenWidgets.andTheFollowingFeaturesSession(
           screenWidth, screenHeight),
@@ -146,6 +144,11 @@ Widget _body(double screenWidth, screenHeight, BuildContext context) {
           context, screenHeight, screenWidth),
       homeScreenWidgets.continueWatching(screenHeight, screenWidth),
       homeScreenWidgets.ourExpertsSession(screenHeight, screenWidth),
+      homeScreenWidgets.successFullLeanersSession(
+          screenHeight: screenHeight, screenWidth: screenWidth),
+      homeScreenWidgets.socialMediasBuilder(
+          screenHeight: screenHeight, screenWidth: screenWidth),
+      homeScreenWidgets.visitOutWebSiteText(),
       IconButton(
           onPressed: () {
             loginServices.logout();

@@ -28,5 +28,5 @@ const course_category_Api='https://educationoncloud.in/api/course_category.php';
 const course_section_Api='https://educationoncloud.in/api_temp/course_section.php';
 
 
-////////////////////////////////           API for the Course session on category        /////////////////////////////////////
+////////////////////////////////           API for the faculity (the teachers in the last of the homescreen)        /////////////////////////////////////
 const faculity_Api='https://educationoncloud.in/api/faculties.php';

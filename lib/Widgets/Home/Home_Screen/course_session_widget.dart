@@ -55,7 +55,15 @@ class CourseSessionWidget {
                           course.img,
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: double.infinity,
+                          height: double.infinity, errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Icon(
+                            Icons
+                                .school_outlined, // Fallback icon (you can use any icon or widget here)
+                            size: 40, // Adjust the size if needed
+                            color: Colors.white, // Icon color
+                          );
+                        },
                         ),
                       ),
                     ),
@@ -80,15 +88,15 @@ class CourseSessionWidget {
                                               course.sectionName, // Use original text if translation fails
                                           textStyle: GoogleFonts.inter(
                                             fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                          ),
-                                          maxline: 1,
-                                          color: homeScreenController
+                                            fontSize: 14, color: homeScreenController
                                                       .categoryIndexForColor
                                                       .value ==
                                                   index
                                               ? Colors.white
                                               : Colors.black,
+                                          ),
+                                          maxline: 1,
+                                         
                                         );
                                       }
                                     },

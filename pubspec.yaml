@@ -135,6 +135,11 @@ flutter:
     - lib/Assets/Home/Different-Mode-Of_Learning/question-bank.png
     - lib/Assets/Home/Different-Mode-Of_Learning/online-record-class.png
     - lib/Assets/Home/Different-Mode-Of_Learning/digital-note.png
+    - lib/Assets/Home/SocialMedia/youtube.png
+    - lib/Assets/Home/SocialMedia/x-twitter.png
+    - lib/Assets/Home/SocialMedia/instagram.png
+    - lib/Assets/Home/SocialMedia/facebook.png
+
 
 
 

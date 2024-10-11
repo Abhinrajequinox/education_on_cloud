@@ -130,3 +130,53 @@ const String countriesJson = '''
   ]
 }
 ''';
+
+const String sucessFullLeanersJson = '''
+{
+  "sucessFullLeaners": [
+    {
+      "name": "Black, Marvin",
+      "describtion": "Excellent conversation. Very practical, logical and motivating info. Thanks for your time Kosta! Tal",
+      "image": "lib/Assets/indianflag.png",
+      "position": "Student"
+    },
+    {
+      "name": "Black, Marvin",
+      "describtion": "Excellent conversation. Very practical, logical and motivating info. Thanks for your time Kosta! Tal",
+      "image": "lib/Assets/indianflag.png",
+      "position": "Student"
+    },
+    {
+      "name": "Black, Marvin",
+      "describtion": "Excellent conversation. Very practical, logical and motivating info. Thanks for your time Kosta! Tal",
+      "image": "lib/Assets/indianflag.png",
+      "position": "Student"
+    }
+  ]
+}
+''';
+
+
+
+const String socialMediaJson = '''
+{
+  "socialMedia": [
+    {
+      "image": "lib/Assets/Home/SocialMedia/facebook.png",
+      "link": ""
+    },
+    {
+      "image": "lib/Assets/Home/SocialMedia/instagram.png",
+      "link": ""
+    },
+    {
+      "image": "lib/Assets/Home/SocialMedia/youtube.png",
+      "link": ""
+    },
+    {
+      "image": "lib/Assets/Home/SocialMedia/x-twitter.png",
+      "link": ""
+    }
+  ]
+}
+''';

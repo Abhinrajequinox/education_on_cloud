@@ -39,15 +39,27 @@ class _CourseCategoryScreenState extends State<CourseCategoryScreen> {
 
 AppBar _appBar(BuildContext context, double screenWidth) {
   return AppBar(
-      backgroundColor:
-          languageController.currentTheme.value.scaffoldBackgroundColor,
+      // backgroundColor:
+      //     languageController.currentTheme.value.scaffoldBackgroundColor,
       leading: Row(children: [
         SizedBox(width: screenWidth * 0.05),
-        const CircleAvatar(radius: 18),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor:
+                Colors.transparent, // Make sure no background color interferes
+            child: ClipOval(
+              child: Image.asset(
+                'lib/Assets/Home/profile-image.png',
+                fit: BoxFit.cover,
+                width: 36, // Diameter of CircleAvatar = 2 * radius
+                height: 36,
+              ),
+            ),
+          ),
         IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_none_outlined,
-                color: Colors.black),
+            icon:   Icon(Icons.notifications_none_outlined,
+               color: Theme.of(context).appBarTheme.iconTheme?.color,),
             iconSize: screenWidth * 0.09),
         GestureDetector(
           onTap: () {},
@@ -189,21 +201,23 @@ Widget listOfCourseSession(List<CourseCategoryModel> courseCategoryModel) {
                         } else {
                           // Successfully translated
                           return CustomText(
-                            text: snapshot.data??course.categoryName,
+                            text: snapshot.data ?? course.categoryName,
                             textStyle: GoogleFonts.inter(
-                                fontWeight: FontWeight.w400, fontSize: 14),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: homeScreenController
+                                          .categoryIndexForColor.value ==
+                                      index
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                             maxline: 1,
-                            color: homeScreenController
-                                        .categoryIndexForColor.value ==
-                                    index
-                                ? Colors.white
-                                : Colors.black,
                           );
                         }
                       },
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios),
+                  const Icon(Icons.arrow_forward_ios,),
                 ],
               ),
             ),

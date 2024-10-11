@@ -20,7 +20,7 @@ class CourseSessionScreen extends StatefulWidget {
 }
 
 final LanguageController languageController = LanguageController();
-final CourseSessionWidget courseSessionWidget=CourseSessionWidget();
+final CourseSessionWidget courseSessionWidget = CourseSessionWidget();
 
 class _CategoryClassesScreenState extends State<CourseSessionScreen> {
   @override
@@ -28,6 +28,8 @@ class _CategoryClassesScreenState extends State<CourseSessionScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     // double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      // backgroundColor:
+      //     languageController.currentTheme.value.scaffoldBackgroundColor,
       appBar: _appBar(context, screenWidth),
       body: _body(context, widget.titleOfCourse, screenWidth,
           widget.courseSectionModel),
@@ -37,15 +39,29 @@ class _CategoryClassesScreenState extends State<CourseSessionScreen> {
 
 AppBar _appBar(BuildContext context, double screenWidth) {
   return AppBar(
-      backgroundColor:
-          languageController.currentTheme.value.scaffoldBackgroundColor,
+      //  backgroundColor:
+      //     languageController.currentTheme.value.scaffoldBackgroundColor,
       leading: Row(children: [
         SizedBox(width: screenWidth * 0.05),
-        const CircleAvatar(radius: 18),
+        CircleAvatar(
+          radius: 18,
+          backgroundColor:
+              Colors.transparent, // Make sure no background color interferes
+          child: ClipOval(
+            child: Image.asset(
+              'lib/Assets/Home/profile-image.png',
+              fit: BoxFit.cover,
+              width: 36, // Diameter of CircleAvatar = 2 * radius
+              height: 36,
+            ),
+          ),
+        ),
         IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_none_outlined,
-                color: Colors.black),
+            icon: Icon(
+              Icons.notifications_none_outlined,
+              color: Theme.of(context).appBarTheme.iconTheme?.color,
+            ),
             iconSize: screenWidth * 0.09),
         GestureDetector(
           onTap: () {},
@@ -80,12 +96,11 @@ Widget _body(BuildContext context, String titleOfCourse, double screenWidth,
     child: SingleChildScrollView(
       child: Column(
         children: [
-         courseSessionWidget.titleAndBackButton(context, screenWidth, titleOfCourse),
+          courseSessionWidget.titleAndBackButton(
+              context, screenWidth, titleOfCourse),
           courseSessionWidget.listOfCourseSession(courseSection)
         ],
       ),
     ),
   );
 }
-
-
