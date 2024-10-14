@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/home_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -39,27 +41,27 @@ class _CourseCategoryScreenState extends State<CourseCategoryScreen> {
 
 AppBar _appBar(BuildContext context, double screenWidth) {
   return AppBar(
-      // backgroundColor:
-      //     languageController.currentTheme.value.scaffoldBackgroundColor,
+      backgroundColor:
+          languageController.currentTheme.value.scaffoldBackgroundColor,
       leading: Row(children: [
         SizedBox(width: screenWidth * 0.05),
-          CircleAvatar(
-            radius: 18,
-            backgroundColor:
-                Colors.transparent, // Make sure no background color interferes
-            child: ClipOval(
-              child: Image.asset(
-                'lib/Assets/Home/profile-image.png',
-                fit: BoxFit.cover,
-                width: 36, // Diameter of CircleAvatar = 2 * radius
-                height: 36,
-              ),
+        CircleAvatar(
+          radius: 18,
+          backgroundColor:
+              Colors.transparent, // Make sure no background color interferes
+          child: ClipOval(
+            child: Image.asset(
+              'lib/Assets/Home/profile-image.png',
+              fit: BoxFit.cover,
+              width: 36, // Diameter of CircleAvatar = 2 * radius
+              height: 36,
             ),
           ),
+        ),
         IconButton(
             onPressed: () {},
-            icon:   Icon(Icons.notifications_none_outlined,
-               color: Theme.of(context).appBarTheme.iconTheme?.color,),
+            icon: const Icon(Icons.notifications_none_outlined,
+                color: Colors.black),
             iconSize: screenWidth * 0.09),
         GestureDetector(
           onTap: () {},
@@ -143,8 +145,19 @@ Widget listOfCourseSession(List<CourseCategoryModel> courseCategoryModel) {
     itemBuilder: (context, index) {
       var course = courseCategoryModel[index];
       return GestureDetector(
-        onTap: () {
+        onTap: () async {
           homeScreenController.changecategoryIndexForColor(index);
+          log(' the catid send is ${course.id}');
+          var _courses = await academicCourseServices.fetchCourses(course.id);
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CourseScreen(
+                  course: _courses,
+                  titleOfCourse: course.categoryName,
+                ),
+              ));
           Future.delayed(const Duration(milliseconds: 300), () {
             homeScreenController.changecategoryIndexForColor(100);
           });
@@ -217,7 +230,9 @@ Widget listOfCourseSession(List<CourseCategoryModel> courseCategoryModel) {
                       },
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios,),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                  ),
                 ],
               ),
             ),

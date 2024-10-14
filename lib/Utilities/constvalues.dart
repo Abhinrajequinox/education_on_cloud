@@ -22,3 +22,16 @@ final List<Map<String, String>> modes = [
   {"mode": "Autumn Mode"},
   {"mode": "Rainy Mode"},
 ];
+
+List<Color> rainbowColors = [
+  const Color.fromRGBO(255, 111, 97, 1),
+  const Color.fromRGBO(255, 183, 77, 1),
+  const Color.fromRGBO(255, 213, 79, 1),
+  const Color.fromRGBO(100, 181, 246, 1),
+  const Color.fromRGBO(77, 182, 172, 1),
+  const Color.fromRGBO(129, 199, 132, 1),
+  const Color.fromRGBO(149, 117, 205, 1),
+  const Color.fromRGBO(100, 181, 246, 1),
+  const Color.fromRGBO(240, 98, 146, 1),
+  
+];

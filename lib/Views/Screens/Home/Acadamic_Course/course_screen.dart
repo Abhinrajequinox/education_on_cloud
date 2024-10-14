@@ -1,46 +1,47 @@
-import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
-import 'package:education_on_cloud/Utilities/Home/course_classes_utilities.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/course_screen_controller.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
+import 'package:education_on_cloud/Utilities/constvalues.dart';
+import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/course_session_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/course_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CourseSessionScreen extends StatefulWidget {
-  final List<CourseSectionModel> courseSectionModel;
+class CourseScreen extends StatefulWidget {
+  final List<CourseModel> course;
   final String titleOfCourse;
-  const CourseSessionScreen(
-      {super.key,
-      required this.courseSectionModel,
-      required this.titleOfCourse});
+  const CourseScreen(
+      {super.key, required this.course, required this.titleOfCourse});
 
   @override
-  State<CourseSessionScreen> createState() => _CategoryClassesScreenState();
+  State<CourseScreen> createState() => _CourseScreenState();
 }
 
-final LanguageController languageController = LanguageController();
-final CourseSessionWidget courseSessionWidget = CourseSessionWidget();
+final CourseScreenWidget courseScreenWidget = CourseScreenWidget();
+  final CourseScreenController courseScreenController=CourseScreenController();
 
-class _CategoryClassesScreenState extends State<CourseSessionScreen> {
+
+class _CourseScreenState extends State<CourseScreen> {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    // double screenHeight = MediaQuery.of(context).size.height;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      // backgroundColor:
-      //     languageController.currentTheme.value.scaffoldBackgroundColor,
       appBar: _appBar(context, screenWidth),
-      body: _body(context, widget.titleOfCourse, screenWidth,
-          widget.courseSectionModel),
+      body: _body(
+          context: context,
+          screenHeight: screenHeight,
+          screenWidth: screenWidth,
+          titleOfCourse: widget.titleOfCourse,
+          courses: widget.course),
     );
   }
 }
 
 AppBar _appBar(BuildContext context, double screenWidth) {
   return AppBar(
-      //  backgroundColor:
-      //     languageController.currentTheme.value.scaffoldBackgroundColor,
+      backgroundColor:
+          languageController.currentTheme.value.scaffoldBackgroundColor,
       leading: Row(children: [
         SizedBox(width: screenWidth * 0.05),
         CircleAvatar(
@@ -58,9 +59,9 @@ AppBar _appBar(BuildContext context, double screenWidth) {
         ),
         IconButton(
             onPressed: () {},
-            icon: Icon(
+            icon: const Icon(
               Icons.notifications_none_outlined,
-              color: Theme.of(context).appBarTheme.iconTheme?.color,
+              color: Colors.black,
             ),
             iconSize: screenWidth * 0.09),
         GestureDetector(
@@ -89,16 +90,23 @@ AppBar _appBar(BuildContext context, double screenWidth) {
       ]);
 }
 
-Widget _body(BuildContext context, String titleOfCourse, double screenWidth,
-    List<CourseSectionModel> courseSection) {
+Widget _body(
+    {required BuildContext context,
+    required double screenHeight,
+    required double screenWidth,
+    required String titleOfCourse,
+    required List<CourseModel> courses}) {
   return Padding(
     padding: EdgeInsets.all(screenWidth * .05),
     child: SingleChildScrollView(
       child: Column(
         children: [
-          courseSessionWidget.titleAndBackButton(
+          courseScreenWidget.titleAndBackButton(
               context, screenWidth, titleOfCourse),
-          courseSessionWidget.listOfCourseSession(courseSection)
+          courseScreenWidget.listOfCourses(
+              courses: courses,
+              screenHeight: screenHeight,
+              screenWidth: screenWidth,titleOfCourse: titleOfCourse)
         ],
       ),
     ),

@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:get/get.dart';
 
 class HomeScreenController extends GetxController {
-  final HomeScreenServices homeScreenServices = HomeScreenServices();
+  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 
   RxBool categoryListOrGrid = true.obs;
 
@@ -36,7 +36,7 @@ class HomeScreenController extends GetxController {
   Future<void> fetchCourses() async {
     log('brfore fetching the coursesession');
     List<CourseSectionModel> fetchedCourses =
-        await homeScreenServices.fetchCoursesSection('0');
+        await academicCourseServices.fetchCoursesSection('0');
     log('Fetched Courses: ${fetchedCourses.length}');
     courseSessionList.value = fetchedCourses;
   }

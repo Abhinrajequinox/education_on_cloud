@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/Home/home_screen_utilities.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/course_session_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_session_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ClassRoomScreenWidget {
   final HomeScreenController homeScreenController = HomeScreenController();
-  final HomeScreenServices homeScreenServices = HomeScreenServices();
+  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 
   Widget titleAndBackButton(BuildContext context, double screenWidth) {
     return Padding(
@@ -113,7 +113,7 @@ class ClassRoomScreenWidget {
             onTap: () async {
               homeScreenController.changecategoryIndexForColor(index);
               List<CourseSectionModel> _course_section =
-                  await homeScreenServices.fetchCoursesSection('0');
+                  await academicCourseServices.fetchCoursesSection('0');
               // log(_course_section.toString());
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {

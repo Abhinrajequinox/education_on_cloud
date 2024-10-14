@@ -139,6 +139,8 @@ flutter:
     - lib/Assets/Home/SocialMedia/x-twitter.png
     - lib/Assets/Home/SocialMedia/instagram.png
     - lib/Assets/Home/SocialMedia/facebook.png
+    - 'lib/Assets/Icons/arrow-circle-up.png'
+    - lib/Assets/Home/chapter-screen-background-image.png
 
 
 

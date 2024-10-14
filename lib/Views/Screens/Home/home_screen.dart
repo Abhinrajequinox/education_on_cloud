@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
-import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Functions/auth_functions.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Pages/auth_check.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/chooselanguagescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 final HomeScreenWidgets homeScreenWidgets = HomeScreenWidgets();
-final HomeScreenServices homeScreenServices = HomeScreenServices();
+  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 final HomeScreenController homeScreenController = HomeScreenController();
 final LoginServices loginServices = LoginServices();
 

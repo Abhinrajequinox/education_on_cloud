@@ -3,14 +3,15 @@ import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
 import 'package:education_on_cloud/Functions/auth_functions.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/Home/home_screen_utilities.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/course_category_screen.dart';
-import 'package:education_on_cloud/Views/Screens/Home/course_session_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_category_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_session_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -21,7 +22,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreenWidgets {
   final HomeScreenController homeScreenController = HomeScreenController();
-  final HomeScreenServices homeScreenServices = HomeScreenServices();
+  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
+  final HomeScreenServices homeScreenServices =HomeScreenServices();
   final LanguageController languageController = LanguageController();
 
   // Course Plans
@@ -248,7 +250,7 @@ class HomeScreenWidgets {
                 flagId.value = '4';
               }
               List<CourseSectionModel> _course_section =
-                  await homeScreenServices.fetchCoursesSection(flagId.value);
+                  await academicCourseServices.fetchCoursesSection(flagId.value);
               // log(_course_section.toString());
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 //  homeScreenController.changecategoryIndexForColor(100);
@@ -332,7 +334,7 @@ class HomeScreenWidgets {
             onTap: () async {
               homeScreenController.changecategoryIndexForColor(index);
               List<CourseSectionModel> _course_section =
-                  await homeScreenServices.fetchCoursesSection('0');
+                  await academicCourseServices.fetchCoursesSection('0');
               // log(_course_section.toString());
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
@@ -717,7 +719,7 @@ class HomeScreenWidgets {
               homeScreenController.changecourseAndBoardIndexForColor(index);
               homeScreenController.courseSessionList.clear();
               var fetchedCourses =
-                  await homeScreenServices.fetchCoursesSection('0');
+                  await academicCourseServices.fetchCoursesSection('0');
               homeScreenController.changeCourseSessionList(fetchedCourses);
             },
             child: Obx(
@@ -788,7 +790,7 @@ class HomeScreenWidgets {
                           .toString());
 
                       List<CourseCategoryModel> courseCategoryModel =
-                          await homeScreenServices
+                          await academicCourseServices
                               .fetchCoursesCategory(course.sectionId);
                       homeScreenController.changecategoryIndexForColor(index);
                       Future.delayed(const Duration(milliseconds: 300), () {

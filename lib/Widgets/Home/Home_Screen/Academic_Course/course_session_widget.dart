@@ -1,8 +1,10 @@
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/home_screen_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Home/home_screen_services.dart';
-import 'package:education_on_cloud/Models/Home/home_screen_model.dart';
+import 'dart:developer';
+
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/course_category_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_category_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -10,7 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CourseSessionWidget {
   final HomeScreenController homeScreenController = HomeScreenController();
-  final HomeScreenServices homeScreenServices = HomeScreenServices();
+  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 
   Widget listOfCourseSession(List<CourseSectionModel> courseSection) {
     return ListView.builder(
@@ -19,9 +21,9 @@ class CourseSessionWidget {
       itemBuilder: (context, index) {
         var course = courseSection[index];
         return GestureDetector(
-          onTap: () async {
+          onTap: () async {log('course category id is ${course.sectionId}');
             List<CourseCategoryModel> courseCategoryModel =
-                await homeScreenServices.fetchCoursesCategory(course.sectionId);
+                await academicCourseServices.fetchCoursesCategory(course.sectionId);
             homeScreenController.changecategoryIndexForColor(index);
             Future.delayed(const Duration(milliseconds: 300), () {
               homeScreenController.changecategoryIndexForColor(100);
@@ -83,20 +85,24 @@ class CourseSessionWidget {
                                             'Error: ${snapshot.error}'); // Error handling
                                       } else {
                                         // Successfully translated
-                                        return CustomText(
-                                          text: snapshot.data ??
-                                              course.sectionName, // Use original text if translation fails
-                                          textStyle: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14, color: homeScreenController
-                                                      .categoryIndexForColor
-                                                      .value ==
-                                                  index
-                                              ? Colors.white
-                                              : Colors.black,
+                                        return SingleChildScrollView(scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [CustomText(
+                                              text: snapshot.data ??
+                                                  course.sectionName, // Use original text if translation fails
+                                              textStyle: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14, color: homeScreenController
+                                                          .categoryIndexForColor
+                                                          .value ==
+                                                      index
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              ),
+                                              maxline: 1,
+                                             
+                                            ),],
                                           ),
-                                          maxline: 1,
-                                         
                                         );
                                       }
                                     },
