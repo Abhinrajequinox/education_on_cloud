@@ -66,90 +66,116 @@ class ChapterScreenWidget {
       itemBuilder: (context, index) {
         var chapter = chapters[index];
         var cardColor = rainbowColors[index % rainbowColors.length];
-        return Card(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: cardColor, width: 3)),
-              image: const DecorationImage(
-                  image: AssetImage(
-                      'lib/Assets/Home/chapter-screen-background-image.png'),
-                  fit: BoxFit.cover,
-                  opacity: .4),
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-            ),
-            height: screenHeight * .09,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: screenHeight * .04,
-                    child: Image.network(
-                        'https://thelearnyn1.s3.ap-south-1.amazonaws.com/chap_imgs/chap_imgs/${chapter.chapterIcon}'),
-                  ),
-                  SizedBox(
-                    width: screenWidth * .03,
-                  ),
-                  SizedBox(
-                    width: screenWidth * .32,
-                    child: CustomText(
-                      maxline: 1,
-                      text: '${index + 1} . ${chapter.chapterName}',
-                      textStyle: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                          color: Colors.black),
-                    ),
-                  ),
-                  SizedBox(
-                    width: screenWidth * .03,
-                  ),
-                  Container(
-                    width: screenWidth * .25,
-                    height: screenHeight * .03,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        color: Color.fromRGBO(30, 117, 229, 1)),
-                    child: Center(
-                      child: CustomText(
-                        text: 'Go to Class',
-                        textStyle: GoogleFonts.mulish(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13,
-                            color: Colors.white),
+        return Column(
+          children: [
+            Card(
+              child: Container(
+                decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: cardColor, width: 3)),
+                  image: const DecorationImage(
+                      image: AssetImage(
+                          'lib/Assets/Home/chapter-screen-background-image.png'),
+                      fit: BoxFit.cover,
+                      opacity: .4),
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
+                height: screenHeight * .09,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: screenHeight * .04,
+                        child: Image.network(
+                            'https://thelearnyn1.s3.ap-south-1.amazonaws.com/chap_imgs/chap_imgs/${chapter.chapterIcon}'),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: screenWidth * .015,
-                  ),
-                  // const ImageIcon(
-                  //     AssetImage('lib/Assets/Icons/arrow-circle-up.png')),
-                  Obx(
-                    ()=> AnimatedRotation(
-                      // Rotate by 180 degrees (pi radians) when toggled
-                      turns: chapterScreenController.toggleanimation[index] ?? false
-                        ? 0
-                        : 0.5, // 0 means no rotation, 0.5 is 180 degrees
-                      duration:
-                          const Duration(milliseconds: 300), // Animation duration
-                      curve: Curves
-                          .easeInOut, // Animation curve for smooth transition
-                      child: GestureDetector(
-                        onTap: () {
-
-                          chapterScreenController.toggleExpansion(index);
-                        },
-                        child: const ImageIcon(AssetImage(
-                              'lib/Assets/Icons/arrow-circle-up.png')),
+                      SizedBox(
+                        width: screenWidth * .03,
                       ),
-                    ),
+                      SizedBox(
+                        width: screenWidth * .32,
+                        child: CustomText(
+                          maxline: 1,
+                          text: '${index + 1} . ${chapter.chapterName}',
+                          textStyle: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                              color: Colors.black),
+                        ),
+                      ),
+                      SizedBox(
+                        width: screenWidth * .03,
+                      ),
+                      Container(
+                        width: screenWidth * .25,
+                        height: screenHeight * .03,
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Color.fromRGBO(30, 117, 229, 1)),
+                        child: Center(
+                          child: CustomText(
+                            text: 'Go to Class',
+                            textStyle: GoogleFonts.mulish(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: screenWidth * .015,
+                      ),
+                      Obx(
+                        () => AnimatedRotation(
+                          turns: chapterScreenController.getRotationState(index)
+                              ? 0
+                              : 0.5, // Rotate 180 degrees when expanded
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: GestureDetector(
+                            onTap: () {
+                              chapterScreenController.toggleExpansion(index);
+                            },
+                            child: const ImageIcon(
+                              AssetImage(
+                                  'lib/Assets/Icons/arrow-circle-up.png'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+            Obx(() {
+              if (chapterScreenController.isExpanded(index)) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],borderRadius:const BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight:  Radius.circular(12))
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  height: screenHeight * 0.28,
+                  width: screenWidth * .85, // Adjust based on content
+                  // Optional background color for the list
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 5, // Number of items in the expandable list
+                    itemBuilder: (context, subIndex) {
+                      return ListTile(
+                        title: Text('Sub-item ${subIndex + 1}'),
+                      );
+                    },
+                  ),
+                );
+              } else {
+                return const SizedBox
+                    .shrink(); // Return an empty widget if not expanded
+              }
+            }),
+          ],
         );
       },
       itemCount: chapters.length,

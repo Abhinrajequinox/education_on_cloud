@@ -70,6 +70,7 @@ class CourseScreenWidget {
           padding: const EdgeInsets.only(top: 8, bottom: 8),
           child: Card(
             child: Container(
+              // width: screenWidth * 1,
               decoration: BoxDecoration(
                   border: Border.all(
                       color: const Color.fromRGBO(0, 78, 255, 1), width: 1.5),
@@ -101,23 +102,39 @@ class CourseScreenWidget {
                         height: screenHeight * 0.01,
                       ),
                       SizedBox(
-                        width: screenWidth * .5,
-                        child: CustomText(
-                          text: titleOfCourse,
-                          textStyle: GoogleFonts.inter(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                              color: const Color.fromRGBO(0, 56, 255, 1)),
+                        width:
+                            screenWidth * .5, // Or dynamically calculate width
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              CustomText(
+                                maxline: 1,
+                                text: titleOfCourse,
+                                textStyle: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                  color: const Color.fromRGBO(0, 56, 255, 1),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ),SizedBox(height: screenHeight*.006,),
                       SizedBox(
                         width: screenWidth * .5,
-                        child: CustomText(
-                          text: course.courseName,
-                          textStyle: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Colors.black),
+                        child: SingleChildScrollView( scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              CustomText(
+                                text: course.courseName,
+                                textStyle: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -126,19 +143,25 @@ class CourseScreenWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          courseDetialsButton(index: index,
+                          courseDetialsButton(
+                            index: index,
                             buttonName: 'Course Details',
                             onTap: () async {
                               log(course.id);
-                              courseScreenController.changeColorOfCourseDetailButton(index);
-                            List<ChapterModel> _chapters=  await academicCourseServices.fetchCourseChapters(course.id);
+                              courseScreenController
+                                  .changeColorOfCourseDetailButton(index);
+                              List<ChapterModel> _chapters =
+                                  await academicCourseServices
+                                      .fetchCourseChapters(course.id);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ChaptersScreen(
-                                        titleOfChapter: course.courseName,chapters:_chapters),
+                                        titleOfChapter: course.courseName,
+                                        chapters: _chapters),
                                   ));
-                              Future.delayed(const Duration(milliseconds: 300), () {
+                              Future.delayed(const Duration(milliseconds: 300),
+                                  () {
                                 courseScreenController
                                     .changeColorOfCourseDetailButton(100);
                               });
@@ -147,10 +170,12 @@ class CourseScreenWidget {
                           SizedBox(
                             width: screenWidth * .02,
                           ),
-                          addClassButton(index: index,
+                          addClassButton(
+                            index: index,
                             buttonName: 'Add to Class',
                             onTap: () {
-                              courseScreenController.changecolorOfAddToClassButtonButton(index);
+                              courseScreenController
+                                  .changecolorOfAddToClassButtonButton(index);
 
                               Future.delayed(const Duration(milliseconds: 300),
                                   () {
@@ -174,20 +199,25 @@ class CourseScreenWidget {
   }
 
   Widget courseDetialsButton(
-      {required String buttonName, required void Function()? onTap,required int index}) {
+      {required String buttonName,
+      required void Function()? onTap,
+      required int index}) {
     return GestureDetector(
       onTap: onTap,
       child: Obx(
         () => Container(
           decoration: BoxDecoration(
-              gradient: courseScreenController.colorOfCourseDetailButton.value == index
+              gradient: courseScreenController
+                          .colorOfCourseDetailButton.value ==
+                      index
                   ? const LinearGradient(colors: [
                       Color.fromRGBO(0, 56, 255, 1),
                       Color.fromRGBO(0, 224, 255, 1)
                     ])
                   : const LinearGradient(colors: [Colors.white, Colors.white]),
               borderRadius: const BorderRadius.all(Radius.circular(12)),
-              border: courseScreenController.colorOfCourseDetailButton.value == index
+              border: courseScreenController.colorOfCourseDetailButton.value ==
+                      index
                   ? const Border.fromBorderSide(BorderSide.none)
                   : Border.all()),
           child: Padding(
@@ -200,15 +230,19 @@ class CourseScreenWidget {
                   textStyle: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       fontSize: 10,
-                      color: courseScreenController.colorOfCourseDetailButton.value == index
+                      color: courseScreenController
+                                  .colorOfCourseDetailButton.value ==
+                              index
                           ? Colors.white
                           : Colors.black),
                 ),
                 Icon(
                   Icons.arrow_circle_right_outlined,
-                  color: courseScreenController.colorOfCourseDetailButton.value == index
-                      ? Colors.white
-                      : const Color.fromRGBO(9, 97, 245, 1),
+                  color:
+                      courseScreenController.colorOfCourseDetailButton.value ==
+                              index
+                          ? Colors.white
+                          : const Color.fromRGBO(9, 97, 245, 1),
                   size: 20,
                 )
               ],
@@ -220,22 +254,26 @@ class CourseScreenWidget {
   }
 
   Widget addClassButton(
-      {required String buttonName, required void Function()? onTap,required int index}) {
+      {required String buttonName,
+      required void Function()? onTap,
+      required int index}) {
     return GestureDetector(
       onTap: onTap,
       child: Obx(
         () => Container(
           decoration: BoxDecoration(
-              gradient: courseScreenController.colorOfAddToClassButton.value == index
+              gradient: courseScreenController.colorOfAddToClassButton.value ==
+                      index
                   ? const LinearGradient(colors: [
                       Color.fromRGBO(0, 56, 255, 1),
                       Color.fromRGBO(0, 224, 255, 1)
                     ])
                   : const LinearGradient(colors: [Colors.white, Colors.white]),
               borderRadius: const BorderRadius.all(Radius.circular(12)),
-              border: courseScreenController.colorOfAddToClassButton.value == index
-                  ? const Border.fromBorderSide(BorderSide.none)
-                  : Border.all()),
+              border:
+                  courseScreenController.colorOfAddToClassButton.value == index
+                      ? const Border.fromBorderSide(BorderSide.none)
+                      : Border.all()),
           child: Padding(
             padding: const EdgeInsets.all(2),
             child: Row(
@@ -246,13 +284,16 @@ class CourseScreenWidget {
                   textStyle: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       fontSize: 10,
-                      color: courseScreenController.colorOfAddToClassButton.value == index
+                      color: courseScreenController
+                                  .colorOfAddToClassButton.value ==
+                              index
                           ? Colors.white
                           : Colors.black),
                 ),
                 Icon(
                   Icons.arrow_circle_right_outlined,
-                  color: courseScreenController.colorOfAddToClassButton.value == index
+                  color: courseScreenController.colorOfAddToClassButton.value ==
+                          index
                       ? Colors.white
                       : const Color.fromRGBO(9, 97, 245, 1),
                   size: 20,

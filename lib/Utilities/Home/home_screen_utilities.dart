@@ -163,19 +163,19 @@ const String socialMediaJson = '''
   "socialMedia": [
     {
       "image": "lib/Assets/Home/SocialMedia/facebook.png",
-      "link": ""
+      "link": "https://www.facebook.com/Learnanyskill"
     },
     {
       "image": "lib/Assets/Home/SocialMedia/instagram.png",
-      "link": ""
+      "link": "https://www.instagram.com/learnanyskill_/"
     },
     {
       "image": "lib/Assets/Home/SocialMedia/youtube.png",
-      "link": ""
+      "link": "https://www.youtube.com/@AnySkill-r2f"
     },
     {
       "image": "lib/Assets/Home/SocialMedia/x-twitter.png",
-      "link": ""
+      "link": "https://x.com/LearnAnySkill"
     }
   ]
 }

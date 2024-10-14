@@ -29,7 +29,7 @@ class _ChaptersScreenState extends State<ChaptersScreen> {
           screenWidth: screenWidth,
           screenHeight: screenHeight,
           titleOfChapter: widget.titleOfChapter,
-          chapters: widget.chapters),
+          chapters: widget.chapters),drawer: _drawer(),
     );
   }
 }
@@ -41,7 +41,9 @@ AppBar _appBar(BuildContext context, double screenWidth) {
       leading: Row(children: [
         SizedBox(width: screenWidth * 0.05),
         IconButton(
-            onPressed: () {},
+            onPressed: () {
+              _drawer();
+            },
             icon: Icon(Icons.list_outlined,
                 color: Colors.black, size: screenWidth * 0.09)),
         IconButton(
@@ -96,4 +98,8 @@ Widget _body(
       ),
     ),
   );
+}
+
+Drawer _drawer(){
+  return Drawer();
 }

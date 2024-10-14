@@ -22,8 +22,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreenWidgets {
   final HomeScreenController homeScreenController = HomeScreenController();
-  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
-  final HomeScreenServices homeScreenServices =HomeScreenServices();
+  final AcademicCourseServices academicCourseServices =
+      AcademicCourseServices();
+  final HomeScreenServices homeScreenServices = HomeScreenServices();
   final LanguageController languageController = LanguageController();
 
   // Course Plans
@@ -250,7 +251,8 @@ class HomeScreenWidgets {
                 flagId.value = '4';
               }
               List<CourseSectionModel> _course_section =
-                  await academicCourseServices.fetchCoursesSection(flagId.value);
+                  await academicCourseServices
+                      .fetchCoursesSection(flagId.value);
               // log(_course_section.toString());
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 //  homeScreenController.changecategoryIndexForColor(100);
@@ -350,101 +352,191 @@ class HomeScreenWidgets {
               });
             },
             child: Obx(
-              () => Card(
-                elevation: 2,
-                child: Container(
-                  height: screenHeight * 0.09, // 9% of screen height
-                  decoration: BoxDecoration(
-                      gradient:
-                          homeScreenController.categoryIndexForColor == index
-                              ? const LinearGradient(colors: [
-                                  Color.fromRGBO(0, 56, 255, 1),
-                                  Color.fromRGBO(0, 224, 255, 1)
-                                ])
-                              : const LinearGradient(
-                                  colors: [Colors.white, Colors.white]),
-                      border: Border.all(width: .002),
-                      borderRadius: const BorderRadius.all(Radius.circular(6))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: screenHeight * 0.07, // 7% of screen height
-                        width: screenHeight * 0.07, // 7% of screen height
-                        child: Image.asset(
-                          cata['categoryimage'],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              () => Column(
+                children: [
+                  Card(
+                    elevation: 2,
+                    child: Container(
+                      height: screenHeight * 0.09, // 9% of screen height
+                      decoration: BoxDecoration(
+                          gradient:
+                              homeScreenController.categoryIndexForColor ==
+                                      index
+                                  ? const LinearGradient(colors: [
+                                      Color.fromRGBO(0, 56, 255, 1),
+                                      Color.fromRGBO(0, 224, 255, 1)
+                                    ])
+                                  : const LinearGradient(
+                                      colors: [Colors.white, Colors.white]),
+                          border: Border.all(width: .002),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(6))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Flexible(
-                            child: CustomText(
-                              text: cata['categorytitle'],
-                              textStyle: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: screenHeight * 0.018,
-                                  color: homeScreenController
-                                              .categoryIndexForColor ==
-                                          index
-                                      ? Colors.white
-                                      : Colors.black), // 1.5% of screen height
+                          SizedBox(
+                            height: screenHeight * 0.07, // 7% of screen height
+                            width: screenHeight * 0.07, // 7% of screen height
+                            child: Image.asset(
+                              cata['categoryimage'],
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          Row(
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.star,
-                                  color: Colors.yellow, size: 13),
-                              CustomText(
-                                text: cata['categoryrating'],
-                                textStyle: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: screenHeight * 0.012,
-                                    color: homeScreenController
-                                                .categoryIndexForColor ==
-                                            index
-                                        ? Colors.white
-                                        : const Color.fromRGBO(130, 130, 130,
-                                            1)), // 1.5% of screen height
+                              Flexible(
+                                child: CustomText(
+                                  text: cata['categorytitle'],
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: screenHeight * 0.018,
+                                      color: homeScreenController
+                                                  .categoryIndexForColor ==
+                                              index
+                                          ? Colors.white
+                                          : Colors
+                                              .black), // 1.5% of screen height
+                                ),
                               ),
-                              CustomText(
-                                text: cata['categorystd'],
-                                textStyle: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: screenHeight * 0.012,
-                                    color: homeScreenController
-                                                .categoryIndexForColor ==
-                                            index
-                                        ? Colors.white
-                                        : const Color.fromRGBO(130, 130, 130,
-                                            1)), // 1.5% of screen height
-                              ),
-                              CustomText(
-                                text: cata['categorycourse'],
-                                textStyle: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: screenHeight * 0.012,
-                                    color: homeScreenController
-                                                .categoryIndexForColor ==
-                                            index
-                                        ? Colors.white
-                                        : const Color.fromRGBO(130, 130, 130,
-                                            1)), // 1.5% of screen height
-                              ),
+                              Row(
+                                children: [
+                                  const Icon(Icons.star,
+                                      color: Colors.yellow, size: 13),
+                                  CustomText(
+                                    text: cata['categoryrating'],
+                                    textStyle: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: screenHeight * 0.012,
+                                        color: homeScreenController
+                                                    .categoryIndexForColor ==
+                                                index
+                                            ? Colors.white
+                                            : const Color.fromRGBO(
+                                                130,
+                                                130,
+                                                130,
+                                                1)), // 1.5% of screen height
+                                  ),
+                                  CustomText(
+                                    text: cata['categorystd'],
+                                    textStyle: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: screenHeight * 0.012,
+                                        color: homeScreenController
+                                                    .categoryIndexForColor ==
+                                                index
+                                            ? Colors.white
+                                            : const Color.fromRGBO(
+                                                130,
+                                                130,
+                                                130,
+                                                1)), // 1.5% of screen height
+                                  ),
+                                  CustomText(
+                                    text: cata['categorycourse'],
+                                    textStyle: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: screenHeight * 0.012,
+                                        color: homeScreenController
+                                                    .categoryIndexForColor ==
+                                                index
+                                            ? Colors.white
+                                            : const Color.fromRGBO(
+                                                130,
+                                                130,
+                                                130,
+                                                1)), // 1.5% of screen height
+                                  ),
+                                ],
+                              )
                             ],
-                          )
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.1,
+                          ),
+                          Obx(
+                            () => AnimatedRotation(
+                              turns: homeScreenController
+                                      .getRotationState(index)
+                                  ? 0
+                                  : 0.25, // Rotate 180 degrees when expanded
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: GestureDetector(
+                                  onTap: () async {
+                                    homeScreenController.toggleExpansion(index);
+                                    homeScreenController.course_section.clear();
+                                    List<CourseSectionModel> fetchedSections =
+                                        await academicCourseServices
+                                            .fetchCoursesSection('0');
+                                    log(fetchedSections.reversed.iterator
+                                        .toString());
+                                    // Step 4: Add the fetched data to the list
+                                    homeScreenController.course_section
+                                        .addAll(fetchedSections);
+                                  },
+                                  child: const Icon(
+                                      Icons.arrow_forward_ios_outlined)),
+                            ),
+                          ),
+                          // const Icon(Icons.arrow_forward_ios_outlined)
                         ],
                       ),
-                      SizedBox(
-                        width: screenWidth * 0.1,
-                      ),
-                      const Icon(Icons.arrow_forward_ios_outlined)
-                    ],
+                    ),
                   ),
-                ),
+                  Obx(() {
+                    if (homeScreenController.isExpanded(index)) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(12),
+                                bottomRight: Radius.circular(12))),
+                        padding: const EdgeInsets.all(8.0),
+                        height: screenHeight * 0.28,
+                        width: screenWidth * .85, // Adjust based on content
+                        // Optional background color for the list
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: homeScreenController.course_section
+                              .length, // Number of items in the expandable list
+                          itemBuilder: (context, subIndex) {
+                            var course =
+                                homeScreenController.course_section[subIndex];
+                            return GestureDetector(
+                              onTap: () async {
+                                List<CourseCategoryModel> courseCategoryModel =
+                                    await academicCourseServices
+                                        .fetchCoursesCategory(course.sectionId);
+                                print('okeyyyy');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CourseCategoryScreen(
+                                              titleOfCategory:
+                                                  course.sectionName,
+                                              courseCategoryModel:
+                                                  courseCategoryModel),
+                                    ));
+                              },
+                              child: ListTile(
+                                leading: const Icon(Icons.book_rounded),
+                                title: CustomText(text: course.sectionName),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return const SizedBox
+                          .shrink(); // Return an empty widget if not expanded
+                    }
+                  }),
+                ],
               ),
             ),
           ),
@@ -1785,9 +1877,9 @@ class HomeScreenWidgets {
                             child: CustomText(
                               text: sucessFullLeaner['describtion'],
                               textStyle: GoogleFonts.inter(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,color: Colors.black
-                              ),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: Colors.black),
                             ),
                           ),
                           SizedBox(

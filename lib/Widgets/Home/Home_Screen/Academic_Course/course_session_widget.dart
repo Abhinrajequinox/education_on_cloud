@@ -12,7 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CourseSessionWidget {
   final HomeScreenController homeScreenController = HomeScreenController();
-  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
+  final AcademicCourseServices academicCourseServices =
+      AcademicCourseServices();
 
   Widget listOfCourseSession(List<CourseSectionModel> courseSection) {
     return ListView.builder(
@@ -21,9 +22,11 @@ class CourseSessionWidget {
       itemBuilder: (context, index) {
         var course = courseSection[index];
         return GestureDetector(
-          onTap: () async {log('course category id is ${course.sectionId}');
+          onTap: () async {
+            log('course category id is ${course.sectionId}');
             List<CourseCategoryModel> courseCategoryModel =
-                await academicCourseServices.fetchCoursesCategory(course.sectionId);
+                await academicCourseServices
+                    .fetchCoursesCategory(course.sectionId);
             homeScreenController.changecategoryIndexForColor(index);
             Future.delayed(const Duration(milliseconds: 300), () {
               homeScreenController.changecategoryIndexForColor(100);
@@ -57,15 +60,16 @@ class CourseSessionWidget {
                           course.img,
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: double.infinity, errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return const Icon(
-                            Icons
-                                .school_outlined, // Fallback icon (you can use any icon or widget here)
-                            size: 40, // Adjust the size if needed
-                            color: Colors.white, // Icon color
-                          );
-                        },
+                          height: double.infinity,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return const Icon(
+                              Icons
+                                  .school_outlined, // Fallback icon (you can use any icon or widget here)
+                              size: 40, // Adjust the size if needed
+                              color: Colors.white, // Icon color
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -73,40 +77,44 @@ class CourseSessionWidget {
                     SizedBox(
                       width: 270,
                       child: FutureBuilder<String>(
-                                    future: languageController
-                                        .translateApiText(course.sectionName),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Text(
-                                            'Loading...'); // Placeholder while translating
-                                      } else if (snapshot.hasError) {
-                                        return Text(
-                                            'Error: ${snapshot.error}'); // Error handling
-                                      } else {
-                                        // Successfully translated
-                                        return SingleChildScrollView(scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            children: [CustomText(
-                                              text: snapshot.data ??
-                                                  course.sectionName, // Use original text if translation fails
-                                              textStyle: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14, color: homeScreenController
-                                                          .categoryIndexForColor
-                                                          .value ==
-                                                      index
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              ),
-                                              maxline: 1,
-                                             
-                                            ),],
-                                          ),
-                                        );
-                                      }
-                                    },
+                        future: languageController
+                            .translateApiText(course.sectionName),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text(
+                                'Loading...'); // Placeholder while translating
+                          } else if (snapshot.hasError) {
+                            return Text(
+                                'Error: ${snapshot.error}'); // Error handling
+                          } else {
+                            // Successfully translated
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    text: snapshot.data ??
+                                        course
+                                            .sectionName, // Use original text if translation fails
+                                    textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: homeScreenController
+                                                  .categoryIndexForColor
+                                                  .value ==
+                                              index
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                    maxline: 1,
                                   ),
+                                ],
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ),
                     const Icon(Icons.arrow_forward_ios),
                   ],
