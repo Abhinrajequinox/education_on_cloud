@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class ChapterScreenController extends GetxController {
+class TheoryChapterScreenController extends GetxController {
   var expandedIndex = (-1).obs; // -1 means no card is expanded
   var toggleAnimations = <int, bool>{}.obs; // Keeps track of animation state for each index
 

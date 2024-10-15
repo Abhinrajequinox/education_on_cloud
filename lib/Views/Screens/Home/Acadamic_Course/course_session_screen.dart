@@ -1,7 +1,5 @@
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
-import 'package:education_on_cloud/Utilities/Home/course_classes_utilities.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/course_session_widget.dart';
 import 'package:flutter/material.dart';

@@ -151,6 +151,12 @@ class OtpScreenWidget {
                 if (sucessoneTimeloginOtp) {
                   log('enterd otp is correct');
                   loginServices.saveLoginStatus(true);
+                  saveUser(
+                      username: userName,
+                      phoneNumber: userNumber,
+                      country: userCountry,
+                      state: userState,
+                      email: userMail);
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

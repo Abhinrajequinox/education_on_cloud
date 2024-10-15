@@ -2,12 +2,14 @@ import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/course_screen_controller.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/chapters_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/theory_chapters_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class CourseScreenWidget {
   final CourseScreenController courseScreenController =
@@ -54,6 +56,27 @@ class CourseScreenWidget {
         ],
       ),
     );
+  }
+
+  String getLanguageName(String localeCode) {
+    var languageCode = localeCode.split('_')[0]; // Extract the language part
+
+    // Mapping of language codes to full language names
+    Map<String, String> languages = {
+      'en': 'English',
+      'hi': 'Hindi',
+      'ta': 'Tamil',
+      'kn': 'Kannada',
+      'te': 'Telugu',
+      'ml': 'Malayalam',
+      'bn': 'Bengali',
+      'gu': 'Gujarati',
+      'mr': 'Marathi',
+      // Add more languages as needed!
+    };
+
+    // Return the full language name, or 'Unknown' if not found
+    return languages[languageCode] ?? 'Unknown';
   }
 
   Widget listOfCourses(
@@ -120,10 +143,14 @@ class CourseScreenWidget {
                             ],
                           ),
                         ),
-                      ),SizedBox(height: screenHeight*.006,),
+                      ),
+                      SizedBox(
+                        height: screenHeight * .006,
+                      ),
                       SizedBox(
                         width: screenWidth * .5,
-                        child: SingleChildScrollView( scrollDirection: Axis.horizontal,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
                               CustomText(
@@ -147,18 +174,26 @@ class CourseScreenWidget {
                             index: index,
                             buttonName: 'Course Details',
                             onTap: () async {
-                              log(course.id);
+                              // log(course.id);
                               courseScreenController
                                   .changeColorOfCourseDetailButton(index);
+                              var languageCode =
+                                  languageController.currentLocale.value;
+                              //  log('the current language code is $languageCode');
+                              var languageName =
+                                  getLanguageName(languageCode.toString());
+                              // log('the course id is ${course.id}');
                               List<ChapterModel> _chapters =
                                   await academicCourseServices
-                                      .fetchCourseChapters(course.id);
+                                      .fetchCourseChapters(
+                                          courseId: course.id,
+                                          language: languageName);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ChaptersScreen(
+                                    builder: (context) => TheoryChaptersScreen(
                                         titleOfChapter: course.courseName,
-                                        chapters: _chapters),
+                                        chapters: _chapters,courseId:course.id,languageName:languageName),
                                   ));
                               Future.delayed(const Duration(milliseconds: 300),
                                   () {

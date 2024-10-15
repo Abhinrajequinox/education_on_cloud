@@ -1,23 +1,33 @@
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/theory_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/theory_class_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChaptersScreen extends StatefulWidget {
-  final String titleOfChapter;
-  final List<ChapterModel> chapters;
-  const ChaptersScreen(
-      {super.key, required this.titleOfChapter, required this.chapters});
+class AcademicCourseTheoryClass extends StatefulWidget {
+  final List<AcademicTheoryClassModel> theoryClass;
+  final String titleName;
+  final String languageName;
+  final Color cardColor;
+  const AcademicCourseTheoryClass(
+      {super.key,
+      required this.theoryClass,
+      required this.titleName,
+      required this.languageName,
+      required this.cardColor});
 
   @override
-  State<ChaptersScreen> createState() => _ChaptersScreenState();
+  State<AcademicCourseTheoryClass> createState() =>
+      _AcademicCourseTheoryClassState();
 }
 
-final ChapterScreenWidget chapterScreenWidget = ChapterScreenWidget();
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+final AcademicTheoryClassWidget academicTheoryClassWidget =
+    AcademicTheoryClassWidget();
 
-class _ChaptersScreenState extends State<ChaptersScreen> {
+class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -28,8 +38,10 @@ class _ChaptersScreenState extends State<ChaptersScreen> {
           context: context,
           screenWidth: screenWidth,
           screenHeight: screenHeight,
-          titleOfChapter: widget.titleOfChapter,
-          chapters: widget.chapters),drawer: _drawer(),
+          titleOfChapter: widget.titleName,
+          chapters: widget.theoryClass,
+          languageName: widget.languageName,
+          cardColor: widget.cardColor),
     );
   }
 }
@@ -42,7 +54,7 @@ AppBar _appBar(BuildContext context, double screenWidth) {
         SizedBox(width: screenWidth * 0.05),
         IconButton(
             onPressed: () {
-              _drawer();
+              _scaffoldKey.currentState?.openDrawer();
             },
             icon: Icon(Icons.list_outlined,
                 color: Colors.black, size: screenWidth * 0.09)),
@@ -84,22 +96,27 @@ Widget _body(
     required double screenWidth,
     required double screenHeight,
     required String titleOfChapter,
-    required List<ChapterModel> chapters}) {
+    required List<AcademicTheoryClassModel> chapters,
+    required String languageName,
+    required Color cardColor}) {
   return SingleChildScrollView(
     child: Padding(
       padding: EdgeInsets.all(screenWidth * .05),
       child: Column(
         children: [
-          chapterScreenWidget.titleAndBackButton(
+          academicTheoryClassWidget.titleAndBackButton(
               context, screenWidth, titleOfChapter),
-          chapterScreenWidget.listOfChapters(
-              chapters: chapters, screenHeight: screenHeight,screenWidth: screenWidth)
+          SizedBox(
+            height: screenHeight * .01,
+          ),
+          academicTheoryClassWidget.listOfClass(
+              titleOfClass: titleOfChapter,
+              classes: chapters,
+              screenHeight: screenHeight,
+              screenWidth: screenWidth,
+              languageName: languageName,cardColor:cardColor)
         ],
       ),
     ),
   );
-}
-
-Drawer _drawer(){
-  return Drawer();
 }

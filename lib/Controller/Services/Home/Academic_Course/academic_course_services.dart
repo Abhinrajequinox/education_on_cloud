@@ -128,14 +128,45 @@ class AcademicCourseServices {
       return []; // Return an empty list on error
     }
   }
+
+
+   Future<List<AcademicMenuStructureModel>> fetchMenuStructure(
+     {required String courseId,required String mobileNum}) async {
+    try {
+      final response = await http.post(
+        Uri.parse(menuStructure),
+        body: {
+          'crs_id': courseId,
+          'mobile_num':mobileNum
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON.
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+
+        // Convert the JSON response to a List<CourseSection>
+        return jsonResponse
+            .map((section) => AcademicMenuStructureModel.fromJson(section))
+            .toList();
+      } else {
+        throw Exception('Failed to load menustructure');
+      }
+    } catch (e) {
+      print("Error fetching menustructure: $e");
+      return []; // Return an empty list on error
+    }
+  }
+
+
    Future<List<ChapterModel>> fetchCourseChapters(
-      String courseId) async {
+     {required String courseId,required String language}) async {
     try {
       final response = await http.post(
         Uri.parse(courseChaptersApi),
         body: {
           'crs_id': courseId,
-          'lang':'English'
+          'lang':language
         },
       );
 
@@ -148,10 +179,37 @@ class AcademicCourseServices {
             .map((section) => ChapterModel.fromJson(section))
             .toList();
       } else {
-        throw Exception('Failed to load courses');
+        throw Exception('Failed to load course chapters');
       }
     } catch (e) {
-      print("Error fetching courses: $e");
+      print("Error fetching courses chapters: $e");
+      return []; // Return an empty list on error
+    }
+  }
+   Future<List<AcademicTheoryClassModel>> fetchAcademicTheoryClass(
+     {required String chaptId,required String language}) async {
+    try {
+      final response = await http.post(
+        Uri.parse(academicCourseTheoryClassApi),
+        body: {
+          'chap_id': chaptId,
+          'lang':language
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON.
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+
+        // Convert the JSON response to a List<CourseSection>
+        return jsonResponse
+            .map((section) => AcademicTheoryClassModel.fromJson(section))
+            .toList();
+      } else {
+        throw Exception('Failed to load theory classes');
+      }
+    } catch (e) {
+      print("Error fetching theory classes: $e");
       return []; // Return an empty list on error
     }
   }
