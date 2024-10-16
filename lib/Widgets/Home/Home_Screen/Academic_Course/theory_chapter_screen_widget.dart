@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TheoryChaptersScreenWidget {
+  List<AcademicTheoryClassModel> theoryClass=[];
   final TheoryChapterScreenController theorychapterScreenController =
       TheoryChapterScreenController();
   Widget titleAndBackButton(
@@ -81,10 +82,10 @@ class TheoryChaptersScreenWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AcademicCourseTheoryClass(
-                          languageName: languageName,
-                          theoryClass: theoryClass,
-                          titleName: chapter.chapterName,cardColor:cardColor
-                        ),
+                            languageName: languageName,
+                            theoryClass: theoryClass,
+                            titleName: chapter.chapterName,
+                            cardColor: cardColor),
                       ));
                 },
                 child: Card(
@@ -116,12 +117,14 @@ class TheoryChaptersScreenWidget {
                           ),
                           SizedBox(
                             width: screenWidth * .32,
-                            child: SingleChildScrollView(scrollDirection: Axis.horizontal,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
                                   CustomText(
                                     maxline: 1,
-                                    text: '${index + 1} . ${chapter.chapterName}',
+                                    text:
+                                        '${index + 1} . ${chapter.chapterName}',
                                     textStyle: GoogleFonts.inter(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
@@ -163,9 +166,15 @@ class TheoryChaptersScreenWidget {
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                               child: GestureDetector(
-                                onTap: () {
+                                onTap: () async {
                                   theorychapterScreenController
                                       .toggleExpansion(index);
+                                      theoryClass.clear();
+                                   theoryClass =
+                                      await academicCourseServices
+                                          .fetchAcademicTheoryClass(
+                                              chaptId: chapter.id,
+                                              language: languageName);
                                 },
                                 child: const ImageIcon(
                                   AssetImage(
@@ -195,10 +204,11 @@ class TheoryChaptersScreenWidget {
                   // Optional background color for the list
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: 5, // Number of items in the expandable list
+                    itemCount: theoryClass.length, // Number of items in the expandable list
                     itemBuilder: (context, subIndex) {
+                      var classes=theoryClass[index];
                       return ListTile(
-                        title: Text('Sub-item ${subIndex + 1}'),
+                        title: Text(classes.part),
                       );
                     },
                   ),

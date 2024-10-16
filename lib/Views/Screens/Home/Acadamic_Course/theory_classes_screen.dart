@@ -1,3 +1,4 @@
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -26,8 +27,17 @@ class AcademicCourseTheoryClass extends StatefulWidget {
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 final AcademicTheoryClassWidget academicTheoryClassWidget =
     AcademicTheoryClassWidget();
+// final TheoryVideoController theoryVideoController = TheoryVideoController();
 
 class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
+  @override
+  void dispose() {
+    // Call the resetVideo method to clean up when the widget is disposed
+    academicTheoryClassWidget.theoryVideoController.resetVideo();
+    academicTheoryClassWidget.theoryVideoController.changeFavIcon(false);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -114,7 +124,8 @@ Widget _body(
               classes: chapters,
               screenHeight: screenHeight,
               screenWidth: screenWidth,
-              languageName: languageName,cardColor:cardColor)
+              languageName: languageName,
+              cardColor: cardColor)
         ],
       ),
     ),
