@@ -145,6 +145,21 @@ flutter:
     - 'lib/Assets/Icons/arrow-circle-up.png'
     - lib/Assets/Home/chapter-screen-background-image.png
     - lib\Assets\Home\video-thumbnail-img.png
+    - lib\Assets\Icons\note-icon.png
+    - lib\Assets\Icons\brush-icon.png
+    - lib/Assets/Home/sub-topic-book-img.png
+    - lib/Assets/Home/Drawer_icon/topic-test-img-icon.png
+    - lib/Assets/Home/Drawer_icon/theory-class-img-icon.png
+    - lib/Assets/Home/Drawer_icon/saved-chat-img-icon.png
+    - lib/Assets/Home/Drawer_icon/revision-class-img-icon.png
+    - lib/Assets/Home/Drawer_icon/quick-tip-img-icon.png
+    - lib/Assets/Home/Drawer_icon/previous-q-img-icon.png
+    - lib/Assets/Home/Drawer_icon/mock-exam-img-icon.png
+    - lib/Assets/Home/Drawer_icon/fav-video-img-icon.png
+    - lib/Assets/Home/Drawer_icon/FAQ-icon.png
+    - lib/Assets/Home/Drawer_icon/chapters-img-icon.png
+    - lib/Assets/Home/Drawer_icon/chapter-test-img-icon.png
+
 
 
 

@@ -4,8 +4,6 @@ import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_co
 import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Functions/auth_functions.dart';
-import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
-import 'package:education_on_cloud/Views/Pages/auth_check.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/chooselanguagescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/student_profile_screen.dart';
@@ -22,33 +20,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 final HomeScreenWidgets homeScreenWidgets = HomeScreenWidgets();
-  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
+final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 final HomeScreenController homeScreenController = HomeScreenController();
 final LoginServices loginServices = LoginServices();
 
 class _HomeScreenState extends State<HomeScreen> {
   // @override
-  // void initState() {
-  //   super.initState();
-  // _fetchCourses();
-  // }
+  void initState() {
+    homeScreenController.fetchCourses();
+    super.initState();
+  }
 
-  // void _fetchCourses() async {
-  //   await  homeScreenController.fetchCourses();
-  // }
+
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: _appBar(context, screenWidth),
+      appBar: _appBar(context, screenWidth,screenHeight),
       body: _body(screenWidth, screenHeight, context),
     );
   }
 }
 
-AppBar _appBar(BuildContext context, double screenWidth) {
+AppBar _appBar(BuildContext context, double screenWidth,double screenHeight) {
   // double screenWidth = MediaQuery.of(context).size.width;
 
   return AppBar(
@@ -72,17 +68,16 @@ AppBar _appBar(BuildContext context, double screenWidth) {
               child: Image.asset(
                 'lib/Assets/Home/profile-image.png',
                 fit: BoxFit.cover,
-                width: 36, // Diameter of CircleAvatar = 2 * radius
-                height: 36,
+                width: screenWidth*0.1, // Diameter of CircleAvatar = 2 * radius
+                height: screenHeight*0.05,
               ),
             ),
           ),
         ),
         IconButton(
             onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: Theme.of(context).appBarTheme.iconTheme?.color,
+            icon: const Icon(
+              Icons.notifications_none_outlined,color: Colors.black,
             ),
             iconSize: screenWidth * 0.09),
         GestureDetector(

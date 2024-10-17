@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:education_on_cloud/Controller/Services/Auth/login_services.dart';
+import 'package:get/get.dart';
 
 void saveUser({required String username,required String phoneNumber,required String country,required String state,required String email}) async {
   await UserPreferences.saveUserDetails(
@@ -25,3 +26,6 @@ void deleteUser() async {
   await UserPreferences.deleteUserDetails();
   log('User details deleted');
 }
+
+
+ 

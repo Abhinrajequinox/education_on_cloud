@@ -1,6 +1,6 @@
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/course_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
-import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/course_screen_widget.dart';
@@ -8,18 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CourseScreen extends StatefulWidget {
-  final List<CourseModel> course;
   final String titleOfCourse;
+  final String courseId;
   const CourseScreen(
-      {super.key, required this.course, required this.titleOfCourse});
+      {super.key, required this.titleOfCourse, required this.courseId});
 
   @override
   State<CourseScreen> createState() => _CourseScreenState();
 }
 
 final CourseScreenWidget courseScreenWidget = CourseScreenWidget();
-  final CourseScreenController courseScreenController=CourseScreenController();
-
+final CourseScreenController courseScreenController = CourseScreenController();
+final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 
 class _CourseScreenState extends State<CourseScreen> {
   @override
@@ -33,7 +33,7 @@ class _CourseScreenState extends State<CourseScreen> {
           screenHeight: screenHeight,
           screenWidth: screenWidth,
           titleOfCourse: widget.titleOfCourse,
-          courses: widget.course),
+          courseId: widget.courseId),
     );
   }
 }
@@ -95,20 +95,46 @@ Widget _body(
     required double screenHeight,
     required double screenWidth,
     required String titleOfCourse,
-    required List<CourseModel> courses}) {
-  return Padding(
-    padding: EdgeInsets.all(screenWidth * .05),
-    child: SingleChildScrollView(
-      child: Column(
-        children: [
-          courseScreenWidget.titleAndBackButton(
-              context, screenWidth, titleOfCourse),
-          courseScreenWidget.listOfCourses(
-              courses: courses,
-              screenHeight: screenHeight,
-              screenWidth: screenWidth,titleOfCourse: titleOfCourse)
-        ],
-      ),
-    ),
-  );
+    required String courseId}) {
+  return FutureBuilder<List<CourseModel>>(
+      future: academicCourseServices.fetchCourses(courseId), // Fetch courses
+      builder: (context, snapshot) {
+        // Handle the states of the Future
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While waiting for the future to complete, show a loading indicator
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * .05),
+            child: courseScreenWidget.shimmerOfListOfCourses(
+                height: screenHeight, width: screenWidth),
+          );
+        } else if (snapshot.hasError) {
+          // If there's an error, display an error message
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          // If there's no data or the data is empty, show a message
+          return const Center(
+            child: Text('No courses found'),
+          );
+        } else {
+          var courses = snapshot.data;
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * .05),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  courseScreenWidget.titleAndBackButton(
+                      context, screenWidth, titleOfCourse),
+                  courseScreenWidget.listOfCourses(
+                      courses: courses!,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
+                      titleOfCourse: titleOfCourse)
+                ],
+              ),
+            ),
+          );
+        }
+      });
 }

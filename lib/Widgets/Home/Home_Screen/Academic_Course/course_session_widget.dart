@@ -22,11 +22,7 @@ class CourseSessionWidget {
       itemBuilder: (context, index) {
         var course = courseSection[index];
         return GestureDetector(
-          onTap: () async {
-            log('course category id is ${course.sectionId}');
-            List<CourseCategoryModel> courseCategoryModel =
-                await academicCourseServices
-                    .fetchCoursesCategory(course.sectionId);
+          onTap: () {
             homeScreenController.changecategoryIndexForColor(index);
             Future.delayed(const Duration(milliseconds: 300), () {
               homeScreenController.changecategoryIndexForColor(100);
@@ -36,7 +32,7 @@ class CourseSessionWidget {
                 MaterialPageRoute(
                   builder: (context) => CourseCategoryScreen(
                       titleOfCategory: course.sectionName,
-                      courseCategoryModel: courseCategoryModel),
+                      sectionId: course.sectionId,),
                 ));
           },
           child: Obx(

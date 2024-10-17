@@ -1,23 +1,26 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
+import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/theory_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TheoryChaptersScreen extends StatefulWidget {
   final String titleOfChapter;
   final String courseId;
-  final List<ChapterModel> chapters;
   final String languageName;
   const TheoryChaptersScreen(
       {super.key,
       required this.titleOfChapter,
-      required this.chapters,
-      required this.courseId, required this.languageName});
+      required this.courseId,
+      required this.languageName});
 
   @override
   State<TheoryChaptersScreen> createState() => _TheoryChaptersScreenState();
@@ -25,6 +28,8 @@ class TheoryChaptersScreen extends StatefulWidget {
 
 final TheoryChaptersScreenWidget theoryChaptersScreenWidget =
     TheoryChaptersScreenWidget();
+final TheoryChapterScreenController theoryChapterScreenController =
+    TheoryChapterScreenController();
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -46,8 +51,13 @@ class _TheoryChaptersScreenState extends State<TheoryChaptersScreen> {
     }
 
     void fetchMenu() async {
+      Map<String, String?> userDetails = await getUser();
+              var userPhoneNumber = ''.obs;
+              log('phone number is before fetching $userPhoneNumber');
+             userPhoneNumber.value=userDetails['phoneNumber']!;
       menuStructure = await academicCourseServices.fetchMenuStructure(
-          courseId: widget.courseId, mobileNum: '8592943588');
+          courseId: widget.courseId, mobileNum: userPhoneNumber as String);
+          log('phone number is after fetching $userPhoneNumber');
       setState(() {});
     }
 
@@ -61,19 +71,28 @@ class _TheoryChaptersScreenState extends State<TheoryChaptersScreen> {
       });
     }
 
+    // @override
+    // void dispose() {
+    //   super.dispose();
+    //   theoryChapterScreenController.isExpanded(-1);
+    // }
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: _appBar(context, screenWidth),
-      body: _body(languageName: widget.languageName,
-          context: context,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          titleOfChapter: widget.titleOfChapter,
-          chapters: widget.chapters),
+      body: _body(
+        courseId: widget.courseId,
+        languageName: widget.languageName,
+        context: context,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        titleOfChapter: widget.titleOfChapter,
+      ),
       drawer: DrawerOfAcademicCourse(
-          menuStructure: menuStructure,
-          chapters: widget.chapters,
-          courseId: widget.courseId,titleOfChapter: widget.titleOfChapter,),
+        titleOfChapter: widget.titleOfChapter,
+        menuStructure: menuStructure,
+        courseId: widget.courseId,
+      ),
     );
   }
 }
@@ -128,24 +147,52 @@ Widget _body(
     required double screenWidth,
     required double screenHeight,
     required String titleOfChapter,
-    required List<ChapterModel> chapters,required String languageName}) {
-  return SingleChildScrollView(
-    child: Padding(
-      padding: EdgeInsets.all(screenWidth * .05),
-      child: Column(
-        children: [
-          theoryChaptersScreenWidget.titleAndBackButton(
-              context, screenWidth, titleOfChapter),
-          SizedBox(
-            height: screenHeight * .01,
-          ),
-          theoryChaptersScreenWidget.listOfChapters(
-              chapters: chapters,
-              screenHeight: screenHeight,
-              screenWidth: screenWidth,languageName:languageName)
-        ],
+    required String courseId,
+    required String languageName}) {
+  return FutureBuilder<List<ChapterModel>>(
+      future: academicCourseServices.fetchCourseChapters(
+        courseId: courseId,
+        language: languageName,
       ),
-    ),
-  );
+      builder: (context, snapshot) {
+        // Handle different states of the Future
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While waiting for the future to complete, show a loading indicator
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * .05),
+            child: customShimmerForList(screenHeight, screenWidth),
+          );
+        } else if (snapshot.hasError) {
+          // If there's an error, display an error message
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          // If there's no data or the data is empty, show a message
+          return const Center(
+            child: Text('No chapters found'),
+          );
+        } else {
+          var chapters = snapshot.data;
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(screenWidth * .05),
+              child: Column(
+                children: [
+                  theoryChaptersScreenWidget.titleAndBackButton(
+                      context, screenWidth, titleOfChapter),
+                  SizedBox(
+                    height: screenHeight * .01,
+                  ),
+                  theoryChaptersScreenWidget.listOfChapters(
+                      chapters: chapters!,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
+                      languageName: languageName)
+                ],
+              ),
+            ),
+          );
+        }
+      });
 }
-

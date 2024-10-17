@@ -3,13 +3,14 @@ import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_co
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
-import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/theory_chapters_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_chapters_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/home_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CourseScreenWidget {
   final CourseScreenController courseScreenController =
@@ -111,7 +112,15 @@ class CourseScreenWidget {
                       height: screenHeight * 0.15,
                       child: Image.network(
                         "https://educationoncloud.in/admin/html/ajax/course_img/${course.img}",
-                        fit: BoxFit.cover,
+                        fit: BoxFit.cover,errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Icon(
+                            Icons
+                                .school_outlined, // Fallback icon (you can use any icon or widget here)
+                            size: 40, // Adjust the size if needed
+                            color: Colors.white, // Icon color
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -183,17 +192,13 @@ class CourseScreenWidget {
                               var languageName =
                                   getLanguageName(languageCode.toString());
                               // log('the course id is ${course.id}');
-                              List<ChapterModel> _chapters =
-                                  await academicCourseServices
-                                      .fetchCourseChapters(
-                                          courseId: course.id,
-                                          language: languageName);
+                             
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => TheoryChaptersScreen(
                                         titleOfChapter: course.courseName,
-                                        chapters: _chapters,courseId:course.id,languageName:languageName),
+                                        courseId:course.id,languageName:languageName),
                                   ));
                               Future.delayed(const Duration(milliseconds: 300),
                                   () {
@@ -340,4 +345,150 @@ class CourseScreenWidget {
       ),
     );
   }
+
+
+// Create a new widget for shimmer effect
+Widget shimmerOfListOfCourses({required double height, required double width}) {
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        // Shimmer for Title and Back Button
+        Container(
+          margin: EdgeInsets.symmetric(vertical: height * 0.02),
+          child: Row(
+            children: [
+              // Shimmer effect for back button icon
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.white,
+                child: const SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: Icon(Icons.arrow_back), // Placeholder icon
+                ),
+              ),
+              SizedBox(width: width * .03),
+              // Shimmer effect for title
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.white,
+                child: Container(
+                  width: width * 0.7,
+                  height: 20, // Adjust height as necessary
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Shimmer for 'Select Your Subject' Text
+        Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.white,
+          child: Container(
+            width: width * 0.6,
+            height: 15, // Adjust height as necessary
+            margin: EdgeInsets.only(bottom: height * 0.02),
+            color: Colors.grey,
+          ),
+        ),
+        // Shimmer for List of Courses
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 5, // Number of shimmer placeholders
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Card(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      width: 1.5,
+                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    color: const Color.fromRGBO(22, 93, 255, 0.1),
+                  ),
+                  height: height * 0.15,
+                  child: Row(
+                    children: [
+                      // Shimmer for course image
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.white,
+                        child: Container(
+                          width: width * 0.3,
+                          height: height * 0.15,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(width: width * .03),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: height * 0.01),
+                          // Shimmer for course title
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.white,
+                            child: Container(
+                              width: width * 0.5,
+                              height: 12, // Adjust height as necessary
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(height: height * 0.006),
+                          // Shimmer for course name
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.white,
+                            child: Container(
+                              width: width * 0.5,
+                              height: 16, // Adjust height as necessary
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(height: height * 0.03),
+                          // Shimmer for buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              // Shimmer for Course Details button
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.white,
+                                child: Container(
+                                  width: width * 0.25,
+                                  height: 30, // Adjust height as necessary
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              SizedBox(width: width * .02),
+                              // Shimmer for Add to Class button
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.white,
+                                child: Container(
+                                  width: width * 0.25,
+                                  height: 30, // Adjust height as necessary
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
 }

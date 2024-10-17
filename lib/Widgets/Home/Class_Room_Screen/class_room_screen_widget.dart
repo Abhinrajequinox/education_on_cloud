@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/Home/home_screen_utilities.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
@@ -9,12 +10,14 @@ import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_ses
 import 'package:education_on_cloud/Views/Screens/Home/home_bottom_navigation_bar.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ClassRoomScreenWidget {
   final HomeScreenController homeScreenController = HomeScreenController();
-  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
+  final AcademicCourseServices academicCourseServices =
+      AcademicCourseServices();
 
   Widget titleAndBackButton(BuildContext context, double screenWidth) {
     return Padding(
@@ -27,7 +30,7 @@ class ClassRoomScreenWidget {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>const HomeBottomNavigationBar(),
+                      builder: (context) => const HomeBottomNavigationBar(),
                     ));
               },
               child: const ImageIcon(
@@ -112,14 +115,24 @@ class ClassRoomScreenWidget {
           child: GestureDetector(
             onTap: () async {
               homeScreenController.changecategoryIndexForColor(index);
-              List<CourseSectionModel> _course_section =
-                  await academicCourseServices.fetchCoursesSection('0');
-              // log(_course_section.toString());
+              Map<String, String?> userDetails = await getUser();
+              var flagId = ''.obs;
+              if (userDetails['country'] == 'India') {
+                flagId.value = '0';
+              } else if (userDetails['country'] == 'Nepal') {
+                flagId.value = '1';
+              } else if (userDetails['country'] == 'Sri lanka') {
+                flagId.value = '2';
+              } else if (userDetails['country'] == 'Bangladesh') {
+                flagId.value = '3';
+              } else if (userDetails['country'] == 'Bhutan') {
+                flagId.value = '4';
+              }
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   //  homeScreenController.changecategoryIndexForColor(100);
                   return CourseSessionScreen(
-                    courseSectionModel: _course_section,
+                    country: flagId.value,
                     titleOfCourse: cata['categorytitle'],
                   );
                 },

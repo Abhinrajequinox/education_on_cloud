@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/theory_classes_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_classes_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -147,7 +147,7 @@ class AcademicTheoryClassWidget {
               theoryVideoController.updateVideo(videoUrl,
                   '$titleOfClass :- Theory Class ${theoryClass.part}');
               theoryVideoController.changeFavIcon(true);
-              // Move the tapped item to the top of the list
+              theoryVideoController.changeTakeNote(false);
               if (index != 0) {
                 // Only update if it's not already the first item
                 _listKey.currentState?.removeItem(
@@ -326,59 +326,164 @@ class AcademicTheoryClassWidget {
           'https://educationoncloud.in/new/ajax/get_vid.php?vid=$videoUrl&viewonly'));
     return Padding(
       padding: EdgeInsets.all(screenWidth * .02),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: const BorderRadius.all(Radius.circular(12))),
-        height: screenHeight * 0.4,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-                height: screenHeight * 0.307,
-                child: WebViewWidget(controller: controller)),
-            Padding(
-              padding: EdgeInsets.only(left: screenWidth * .02),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomText(
-                    text: 'SSLC - Mathematics',
-                    textStyle: GoogleFonts.mulish(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: const Color.fromRGBO(0, 56, 255, 1)),
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: screenWidth * 04,
+                // height: screenHeight * .42,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 2.5, color: Colors.grey.shade400),
+                    // color: Colors.yellow,
+                    borderRadius: const BorderRadius.all( Radius.circular(6))),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: screenWidth * 0.02,
+                      right: screenWidth * 0.02,
+                      top: screenHeight * .4,
+                      bottom: screenHeight * .02),
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        theoryVideoController.takeNote.value == false
+                            ? GestureDetector(
+                                onTap: () {
+                                  theoryVideoController.changeTakeNote(true);
+                                },
+                                child: Row(
+                                  children: [
+                                    const ImageIcon(AssetImage(
+                                        'lib/Assets/Icons/note-icon.png')),
+                                    SizedBox(
+                                      width: screenWidth * 0.03,
+                                    ),
+                                    CustomText(
+                                      text: 'Click here to take notes.',
+                                      textStyle: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14,
+                                          color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomText(
+                                    text: 'Take Your Notes Here',
+                                    textStyle: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: const Color.fromRGBO(
+                                            0, 56, 255, 1)),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(6)),
+                                        border: Border.all(color: Colors.grey)),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenWidth * 0.01,
+                                          right: screenWidth * 0.01),
+                                      child: Row(
+                                        children: [
+                                          CustomText(
+                                            text: 'Clear Notes ',
+                                            textStyle: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12,
+                                                color: Colors.black),
+                                          ),
+                                          const ImageIcon(AssetImage(
+                                              'lib/Assets/Icons/brush-icon.png'))
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                        theoryVideoController.takeNote.value == true
+                            ? TextFormField(
+                                decoration: const InputDecoration(
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide.none)),
+                                maxLines: null,
+                                style: GoogleFonts.kalam(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                ),
+                              )
+                            : const SizedBox()
+                      ],
+                    ),
                   ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.favorite_border,
-                      ))
-                ],
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: screenWidth * .02),
-              child: SizedBox(
-                width: screenWidth * .8,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+              Positioned(
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(12))),
+                  // height: screenHeight * 0.4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomText(
-                        text: videoName,
-                        textStyle: GoogleFonts.mulish(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                            color: Colors.black),
+                      SizedBox(
+                          height: screenHeight * 0.307,
+                          child: WebViewWidget(controller: controller,)),
+                      Padding(
+                        padding: EdgeInsets.only(left: screenWidth * .02),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              text: 'SSLC - Mathematics',
+                              textStyle: GoogleFonts.mulish(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  color: const Color.fromRGBO(0, 56, 255, 1)),
+                            ),
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.favorite_border,
+                                ))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: screenWidth * .02),
+                        child: SizedBox(
+                          width: screenWidth * .8,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                CustomText(
+                                  text: videoName,
+                                  textStyle: GoogleFonts.mulish(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

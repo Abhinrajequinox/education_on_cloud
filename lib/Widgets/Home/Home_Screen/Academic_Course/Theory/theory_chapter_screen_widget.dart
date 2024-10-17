@@ -1,17 +1,21 @@
+import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/home_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/theory_classes_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_classes_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TheoryChaptersScreenWidget {
-  List<AcademicTheoryClassModel> theoryClass=[];
+  // List<AcademicTheoryClassModel> theoryClass = [];
   final TheoryChapterScreenController theorychapterScreenController =
       TheoryChapterScreenController();
+  final AcademicCourseServices academicCourseServices =
+      AcademicCourseServices();
   Widget titleAndBackButton(
       BuildContext context, double screenWidth, String titleOfChapter) {
     return SingleChildScrollView(
@@ -74,16 +78,13 @@ class TheoryChaptersScreenWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: GestureDetector(
-                onTap: () async {
-                  List<AcademicTheoryClassModel> theoryClass =
-                      await academicCourseServices.fetchAcademicTheoryClass(
-                          chaptId: chapter.id, language: languageName);
+                onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => AcademicCourseTheoryClass(
                             languageName: languageName,
-                            theoryClass: theoryClass,
+                            chapterId: chapter.id,
                             titleName: chapter.chapterName,
                             cardColor: cardColor),
                       ));
@@ -169,13 +170,7 @@ class TheoryChaptersScreenWidget {
                                 onTap: () async {
                                   theorychapterScreenController
                                       .toggleExpansion(index);
-                                      theoryClass.clear();
-                                   theoryClass =
-                                      await academicCourseServices
-                                          .fetchAcademicTheoryClass(
-                                              chaptId: chapter.id,
-                                              language: languageName);
-                                },
+                                                              },
                                 child: const ImageIcon(
                                   AssetImage(
                                       'lib/Assets/Icons/arrow-circle-up.png'),
@@ -192,25 +187,65 @@ class TheoryChaptersScreenWidget {
             ),
             Obx(() {
               if (theorychapterScreenController.isExpanded(index)) {
+                log(chapter.id);
                 return Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12))),
-                  padding: const EdgeInsets.all(8.0),
-                  height: screenHeight * 0.28,
-                  width: screenWidth * .85, // Adjust based on content
-                  // Optional background color for the list
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: theoryClass.length, // Number of items in the expandable list
-                    itemBuilder: (context, subIndex) {
-                      var classes=theoryClass[index];
-                      return ListTile(
-                        title: Text(classes.part),
-                      );
-                    },
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(0),
+                  height: screenHeight * 0.33,
+                  width: screenWidth * 0.9, // Adjust based on content
+                  child: Card(
+                    elevation: 3,
+                    child: FutureBuilder<List<ChapterSubTopicModel>>(
+                      future: academicCourseServices.fetchTheorySubTopics(
+                          chaptrId:
+                              chapter.id), // Pass the appropriate chapter ID
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          // While waiting for the future to complete, show a loading indicator
+                          return shimmerSubTopics(screenHeight, screenWidth);
+                        } else if (snapshot.hasError) {
+                          // If there's an error, display an error message
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          // If there's no data or the data is empty, show a message
+                          return const Center(
+                              child: Text('No subtopics found'));
+                        } else {
+                          // When data is successfully fetched, display it in a ListView
+                          final subTopics = snapshot.data!;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: subTopics.length,
+                            itemBuilder: (context, subIndex) {
+                              var subTopic = subTopics[subIndex];
+                              return ListTile(
+                                leading: SizedBox(
+                                  height: screenHeight * 0.02,
+                                  child: Image.asset(
+                                      'lib/Assets/Home/sub-topic-book-img.png'),
+                                ),
+                                title: CustomText(
+                                  text:
+                                      '1.${subIndex + 1}:  ${subTopic.subTopic}',
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 11,
+                                      color: Colors.black),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
                   ),
                 );
               } else {
@@ -224,4 +259,38 @@ class TheoryChaptersScreenWidget {
       itemCount: chapters.length,
     );
   }
+
+  Widget shimmerSubTopics(double screenHeight, double screenWidth) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 5, // Number of shimmer items
+      itemBuilder: (context, subIndex) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: ListTile(
+              leading: SizedBox(
+                height: screenHeight * 0.02,
+                child: Container(
+                  width: 40, // Adjust width for the placeholder image
+                  color: Colors.grey[300], // Placeholder for image
+                ),
+              ),
+              title: Container(
+                height: 15, // Height for the text placeholder
+                width:
+                    screenWidth * 0.5, // Adjust width for the placeholder text
+                color: Colors.grey[300], // Placeholder for text
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+ 
 }

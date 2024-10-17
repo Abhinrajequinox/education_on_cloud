@@ -78,10 +78,15 @@ RxList<CourseSectionModel> course_section = <CourseSectionModel>[].obs;
   }
 
   RxBool isLoadingOfcourseSessionList = true.obs;
-  void changeCourseSessionList(List<CourseSectionModel> _course_section) {
-    isLoadingOfcourseSessionList.value = true;
-    courseSessionList.assignAll(_course_section);
-    isLoadingOfcourseSessionList.value = false;
+
+void changeisLoadingOfcourseSessionList(bool val){
+  isLoadingOfcourseSessionList.value=val;
+}
+
+  void changeCourseSessionList(List<CourseSectionModel> coursesection) {
+    // isLoadingOfcourseSessionList.value = false;
+    courseSessionList.value = coursesection;
+    // isLoadingOfcourseSessionList.value = true;
   }
 
   RxBool andTheFollowingFeaturesListOrGrid = false.obs;

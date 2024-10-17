@@ -107,3 +107,126 @@ Widget customShimmer({
     ),
   );
 }
+ Widget customShimmerForList(double screenHeight, double screenWidth) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Shimmer effect for title and back button
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.7,
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      height: 20,
+                      color: Colors.grey[300], // Placeholder for title text
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // const SizedBox(height: 10), // Spacing between title and chapter list
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: screenWidth * 0.5,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 20,
+                  color: Colors.grey[300], // Placeholder for title text
+                ),
+              ),
+            ),
+          ),
+          // Shimmer effect for chapters
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 12, // Number of shimmer items
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Card(
+                  elevation: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey[400]!, width: 3),
+                      ),
+                      image: const DecorationImage(
+                        image: AssetImage(
+                            'lib/Assets/Home/chapter-screen-background-image.png'),
+                        fit: BoxFit.cover,
+                        opacity: .4,
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    ),
+                    height: screenHeight * .07,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Placeholder for chapter icon
+                          Container(
+                            height: screenHeight * .04,
+                            width: screenWidth * .1,
+                            color: Colors.grey[300], // Placeholder color
+                          ),
+                          SizedBox(width: screenWidth * .03),
+
+                          // Placeholder for chapter name
+                          SizedBox(
+                            width: screenWidth * .32,
+                            child: Container(
+                              height: 20,
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                          SizedBox(width: screenWidth * .03),
+
+                          // Placeholder for "Go to Class" button
+                          Container(
+                            width: screenWidth * .25,
+                            height: screenHeight * .03,
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                              color: Color.fromRGBO(30, 117, 229, 1),
+                            ),
+                            child: Center(
+                              child: Container(
+                                height: 15,
+                                color: Colors.grey[300], // Placeholder text
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: screenWidth * .015),
+
+                          // Placeholder for the expand/collapse button
+                          Container(
+                            width: 30,
+                            height: 30,
+                            color: Colors.grey[300],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }

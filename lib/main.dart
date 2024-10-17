@@ -1,8 +1,10 @@
 import 'package:education_on_cloud/Controller/AuthController/apptraslation.dart';
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/NotificationServices/notification_services.dart';
 import 'package:education_on_cloud/Views/Pages/auth_check.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/signupscreen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_category_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,8 +22,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final HomeScreenController _homeScreenController=HomeScreenController();
     final LanguageController languageController =
         Get.find<LanguageController>();
+        _homeScreenController.fetchCourses();
     return Obx(() {
       return GetMaterialApp(
         // translations: AppTranslations(),

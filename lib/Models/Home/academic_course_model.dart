@@ -269,6 +269,19 @@ class ChapterModel {
   }
 }
 
+class ChapterSubTopicModel {
+  final String id;
+  final String subTopic;
+
+  ChapterSubTopicModel({required this.id, required this.subTopic});
+
+  factory ChapterSubTopicModel.fromJson(Map<String, dynamic> json) {
+    return ChapterSubTopicModel(
+      id: json['id'] as String,
+      subTopic: json['sub_topics'] as String,
+    );
+  }
+}
 
 class AcademicMenuStructureModel {
   final int theoryClasses;

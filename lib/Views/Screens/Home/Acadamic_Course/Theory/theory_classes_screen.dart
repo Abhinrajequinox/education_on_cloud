@@ -1,23 +1,24 @@
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/theory_chapter_screen_widget.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/theory_class_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_class_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AcademicCourseTheoryClass extends StatefulWidget {
-  final List<AcademicTheoryClassModel> theoryClass;
   final String titleName;
   final String languageName;
+  final String chapterId;
   final Color cardColor;
   const AcademicCourseTheoryClass(
       {super.key,
-      required this.theoryClass,
       required this.titleName,
       required this.languageName,
-      required this.cardColor});
+      required this.cardColor,
+      required this.chapterId});
 
   @override
   State<AcademicCourseTheoryClass> createState() =>
@@ -27,6 +28,7 @@ class AcademicCourseTheoryClass extends StatefulWidget {
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 final AcademicTheoryClassWidget academicTheoryClassWidget =
     AcademicTheoryClassWidget();
+final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 // final TheoryVideoController theoryVideoController = TheoryVideoController();
 
 class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
@@ -49,7 +51,7 @@ class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
           screenWidth: screenWidth,
           screenHeight: screenHeight,
           titleOfChapter: widget.titleName,
-          chapters: widget.theoryClass,
+          chapterId: widget.chapterId,
           languageName: widget.languageName,
           cardColor: widget.cardColor),
     );
@@ -106,28 +108,50 @@ Widget _body(
     required double screenWidth,
     required double screenHeight,
     required String titleOfChapter,
-    required List<AcademicTheoryClassModel> chapters,
+    required String chapterId,
     required String languageName,
     required Color cardColor}) {
-  return SingleChildScrollView(
-    child: Padding(
-      padding: EdgeInsets.all(screenWidth * .05),
-      child: Column(
-        children: [
-          academicTheoryClassWidget.titleAndBackButton(
-              context, screenWidth, titleOfChapter),
-          SizedBox(
-            height: screenHeight * .01,
-          ),
-          academicTheoryClassWidget.listOfClass(
-              titleOfClass: titleOfChapter,
-              classes: chapters,
-              screenHeight: screenHeight,
-              screenWidth: screenWidth,
-              languageName: languageName,
-              cardColor: cardColor)
-        ],
+  return FutureBuilder<List<AcademicTheoryClassModel>>(
+      future: academicCourseServices.fetchAcademicTheoryClass(
+        chaptId: chapterId,
+        language: languageName,
       ),
-    ),
-  );
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While waiting for the future to complete, show a loading indicator
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * .05),
+            child: customShimmerForList(screenHeight, screenWidth),
+          );
+        } else if (snapshot.hasError) {
+          // If there's an error, display an error message
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          // If there's no data or the data is empty, show a message
+          return const Center(child: Text('No theory classes found'));
+        } else {
+          var chapters=snapshot.data!;
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(screenWidth * .05),
+              child: Column(
+                children: [
+                  academicTheoryClassWidget.titleAndBackButton(
+                      context, screenWidth, titleOfChapter),
+                  SizedBox(
+                    height: screenHeight * .01,
+                  ),
+                  academicTheoryClassWidget.listOfClass(
+                      titleOfClass: titleOfChapter,
+                      classes: chapters,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
+                      languageName: languageName,
+                      cardColor: cardColor)
+                ],
+              ),
+            ),
+          );
+        }
+      });
 }

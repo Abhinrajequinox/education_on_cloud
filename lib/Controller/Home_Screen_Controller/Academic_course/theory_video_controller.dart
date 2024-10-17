@@ -19,4 +19,10 @@ class TheoryVideoController extends GetxController {
   void changeFavIcon(bool val) {
     favIcon.value = val;
   }
+
+  RxBool takeNote=false.obs;
+
+  void changeTakeNote(bool val){
+    takeNote.value=val;
+  }
 }

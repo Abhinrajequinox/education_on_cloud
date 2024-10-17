@@ -1,23 +1,24 @@
 import 'dart:developer';
-
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/course_categor_screen_widget.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:education_on_cloud/Controller/AuthController/languagecontroller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/home_screen_controller.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_screen.dart';
-import 'package:education_on_cloud/Views/Screens/Home/home_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CourseCategoryScreen extends StatefulWidget {
   final String titleOfCategory;
-  final List<CourseCategoryModel> courseCategoryModel;
-  const CourseCategoryScreen(
-      {super.key,
-      required this.titleOfCategory,
-      required this.courseCategoryModel});
+  final String sectionId;
+  // final List<CourseCategoryModel> courseCategoryModel;
+  const CourseCategoryScreen({
+    super.key,
+    required this.titleOfCategory,
+    required this.sectionId,
+  });
 
   @override
   State<CourseCategoryScreen> createState() => _CourseCategoryScreenState();
@@ -25,16 +26,18 @@ class CourseCategoryScreen extends StatefulWidget {
 
 final LanguageController languageController = LanguageController();
 final HomeScreenController homeScreenController = HomeScreenController();
-
+final CourseCategorScreenWidget courseCategorScreenWidget=CourseCategorScreenWidget();
+final AcademicCourseServices academicCourseServices=AcademicCourseServices();
 class _CourseCategoryScreenState extends State<CourseCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: _appBar(context, screenWidth),
-      body: _body(context, widget.titleOfCategory, screenWidth,
-          widget.courseCategoryModel),
+      body: _body(context, widget.titleOfCategory, screenWidth, screenHeight,
+          widget.sectionId),
     );
   }
 }
@@ -90,156 +93,78 @@ AppBar _appBar(BuildContext context, double screenWidth) {
 }
 
 Widget _body(BuildContext context, String titleOfCourse, double screenWidth,
-    List<CourseCategoryModel> courseCategoryModel) {
-  return Padding(
-    padding: EdgeInsets.all(screenWidth * .05),
-    child: SingleChildScrollView(
-      child: Column(
-        children: [
-          Row(children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: const ImageIcon(
-                  AssetImage('lib/Assets/Icons/arrow-circle-left.png'),
-                  size: 30),
-            ),
-            SizedBox(width: screenWidth * .03),
-            SizedBox(
-              width: 300,
-              child: CustomText(
-                text: titleOfCourse,
-                maxline: 3,
-                textStyle: GoogleFonts.inter(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                ),
-              ),
-            )
-          ]),
-          Row(
-            children: [
-              SizedBox(width: screenWidth * .102),
-              CustomText(
-                  text: 'Select your Course',
-                  textStyle: GoogleFonts.inter(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    color: primarycolour,
-                  )),
-            ],
-          ),
-          listOfCourseSession(courseCategoryModel)
-        ],
-      ),
-    ),
-  );
-}
-
-Widget listOfCourseSession(List<CourseCategoryModel> courseCategoryModel) {
-  log(homeScreenController.isLoadingcoursecategoryModel.value.toString());
-  return ListView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemBuilder: (context, index) {
-      var course = courseCategoryModel[index];
-      return GestureDetector(
-        onTap: () async {
-          homeScreenController.changecategoryIndexForColor(index);
-          log(' the catid send is ${course.id}');
-          var _courses = await academicCourseServices.fetchCourses(course.id);
-
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CourseScreen(
-                  course: _courses,
-                  titleOfCourse: course.categoryName,
-                ),
-              ));
-          Future.delayed(const Duration(milliseconds: 300), () {
-            homeScreenController.changecategoryIndexForColor(100);
-          });
-        },
-        child: Obx(
-          () => Card(
-            elevation: 3,
-            child: Container(
-              decoration: BoxDecoration(
-                  color:
-                      homeScreenController.categoryIndexForColor.value == index
-                          ? Colors.blue
-                          : Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(12))),
-              padding: const EdgeInsets.all(8),
-              height: 60,
-              child: Row(
+    double screenHeight, String sessionId) {
+  return FutureBuilder<List<CourseCategoryModel>>(
+      future: academicCourseServices.fetchCoursesCategory(sessionId),
+      builder: (context, snapshot) {
+        // Handle different states of the Future
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show loading indicator while fetching data
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * .05),
+            child: customShimmerForList(screenHeight, screenWidth),
+          );
+        } else if (snapshot.hasError) {
+          // Handle error state
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          // Handle empty data case
+          return const Center(
+            child: Text('No courses available'),
+          );
+        } else {
+          var courseCategoryModel = snapshot.data;
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * .05),
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: ClipOval(
-                      child: Image.network(
-                        course.img,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        // Handle image loading errors
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return const Icon(
-                            Icons
-                                .school_outlined, // Fallback icon (you can use any icon or widget here)
-                            size: 40, // Adjust the size if needed
-                            color: Colors.white, // Icon color
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: 270,
-                    child: FutureBuilder<String>(
-                      future: languageController
-                          .translateApiText(course.categoryName),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Text(
-                              'Loading...'); // Placeholder while translating
-                        } else if (snapshot.hasError) {
-                          return Text(
-                              'Error: ${snapshot.error}'); // Error handling
-                        } else {
-                          // Successfully translated
-                          return CustomText(
-                            text: snapshot.data ?? course.categoryName,
-                            textStyle: GoogleFonts.inter(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: homeScreenController
-                                          .categoryIndexForColor.value ==
-                                      index
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                            maxline: 1,
-                          );
-                        }
+                  Row(children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
                       },
+                      child: const ImageIcon(
+                          AssetImage('lib/Assets/Icons/arrow-circle-left.png'),
+                          size: 30),
                     ),
+                    SizedBox(width: screenWidth * .03),
+                    SizedBox(
+                      width: 300,
+                      child: CustomText(
+                        text: titleOfCourse,
+                        maxline: 3,
+                        textStyle: GoogleFonts.inter(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  ]),
+                  Row(
+                    children: [
+                      SizedBox(width: screenWidth * .102),
+                      CustomText(
+                          text: 'Select your Course',
+                          textStyle: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                            color: primarycolour,
+                          )),
+                    ],
                   ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                  ),
+                courseCategorScreenWidget.  listOfCourseSession(
+                      courseCategoryModel: courseCategoryModel!,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth)
                 ],
               ),
             ),
-          ),
-        ),
-      );
-    },
-    itemCount: courseCategoryModel.length,
-  );
+          );
+        }
+      });
 }
+
+

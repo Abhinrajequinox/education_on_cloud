@@ -194,7 +194,8 @@ class HomeScreenWidgets {
       future: _fetchCategory(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return shimerListviewOfCatefgory(
+              screenHeight: screenHeight, screenWidth: screenWidth);
         } else if (snapshot.hasError) {
           log(snapshot.error.toString());
           return Center(child: Text('Error: ${snapshot.error}'));
@@ -250,14 +251,10 @@ class HomeScreenWidgets {
               } else if (userDetails['country'] == 'Bhutan') {
                 flagId.value = '4';
               }
-              List<CourseSectionModel> _course_section =
-                  await academicCourseServices
-                      .fetchCoursesSection(flagId.value);
-              // log(_course_section.toString());
+
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                //  homeScreenController.changecategoryIndexForColor(100);
                 return CourseSessionScreen(
-                  courseSectionModel: _course_section,
+                  country: flagId.value,
                   titleOfCourse: cata['categorytitle'],
                 );
               }));
@@ -335,14 +332,24 @@ class HomeScreenWidgets {
           child: GestureDetector(
             onTap: () async {
               homeScreenController.changecategoryIndexForColor(index);
-              List<CourseSectionModel> _course_section =
-                  await academicCourseServices.fetchCoursesSection('0');
-              // log(_course_section.toString());
+              Map<String, String?> userDetails = await getUser();
+              var flagId = ''.obs;
+              if (userDetails['country'] == 'India') {
+                flagId.value = '0';
+              } else if (userDetails['country'] == 'Nepal') {
+                flagId.value = '1';
+              } else if (userDetails['country'] == 'Sri lanka') {
+                flagId.value = '2';
+              } else if (userDetails['country'] == 'Bangladesh') {
+                flagId.value = '3';
+              } else if (userDetails['country'] == 'Bhutan') {
+                flagId.value = '4';
+              }
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   //  homeScreenController.changecategoryIndexForColor(100);
                   return CourseSessionScreen(
-                    courseSectionModel: _course_section,
+                    country: flagId.value,
                     titleOfCourse: cata['categorytitle'],
                   );
                 },
@@ -507,11 +514,7 @@ class HomeScreenWidgets {
                             var course =
                                 homeScreenController.course_section[subIndex];
                             return GestureDetector(
-                              onTap: () async {
-                                List<CourseCategoryModel> courseCategoryModel =
-                                    await academicCourseServices
-                                        .fetchCoursesCategory(course.sectionId);
-                                print('okeyyyy');
+                              onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -519,8 +522,7 @@ class HomeScreenWidgets {
                                           CourseCategoryScreen(
                                               titleOfCategory:
                                                   course.sectionName,
-                                              courseCategoryModel:
-                                                  courseCategoryModel),
+                                              sectionId: course.sectionId),
                                     ));
                               },
                               child: ListTile(
@@ -546,6 +548,69 @@ class HomeScreenWidgets {
     );
   }
 
+///// loading shimmer for the category listview
+
+  Widget shimerListviewOfCatefgory(
+      {required double screenHeight, required double screenWidth}) {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: 5, // Number of shimmer placeholders
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Card(
+              elevation: 2,
+              child: Container(
+                height: screenHeight * 0.09,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: screenHeight * 0.07,
+                      width: screenHeight * 0.07,
+                      color: Colors.grey[300],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: screenWidth * 0.4,
+                          height: screenHeight * 0.02,
+                          color: Colors.grey[300],
+                        ),
+                        SizedBox(height: screenHeight * 0.01),
+                        Container(
+                          width: screenWidth * 0.2,
+                          height: screenHeight * 0.015,
+                          color: Colors.grey[300],
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: screenWidth * 0.1),
+                    Container(
+                      width: screenWidth * 0.05,
+                      height: screenWidth * 0.05,
+                      color: Colors.grey[300],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 //////////////// Our statitics Text
 
   Widget ourStatisticsText(double screenWidth, double screenHeight) {
@@ -809,10 +874,12 @@ class HomeScreenWidgets {
           child: GestureDetector(
             onTap: () async {
               homeScreenController.changecourseAndBoardIndexForColor(index);
+              homeScreenController.changeisLoadingOfcourseSessionList(false);
               homeScreenController.courseSessionList.clear();
               var fetchedCourses =
                   await academicCourseServices.fetchCoursesSection('0');
               homeScreenController.changeCourseSessionList(fetchedCourses);
+              homeScreenController.changeisLoadingOfcourseSessionList(true);
             },
             child: Obx(
               () => Card(
@@ -865,130 +932,139 @@ class HomeScreenWidgets {
   }
 
   Widget listOfgridOfcoursesAndBoardSession() {
-    return Obx(
-        () => homeScreenController.isLoadingOfcourseSessionList.value == false
-            ? ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  var course = homeScreenController.courseSessionList[index];
+    log('the on the home screen is showing at fist like this ${homeScreenController.courseSessionList.toList()}');
+    return Obx(() => homeScreenController.courseSessionList.isEmpty
+            ? CustomText(text: 'list is empty')
+            : homeScreenController.isLoadingOfcourseSessionList.value == true
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      var course =
+                          homeScreenController.courseSessionList[index];
 
-                  return GestureDetector(
-                    onTap: () async {
-                      homeScreenController
-                          .changeIsLoadingcourseCategoryModel(true);
-                      log(homeScreenController
-                          .isLoadingcoursecategoryModel.value
-                          .toString());
+                      return GestureDetector(
+                        onTap: () async {
+                          homeScreenController
+                              .changeIsLoadingcourseCategoryModel(true);
+                          // log(homeScreenController
+                          //     .isLoadingcoursecategoryModel.value
+                          //     .toString());
 
-                      List<CourseCategoryModel> courseCategoryModel =
-                          await academicCourseServices
-                              .fetchCoursesCategory(course.sectionId);
-                      homeScreenController.changecategoryIndexForColor(index);
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        homeScreenController.changecategoryIndexForColor(100);
-                      });
-                      homeScreenController
-                          .changeIsLoadingcourseCategoryModel(false);
-                      log(homeScreenController
-                          .isLoadingcoursecategoryModel.value
-                          .toString());
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CourseCategoryScreen(
-                                titleOfCategory: course.sectionName,
-                                courseCategoryModel: courseCategoryModel),
-                          ));
-                      log('isLoadingcourseCategoryModel changed: ${homeScreenController.isLoadingcoursecategoryModel.value}');
-                    },
-                    child: Obx(
-                      () => Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Card(
-                          elevation: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: homeScreenController
-                                            .categoryIndexForColor.value ==
-                                        index
-                                    ? Colors.blue
-                                    : Colors.white,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(12))),
-                            padding: const EdgeInsets.all(8),
-                            height: 60,
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.grey,
-                                  child: ClipOval(
-                                    child: Image.network(
-                                      course.img,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
+                          List<CourseCategoryModel> courseCategoryModel =
+                              await academicCourseServices
+                                  .fetchCoursesCategory(course.sectionId);
+                          homeScreenController
+                              .changecategoryIndexForColor(index);
+                          Future.delayed(const Duration(milliseconds: 300), () {
+                            homeScreenController
+                                .changecategoryIndexForColor(100);
+                          });
+                          homeScreenController
+                              .changeIsLoadingcourseCategoryModel(false);
+                          log(homeScreenController
+                              .isLoadingcoursecategoryModel.value
+                              .toString());
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CourseCategoryScreen(
+                                  titleOfCategory: course.sectionName,
+                                  sectionId: course.sectionId,
+                                ),
+                              ));
+                          log('isLoadingcourseCategoryModel changed: ${homeScreenController.isLoadingcoursecategoryModel.value}');
+                        },
+                        child: Obx(
+                          () => Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: Card(
+                              elevation: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: homeScreenController
+                                                .categoryIndexForColor.value ==
+                                            index
+                                        ? Colors.blue
+                                        : Colors.white,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(12))),
+                                padding: const EdgeInsets.all(8),
+                                height: 60,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: Colors.grey,
+                                      child: ClipOval(
+                                        child: Image.network(
+                                          course.img,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                SizedBox(
-                                  width: 260,
-                                  child: FutureBuilder<String>(
-                                    future: languageController
-                                        .translateApiText(course.sectionName),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Text(
-                                            'Loading...'); // Placeholder while translating
-                                      } else if (snapshot.hasError) {
-                                        return Text(
-                                            'Error: ${snapshot.error}'); // Error handling
-                                      } else {
-                                        // Successfully translated
-                                        return SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            children: [
-                                              CustomText(
-                                                text: snapshot.data ??
-                                                    course
-                                                        .sectionName, // Use original text if translation fails
-                                                textStyle: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 14,
-                                                  color: homeScreenController
-                                                              .categoryIndexForColor
-                                                              .value ==
-                                                          index
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                ),
-                                                maxline: 1,
+                                    const SizedBox(width: 10),
+                                    SizedBox(
+                                      width: 260,
+                                      child: FutureBuilder<String>(
+                                        future:
+                                            languageController.translateApiText(
+                                                course.sectionName),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Text(
+                                                'Loading...'); // Placeholder while translating
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}'); // Error handling
+                                          } else {
+                                            // Successfully translated
+                                            return SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Row(
+                                                children: [
+                                                  CustomText(
+                                                    text: snapshot.data ??
+                                                        course
+                                                            .sectionName, // Use original text if translation fails
+                                                    textStyle:
+                                                        GoogleFonts.inter(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 14,
+                                                      color: homeScreenController
+                                                                  .categoryIndexForColor
+                                                                  .value ==
+                                                              index
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                    ),
+                                                    maxline: 1,
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    const Icon(Icons.arrow_forward_ios),
+                                  ],
                                 ),
-                                const Icon(Icons.arrow_forward_ios),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-                itemCount: homeScreenController.courseSessionList.length,
-              )
-            : customShimmerBuilder(
-                width: 350,
-                height: 60,
-                builderLength: 10) // Show a message if the list is empty
+                      );
+                    },
+                    itemCount: homeScreenController.courseSessionList.length,
+                  )
+                : customShimmerBuilder(
+                    width: 350,
+                    height: 60,
+                    builderLength: 10) // Show a message if the list is empty
 
         );
   }
