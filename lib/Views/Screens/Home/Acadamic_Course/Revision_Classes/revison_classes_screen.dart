@@ -1,108 +1,88 @@
-import 'dart:async';
-import 'dart:developer';
-
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
-import 'package:education_on_cloud/Functions/auth_functions.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/revision_classes_services.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/Revision_classes_model.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Revision_classes/revision_video_classs_widget.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_class_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TheoryChaptersScreen extends StatefulWidget {
+class AcademicRevisionVideoClass extends StatefulWidget {
+  final String titleName;
+  final String languageName;
+  final String chapterId;
+  final Color cardColor;
   final String titleOfChapter;
   final String courseId;
-  final String languageName;
-  const TheoryChaptersScreen(
+  const AcademicRevisionVideoClass(
       {super.key,
+      required this.titleName,
+      required this.languageName,
+      required this.cardColor,
+      required this.chapterId,
       required this.titleOfChapter,
-      required this.courseId,
-      required this.languageName});
+      required this.courseId});
 
   @override
-  State<TheoryChaptersScreen> createState() => _TheoryChaptersScreenState();
+  State<AcademicRevisionVideoClass> createState() =>
+      _AcademicRevisionVideoClassState();
 }
 
-final TheoryChaptersScreenWidget theoryChaptersScreenWidget =
-    TheoryChaptersScreenWidget();
-final TheoryChapterScreenController theoryChapterScreenController =
-    TheoryChapterScreenController();
+final TheoryVideoClasssWidget theoryVideoClasssWidget =
+    TheoryVideoClasssWidget();
+final RevisionClassesServices revisionClassesServices =
+    RevisionClassesServices();
+// final TheoryVideoController theoryVideoController = TheoryVideoController();
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class _AcademicRevisionVideoClassState
+    extends State<AcademicRevisionVideoClass> {
+  @override
+  void initState() {
+    academicDrawerController.incrementDrawerIndex();
+    super.initState();
+  }
 
-class _TheoryChaptersScreenState extends State<TheoryChaptersScreen> {
+  @override
+  void dispose() {
+    // Call the resetVideo method to clean up when the widget is disposed
+    theoryVideoClasssWidget.theoryVideoController.resetVideo();
+    theoryVideoClasssWidget.theoryVideoController.changeFavIcon(false);
+    academicDrawerController.decrementDrawerIndex();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    // List<AcademicMenuStructureModel> menuStructure = [];
-    bool _drawerOpenedOnce = false; // Track if drawer opened already
-    void _openDrawerAutomatically() {
-      if (!_drawerOpenedOnce) {
-        _scaffoldKey.currentState?.openDrawer();
-        // _drawerOpenedOnce = true; // Ensure it happens only once
-        Timer(const Duration(seconds: 3), () {
-          _scaffoldKey.currentState?.closeDrawer();
-        });
-      }
-    }
-
-    void fetchMenu() async {
-      Map<String, String?> userDetails = await getUser();
-      var userPhoneNumber = ''.obs;
-      log('phone number is before fetching $userPhoneNumber');
-      userPhoneNumber.value = userDetails['phoneNumber']!;
-      // menuStructure = await academicCourseServices.fetchMenuStructure(
-      //     courseId: widget.courseId, mobileNum: userPhoneNumber as String);
-      log('phone number is after fetching $userPhoneNumber');
-      setState(() {});
-    }
-
-    @override
-    void initState() {
-      super.initState();
-      fetchMenu();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Open the drawer when the screen is loaded for the first time
-        _openDrawerAutomatically();
-      });
-    }
-
-    @override
-    void dispose() {
-      super.dispose();
-      theoryChapterScreenController.isExpanded(-1);
-      academicDrawerController.decrementDrawerIndex();
-    }
-
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _appBar(context, screenWidth),
+      appBar: _appBar(context, screenWidth, _scaffoldKey),
       body: _body(
-        courseId: widget.courseId,
-        languageName: widget.languageName,
-        context: context,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        titleOfChapter: widget.titleOfChapter,
-      ),
+          context: context,
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+          titleOfChapter: widget.titleName,
+          chapterId: widget.chapterId,
+          languageName: widget.languageName,
+          cardColor: widget.cardColor),
       drawer: DrawerOfAcademicCourse(
-          titleOfChapter: widget.titleOfChapter,
-          // menuStructure: menuStructure,
           courseId: widget.courseId,
+          titleOfChapter: widget.titleOfChapter,
           languageName: widget.languageName),
     );
   }
 }
 
-AppBar _appBar(BuildContext context, double screenWidth) {
-  academicDrawerController.incrementDrawerIndex();
-  log('while reached on the chapter screen ${academicDrawerController.drawerIntex.value.toString()}');
-
+AppBar _appBar(BuildContext context, double screenWidth,
+    GlobalKey<ScaffoldState> _scaffoldKey) {
   return AppBar(
       backgroundColor:
           languageController.currentTheme.value.scaffoldBackgroundColor,
@@ -152,15 +132,15 @@ Widget _body(
     required double screenWidth,
     required double screenHeight,
     required String titleOfChapter,
-    required String courseId,
-    required String languageName}) {
-  return FutureBuilder<List<ChapterModel>>(
-      future: academicCourseServices.fetchCourseChapters(
-        courseId: courseId,
+    required String chapterId,
+    required String languageName,
+    required Color cardColor}) {
+  return FutureBuilder<List<AcademicTheoryChapterModelClass>>(
+      future: revisionClassesServices.fetchAcademicTheoryClass(
+        chaptId: chapterId,
         language: languageName,
       ),
       builder: (context, snapshot) {
-        // Handle different states of the Future
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While waiting for the future to complete, show a loading indicator
           return Padding(
@@ -169,32 +149,29 @@ Widget _body(
           );
         } else if (snapshot.hasError) {
           // If there's an error, display an error message
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
+          return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           // If there's no data or the data is empty, show a message
-          return const Center(
-            child: Text('No chapters found'),
-          );
+          return const Center(child: Text('No theory classes found'));
         } else {
-          var chapters = snapshot.data;
+          var chapters = snapshot.data!;
           return SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(screenWidth * .05),
               child: Column(
                 children: [
-                  theoryChaptersScreenWidget.titleAndBackButton(
+                  theoryVideoClasssWidget.titleAndBackButton(
                       context, screenWidth, titleOfChapter),
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  theoryChaptersScreenWidget.listOfChapters(
-                      chapters: chapters!,
+                  theoryVideoClasssWidget.listOfClass(
+                      titleOfClass: titleOfChapter,
+                      classes: chapters,
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       languageName: languageName,
-                      titleOfChapter: titleOfChapter)
+                      cardColor: cardColor)
                 ],
               ),
             ),

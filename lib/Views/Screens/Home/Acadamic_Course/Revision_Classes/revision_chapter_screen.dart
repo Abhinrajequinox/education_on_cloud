@@ -1,81 +1,50 @@
-import 'dart:async';
 import 'dart:developer';
-
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
-import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Revision_classes/revision_chapter_screen_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TheoryChaptersScreen extends StatefulWidget {
+class RevisionChapterScreen extends StatefulWidget {
   final String titleOfChapter;
   final String courseId;
   final String languageName;
-  const TheoryChaptersScreen(
+  const RevisionChapterScreen(
       {super.key,
       required this.titleOfChapter,
       required this.courseId,
       required this.languageName});
 
   @override
-  State<TheoryChaptersScreen> createState() => _TheoryChaptersScreenState();
+  State<RevisionChapterScreen> createState() => _RevisionChapterScreenState();
 }
 
-final TheoryChaptersScreenWidget theoryChaptersScreenWidget =
-    TheoryChaptersScreenWidget();
+final RevisionChapterScreenWidget revisionChapterScreenWidget =
+    RevisionChapterScreenWidget();
 final TheoryChapterScreenController theoryChapterScreenController =
     TheoryChapterScreenController();
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class _TheoryChaptersScreenState extends State<TheoryChaptersScreen> {
+class _RevisionChapterScreenState extends State<RevisionChapterScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    // List<AcademicMenuStructureModel> menuStructure = [];
-    bool _drawerOpenedOnce = false; // Track if drawer opened already
-    void _openDrawerAutomatically() {
-      if (!_drawerOpenedOnce) {
-        _scaffoldKey.currentState?.openDrawer();
-        // _drawerOpenedOnce = true; // Ensure it happens only once
-        Timer(const Duration(seconds: 3), () {
-          _scaffoldKey.currentState?.closeDrawer();
-        });
-      }
-    }
-
-    void fetchMenu() async {
-      Map<String, String?> userDetails = await getUser();
-      var userPhoneNumber = ''.obs;
-      log('phone number is before fetching $userPhoneNumber');
-      userPhoneNumber.value = userDetails['phoneNumber']!;
-      // menuStructure = await academicCourseServices.fetchMenuStructure(
-      //     courseId: widget.courseId, mobileNum: userPhoneNumber as String);
-      log('phone number is after fetching $userPhoneNumber');
-      setState(() {});
-    }
 
     @override
     void initState() {
+      // TODO: implement initState
       super.initState();
-      fetchMenu();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Open the drawer when the screen is loaded for the first time
-        _openDrawerAutomatically();
-      });
+      academicDrawerController.incrementDrawerIndex();
     }
 
     @override
     void dispose() {
       super.dispose();
-      theoryChapterScreenController.isExpanded(-1);
       academicDrawerController.decrementDrawerIndex();
     }
 
@@ -91,18 +60,16 @@ class _TheoryChaptersScreenState extends State<TheoryChaptersScreen> {
         titleOfChapter: widget.titleOfChapter,
       ),
       drawer: DrawerOfAcademicCourse(
-          titleOfChapter: widget.titleOfChapter,
-          // menuStructure: menuStructure,
-          courseId: widget.courseId,
-          languageName: widget.languageName),
+        languageName: widget.languageName,
+        titleOfChapter: widget.titleOfChapter,
+        // menuStructure: menuStructure,
+        courseId: widget.courseId,
+      ),
     );
   }
 }
 
 AppBar _appBar(BuildContext context, double screenWidth) {
-  academicDrawerController.incrementDrawerIndex();
-  log('while reached on the chapter screen ${academicDrawerController.drawerIntex.value.toString()}');
-
   return AppBar(
       backgroundColor:
           languageController.currentTheme.value.scaffoldBackgroundColor,
@@ -184,17 +151,18 @@ Widget _body(
               padding: EdgeInsets.all(screenWidth * .05),
               child: Column(
                 children: [
-                  theoryChaptersScreenWidget.titleAndBackButton(
+                  revisionChapterScreenWidget.titleAndBackButton(
                       context, screenWidth, titleOfChapter),
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  theoryChaptersScreenWidget.listOfChapters(
+                  revisionChapterScreenWidget.listOfChapters(
+                      courseId: courseId,
+                      titleOfChapter: titleOfChapter,
                       chapters: chapters!,
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
-                      languageName: languageName,
-                      titleOfChapter: titleOfChapter)
+                      languageName: languageName)
                 ],
               ),
             ),

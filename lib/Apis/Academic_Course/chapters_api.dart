@@ -1,0 +1,1 @@
+const academicChaptersSubtopicApi='https://educationoncloud.in/api/fetch_sub_topics.php';

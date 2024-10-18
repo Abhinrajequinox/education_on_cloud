@@ -31,8 +31,9 @@ class CourseSessionWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CourseCategoryScreen(
-                      titleOfCategory: course.sectionName,
-                      sectionId: course.sectionId,),
+                    titleOfCategory: course.sectionName,
+                    sectionId: course.sectionId,
+                  ),
                 ));
           },
           child: Obx(
@@ -72,44 +73,19 @@ class CourseSessionWidget {
                     const SizedBox(width: 10),
                     SizedBox(
                       width: 270,
-                      child: FutureBuilder<String>(
-                        future: languageController
-                            .translateApiText(course.sectionName),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Text(
-                                'Loading...'); // Placeholder while translating
-                          } else if (snapshot.hasError) {
-                            return Text(
-                                'Error: ${snapshot.error}'); // Error handling
-                          } else {
-                            // Successfully translated
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  CustomText(
-                                    text: snapshot.data ??
-                                        course
-                                            .sectionName, // Use original text if translation fails
-                                    textStyle: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: homeScreenController
-                                                  .categoryIndexForColor
-                                                  .value ==
-                                              index
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                    maxline: 1,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        },
+                      child: CustomText(
+                        text: course
+                            .sectionName, // Use original text if translation fails
+                        textStyle: GoogleFonts.inter(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: homeScreenController
+                                      .categoryIndexForColor.value ==
+                                  index
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        maxline: 1,
                       ),
                     ),
                     const Icon(Icons.arrow_forward_ios),

@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/chapters_model.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_category_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_classes_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +12,15 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TheoryChaptersScreenWidget {
+class ChaptersTopicsWidget {
   // List<AcademicTheoryClassModel> theoryClass = [];
   final TheoryChapterScreenController theorychapterScreenController =
       TheoryChapterScreenController();
   final AcademicCourseServices academicCourseServices =
       AcademicCourseServices();
   Widget titleAndBackButton(
-      BuildContext context, double screenWidth, String titleOfChapter) {
+      BuildContext context, double screenWidth, String titleOfChapter,
+      String titleName) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -48,7 +51,7 @@ class TheoryChaptersScreenWidget {
               SizedBox(
                 width: screenWidth * .7,
                 child: CustomText(
-                    text: '$titleOfChapter Theory Classes',
+                    text: '$titleName Chapters Notes',
                     textStyle: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -62,35 +65,113 @@ class TheoryChaptersScreenWidget {
     );
   }
 
+Widget languageChangeDropDown(double screenHeight) {
+  return Obx(() {
+    return DropdownButton<String>(
+      value: languageController.currentLocale.value.languageCode, // Current selected language code
+      items: indianLanguages.map((language) {
+        // Mapping each language to a DropdownMenuItem
+        return DropdownMenuItem<String>(
+          value: language["code"],
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.01), // 1% of screen height
+            child: Container(
+              height: screenHeight * 0.045, // 4.5% of screen height
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenHeight * 0.02), // 2% of screen height
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: languageController.currentLocale.value.languageCode ==
+                        language["code"]
+                    ? const Color.fromRGBO(239, 246, 255, 1)
+                    : Colors.transparent,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: screenHeight * 0.02), // 2% of screen height
+                    child: Container(
+                      width: screenHeight * 0.025, // 2.5% of screen height
+                      height: screenHeight * 0.025, // 2.5% of screen height
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 1),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(screenHeight * 0.005), // 0.5%
+                        child: CircleAvatar(
+                          radius: screenHeight * 0.0125, // 1.25% of screen height
+                          backgroundColor: languageController
+                                      .currentLocale.value.languageCode ==
+                                  language["code"]
+                              ? const Color.fromARGB(255, 9, 97, 245)
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    language["language"]!,
+                    style: GoogleFonts.lato(
+                      fontSize: screenHeight * 0.02, // 2% of screen height
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+      onChanged: (newLanguageCode) {
+        if (newLanguageCode != null) {
+          // Change the visibility of the dropdown and update the language
+          homeScreenController.changelanguageListVisibility(false);
+          var selectedLanguage = indianLanguages.firstWhere(
+              (language) => language["code"] == newLanguageCode);
+          languageController.changeLanguage(
+              selectedLanguage["code"]!, selectedLanguage["country"]!);
+        }
+      },
+      isExpanded: true, // Makes the dropdown expand to the full width
+      underline: SizedBox(), // Removes the default underline
+      dropdownColor: Colors.white, // Change the dropdown background color
+    );
+  });
+}
+
+
   Widget listOfChapters(
-      {required List<ChapterModel> chapters,
+      {required List<ChapterSubTopicModel> chapters,
       required double screenHeight,
       required double screenWidth,
       required String languageName,
-      required String titleOfChapter}) {
+      required String titleOfChapter,
+      required Color cardColor}) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         var chapter = chapters[index];
-        var cardColor = rainbowColors[index % rainbowColors.length];
         return Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AcademicCourseTheoryClass(
-                            drawerCourseId: chapter.courseId,
-                            drawertitleOfChapter: titleOfChapter,
-                            languageName: languageName,
-                            chapterId: chapter.id,
-                            titleName: chapter.chapterName,
-                            cardColor: cardColor),
-                      ));
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => AcademicCourseTheoryClass(
+                  //           drawerCourseId: chapter.courseId,
+                  //           drawertitleOfChapter: titleOfChapter,
+                  //           languageName: languageName,
+                  //           chapterId: chapter.id,
+                  //           titleName: chapter.chapterName,
+                  //           cardColor: cardColor),
+                  //     ));
                 },
                 child: Card(
                   elevation: 3,
@@ -112,9 +193,9 @@ class TheoryChaptersScreenWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            height: screenHeight * .04,
-                            child: Image.network(
-                                'https://thelearnyn1.s3.ap-south-1.amazonaws.com/chap_imgs/chap_imgs/${chapter.chapterIcon}'),
+                            height: screenHeight * .03,
+                            child: Image.asset(
+                                'lib/Assets/Home/Drawer_icon/chapters-img-icon.png'),
                           ),
                           SizedBox(
                             width: screenWidth * .03,
@@ -127,8 +208,7 @@ class TheoryChaptersScreenWidget {
                                 children: [
                                   CustomText(
                                     maxline: 1,
-                                    text:
-                                        '${index + 1} . ${chapter.chapterName}',
+                                    text: '${index + 1} . ${chapter.subTopic}',
                                     textStyle: GoogleFonts.inter(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
@@ -150,7 +230,7 @@ class TheoryChaptersScreenWidget {
                                 color: Color.fromRGBO(30, 117, 229, 1)),
                             child: Center(
                               child: CustomText(
-                                text: 'Go to Class',
+                                text: 'Get Notes',
                                 textStyle: GoogleFonts.mulish(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 13,

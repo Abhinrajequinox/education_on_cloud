@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_class_widget.dart';
@@ -11,6 +14,8 @@ import 'package:google_fonts/google_fonts.dart';
 class AcademicCourseTheoryClass extends StatefulWidget {
   final String titleName;
   final String languageName;
+  final String drawerCourseId;
+  final String drawertitleOfChapter;
   final String chapterId;
   final Color cardColor;
   const AcademicCourseTheoryClass(
@@ -18,14 +23,15 @@ class AcademicCourseTheoryClass extends StatefulWidget {
       required this.titleName,
       required this.languageName,
       required this.cardColor,
-      required this.chapterId});
+      required this.chapterId,
+      required this.drawerCourseId,
+      required this.drawertitleOfChapter});
 
   @override
   State<AcademicCourseTheoryClass> createState() =>
       _AcademicCourseTheoryClassState();
 }
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 final AcademicTheoryClassWidget academicTheoryClassWidget =
     AcademicTheoryClassWidget();
 final AcademicCourseServices academicCourseServices = AcademicCourseServices();
@@ -33,19 +39,33 @@ final AcademicCourseServices academicCourseServices = AcademicCourseServices();
 
 class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    academicDrawerController.incrementDrawerIndex();
+  }
+
+  @override
   void dispose() {
     // Call the resetVideo method to clean up when the widget is disposed
     academicTheoryClassWidget.theoryVideoController.resetVideo();
     academicTheoryClassWidget.theoryVideoController.changeFavIcon(false);
+    academicDrawerController.decrementDrawerIndex();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    log('while reached on the video screen ${academicDrawerController.drawerIntex.value.toString()}');
+
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: _appBar(context, screenWidth),
+      key: scaffoldKey,
+      appBar: _appBar(context, screenWidth, scaffoldKey),
       body: _body(
           context: context,
           screenWidth: screenWidth,
@@ -54,11 +74,16 @@ class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
           chapterId: widget.chapterId,
           languageName: widget.languageName,
           cardColor: widget.cardColor),
+      drawer: DrawerOfAcademicCourse(
+          courseId: widget.drawerCourseId,
+          titleOfChapter: widget.drawertitleOfChapter,
+          languageName: widget.languageName),
     );
   }
 }
 
-AppBar _appBar(BuildContext context, double screenWidth) {
+AppBar _appBar(BuildContext context, double screenWidth,
+    GlobalKey<ScaffoldState> scaffoldKey) {
   return AppBar(
       backgroundColor:
           languageController.currentTheme.value.scaffoldBackgroundColor,
@@ -66,7 +91,7 @@ AppBar _appBar(BuildContext context, double screenWidth) {
         SizedBox(width: screenWidth * 0.05),
         IconButton(
             onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
+              scaffoldKey.currentState?.openDrawer();
             },
             icon: Icon(Icons.list_outlined,
                 color: Colors.black, size: screenWidth * 0.09)),
@@ -130,7 +155,7 @@ Widget _body(
           // If there's no data or the data is empty, show a message
           return const Center(child: Text('No theory classes found'));
         } else {
-          var chapters=snapshot.data!;
+          var chapters = snapshot.data!;
           return SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(screenWidth * .05),
