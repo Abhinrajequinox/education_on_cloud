@@ -159,6 +159,8 @@ flutter:
     - lib/Assets/Home/Drawer_icon/FAQ-icon.png
     - lib/Assets/Home/Drawer_icon/chapters-img-icon.png
     - lib/Assets/Home/Drawer_icon/chapter-test-img-icon.png
+    - lib\Assets\Home\Buttons\E-note-button-choose.png
+    - lib\Assets\Home\Buttons\E-note-button.png
 
 
 

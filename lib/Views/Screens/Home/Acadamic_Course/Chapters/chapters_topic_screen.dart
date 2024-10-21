@@ -179,31 +179,16 @@ Widget _body(
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10))),
-                    height: screenHeight * .04,
-                    width: screenWidth * 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Icon(Icons.g_translate),
-                        CustomText(
-                          text: 'Select your language here',
-                          color: Colors.black,
-                          textStyle: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w400, fontSize: 12),
-                        ),
-                        SizedBox(
-                          width: screenWidth * .1,
-                        ),
-                        const Icon(Icons.keyboard_arrow_down_outlined)
-                      ],
-                    ),
+                  chaptersTopicsWidget.languageChangeDropDownContainer(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
+                  SizedBox(
+                    height: screenHeight * .025,
                   ),
-                  chaptersTopicsWidget.languageChangeDropDown(screenHeight),
+                  chaptersTopicsWidget.languageOptionsList(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
+                  chaptersTopicsWidget.typesOfNotes(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
+                  // chaptersTopicsWidget.languageChangeDropDown(screenHeight),
                   chaptersTopicsWidget.listOfChapters(
                     cardColor: cardColor,
                     chapters: chapters!,

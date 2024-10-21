@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/chapter_topic_controller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/Academic_Course/chapters_model.dart';
@@ -18,9 +19,10 @@ class ChaptersTopicsWidget {
       TheoryChapterScreenController();
   final AcademicCourseServices academicCourseServices =
       AcademicCourseServices();
-  Widget titleAndBackButton(
-      BuildContext context, double screenWidth, String titleOfChapter,
-      String titleName) {
+  final AcademicChapterTopicController academicChapterTopicController =
+      AcademicChapterTopicController();
+  Widget titleAndBackButton(BuildContext context, double screenWidth,
+      String titleOfChapter, String titleName) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -65,83 +67,182 @@ class ChaptersTopicsWidget {
     );
   }
 
-Widget languageChangeDropDown(double screenHeight) {
-  return Obx(() {
-    return DropdownButton<String>(
-      value: languageController.currentLocale.value.languageCode, // Current selected language code
-      items: indianLanguages.map((language) {
-        // Mapping each language to a DropdownMenuItem
-        return DropdownMenuItem<String>(
-          value: language["code"],
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.01), // 1% of screen height
-            child: Container(
-              height: screenHeight * 0.045, // 4.5% of screen height
-              padding: EdgeInsets.symmetric(
-                  horizontal: screenHeight * 0.02), // 2% of screen height
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: languageController.currentLocale.value.languageCode ==
-                        language["code"]
-                    ? const Color.fromRGBO(239, 246, 255, 1)
-                    : Colors.transparent,
+  Widget typesOfNotes(
+      {required double screenHeight, required double screenWidth}) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: screenHeight * 0.038,
+            width: screenWidth * 0.28,
+            child: Image.asset(
+              'lib/Assets/Home/Buttons/E-note-button-choose.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(
+            height: screenHeight * 0.038,
+            width: screenWidth * 0.28,
+            child: Image.asset(
+              'lib/Assets/Home/Buttons/E-note-button.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(
+            height: screenHeight * 0.038,
+            width: screenWidth * 0.28,
+            child: Image.asset(
+              'lib/Assets/Home/Buttons/E-note-button.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget languageChangeDropDownContainer({
+    required double screenHeight,
+    required double screenWidth,
+  }) {
+    return Obx(() {
+      return GestureDetector(
+        onTap: () {
+          // Toggle the dropdown expansion and arrow animation
+          academicChapterTopicController.toggleDropdown();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
+          height: screenHeight * 0.04,
+          width: screenWidth,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Icon(Icons.g_translate),
+              CustomText(
+                text: 'Select your language here',
+                color: Colors.black,
+                textStyle: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: screenHeight * 0.02), // 2% of screen height
-                    child: Container(
-                      width: screenHeight * 0.025, // 2.5% of screen height
-                      height: screenHeight * 0.025, // 2.5% of screen height
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 1),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(screenHeight * 0.005), // 0.5%
-                        child: CircleAvatar(
-                          radius: screenHeight * 0.0125, // 1.25% of screen height
-                          backgroundColor: languageController
-                                      .currentLocale.value.languageCode ==
-                                  language["code"]
-                              ? const Color.fromARGB(255, 9, 97, 245)
-                              : Colors.transparent,
+              const SizedBox(width: 16), // Adjust space if needed
+              AnimatedRotation(
+                turns: academicChapterTopicController.iconRotation.value,
+                duration: const Duration(milliseconds: 300),
+                child: const Icon(Icons.keyboard_arrow_down_outlined),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget languageOptionsList({
+    required double screenHeight,
+    required double screenWidth,
+  }) {
+    return Obx(() {
+      return academicChapterTopicController.isDropdownExpanded.value
+          ? Container(
+              height: screenHeight *
+                  0.5, // Set a fixed height for the dropdown list
+              child: ListView.builder(
+                itemCount: indianLanguages.length,
+                itemBuilder: (context, index) {
+                  final language = indianLanguages[index];
+                  final isSelected =
+                      languageController.currentLocale.value.languageCode ==
+                          language["code"];
+
+                  return GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return customAlertBox(
+                              confirm: () {},
+                              cancel: () {
+                                Navigator.pop(context);
+                              },
+                              content:
+                                  'Are you sure Do you want to change the Language into ${language["language"]!} ?',
+                              confirmText: 'Yes',
+                              cancelText: 'No',
+                              screenHeight: screenHeight,
+                              screenWidth: screenWidth);
+                        },
+                      );
+                      // Call selectLanguage with language code and country
+                      // academicChapterTopicController.selectLanguage(
+                      //   language["code"]!, // Pass the correct language code
+                      //   language["country"]!, // Pass the country code
+                      // );
+                    },
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                      child: Container(
+                        height: screenHeight * 0.038, // 4.5% of screen height
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenHeight * 0.02),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: isSelected
+                              ? const Color.fromRGBO(239, 246, 255, 1)
+                              : Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(right: screenHeight * 0.02),
+                              child: Container(
+                                width: screenHeight * 0.025,
+                                height: screenHeight * 0.025,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border:
+                                      Border.all(color: Colors.black, width: 1),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(
+                                      screenHeight * 0.005), // 0.5%
+                                  child: CircleAvatar(
+                                    radius: screenHeight *
+                                        0.0125, // 1.25% of screen height
+                                    backgroundColor: isSelected
+                                        ? const Color.fromARGB(255, 9, 97, 245)
+                                        : Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              language["language"]!,
+                              style: GoogleFonts.lato(
+                                fontSize:
+                                    screenHeight * 0.02, // 2% of screen height
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  Text(
-                    language["language"]!,
-                    style: GoogleFonts.lato(
-                      fontSize: screenHeight * 0.02, // 2% of screen height
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
-          ),
-        );
-      }).toList(),
-      onChanged: (newLanguageCode) {
-        if (newLanguageCode != null) {
-          // Change the visibility of the dropdown and update the language
-          homeScreenController.changelanguageListVisibility(false);
-          var selectedLanguage = indianLanguages.firstWhere(
-              (language) => language["code"] == newLanguageCode);
-          languageController.changeLanguage(
-              selectedLanguage["code"]!, selectedLanguage["country"]!);
-        }
-      },
-      isExpanded: true, // Makes the dropdown expand to the full width
-      underline: SizedBox(), // Removes the default underline
-      dropdownColor: Colors.white, // Change the dropdown background color
-    );
-  });
-}
-
+            )
+          : const SizedBox.shrink(); // Collapsed dropdown
+    });
+  }
 
   Widget listOfChapters(
       {required List<ChapterSubTopicModel> chapters,

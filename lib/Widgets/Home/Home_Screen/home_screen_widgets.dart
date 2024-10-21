@@ -1298,7 +1298,7 @@ class HomeScreenWidgets {
                   height: screenHeight * .02,
                 ),
                 SizedBox(
-                  height: 110,
+                  height: screenHeight * .12,
                   child: SingleChildScrollView(
                     child: CustomText(
                         maxline: 9,
@@ -1636,7 +1636,7 @@ class HomeScreenWidgets {
                 return Card(
                   child: Container(
                     height: screenHeight * .2,
-                    width: 270,
+                    width: screenWidth*.6,
                     decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                         color: Colors.black),
@@ -1703,17 +1703,19 @@ class HomeScreenWidgets {
                     itemCount: facultyList.length,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(screenWidth *
+                            0.01), // Dynamic padding (1% of screen width)
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
                             // Gradient border
                             Container(
                               height: screenHeight *
-                                  .31, // Increased height for border
-                              width: 236, // Increased width for border
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
+                                  0.31, // Dynamic height for border (31% of screen height)
+                              width: screenWidth *
+                                  0.6, // Dynamic width for border (60% of screen width)
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
                                   colors: [
                                     Color.fromRGBO(30, 117, 229, 1),
                                     Color.fromRGBO(90, 203, 255, 1),
@@ -1721,26 +1723,31 @@ class HomeScreenWidgets {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                    screenWidth *
+                                        0.03)), // Dynamic border radius
                               ),
                             ),
                             // Original container
                             Container(
-                              height: screenHeight * .227,
-                              width: 230,
-                              decoration: const BoxDecoration(
+                              height: screenHeight *
+                                  0.227, // Dynamic height (22.7% of screen height)
+                              width: screenWidth *
+                                  0.58, // Dynamic width (58% of screen width)
+                              decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                    screenWidth *
+                                        0.03)), // Dynamic border radius
                               ),
                               child: Column(
                                 children: [
                                   SizedBox(
-                                    height: screenHeight * .005,
-                                  ),
+                                      height: screenHeight *
+                                          0.0045), // Dynamic vertical spacing
                                   CircleAvatar(
-                                    radius: 56,
+                                    radius: screenWidth *
+                                        0.13, // Dynamic radius (15% of screen width)
                                     backgroundColor:
                                         const Color.fromRGBO(206, 211, 214, 1),
                                     child: ClipOval(
@@ -1750,23 +1757,26 @@ class HomeScreenWidgets {
                                         errorBuilder: (BuildContext context,
                                             Object exception,
                                             StackTrace? stackTrace) {
-                                          return const Icon(
+                                          return Icon(
                                             Icons
-                                                .person_2_outlined, // Fallback icon (you can use any icon or widget here)
-                                            size:
-                                                40, // Adjust the size if needed
+                                                .person_2_outlined, // Fallback icon
+                                            size: screenWidth *
+                                                0.1, // Dynamic size for fallback icon (10% of screen width)
                                             color: Colors.white, // Icon color
                                           );
                                         },
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                      height: screenHeight *
+                                          0.005), // Dynamic vertical spacing
                                   SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: screenWidth *
+                                              0.02), // Dynamic horizontal padding
                                       child: Row(
                                         children: [
                                           CustomText(
@@ -1777,14 +1787,17 @@ class HomeScreenWidgets {
                                               color: const Color.fromRGBO(
                                                   27, 73, 101, 1),
                                               fontWeight: FontWeight.w600,
-                                              fontSize: 14,
+                                              fontSize: screenWidth *
+                                                  0.04, // Dynamic font size (4% of screen width)
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 3),
+                                  SizedBox(
+                                      height: screenHeight *
+                                          0.003), // Dynamic vertical spacing
                                   CustomText(
                                     text:
                                         facultyList[index].qualification ?? '',
@@ -1792,7 +1805,8 @@ class HomeScreenWidgets {
                                       color: const Color.fromRGBO(
                                           188, 189, 189, 1),
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 8,
+                                      fontSize: screenWidth *
+                                          0.02, // Dynamic font size (2% of screen width)
                                     ),
                                     textalign: TextAlign.center,
                                   ),
@@ -1802,10 +1816,13 @@ class HomeScreenWidgets {
                                       color:
                                           const Color.fromRGBO(27, 73, 101, 1),
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 15,
+                                      fontSize: screenWidth *
+                                          0.04, // Dynamic font size (4% of screen width)
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                      height: screenHeight *
+                                          0.01), // Dynamic vertical spacing
                                 ],
                               ),
                             ),
@@ -1904,7 +1921,7 @@ class HomeScreenWidgets {
     double screenHeight,
   ) {
     return SizedBox(
-      height: 200,
+      height: screenHeight * .2,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
