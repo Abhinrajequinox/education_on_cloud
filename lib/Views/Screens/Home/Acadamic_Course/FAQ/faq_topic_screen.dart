@@ -1,35 +1,40 @@
 import 'dart:developer';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/faq_topi_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/chapters_services.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/faq_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Chapters/chapter_chapters_widget.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Revision_classes/revision_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/FAQ/faq_topics_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChapterScreenChapter extends StatefulWidget {
+class FaqTopicScreen extends StatefulWidget {
+  final String titleName;
+  final String languageName;
+  final String chapterId;
+  final Color cardColor;
   final String titleOfChapter;
   final String courseId;
-  final String languageName;
-  const ChapterScreenChapter(
+  const FaqTopicScreen(
       {super.key,
       required this.titleOfChapter,
       required this.courseId,
-      required this.languageName});
+      required this.languageName,
+      required this.titleName,
+      required this.chapterId,
+      required this.cardColor});
 
   @override
-  State<ChapterScreenChapter> createState() => _ChapterScreenChapterState();
+  State<FaqTopicScreen> createState() => _FaqTopicScreenState();
 }
 
-final ChapterScreenChapterWidget chapterScreenChapterWidget =
-    ChapterScreenChapterWidget();
-final TheoryChapterScreenController theoryChapterScreenController =
-    TheoryChapterScreenController();
-final AcademicChaptersServices academicChaptersServices=AcademicChaptersServices();
-class _ChapterScreenChapterState extends State<ChapterScreenChapter> {
+final FaqTopicScreenWidget faqTopicScreenWidget=FaqTopicScreenWidget();
+final FaqTopiScreenController faqTopiScreenController=FaqTopiScreenController();
+final AcademicFaqServices academicFaqServices=AcademicFaqServices();
+
+class _FaqTopicScreenState extends State<FaqTopicScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -45,32 +50,38 @@ class _ChapterScreenChapterState extends State<ChapterScreenChapter> {
     @override
     void dispose() {
       super.dispose();
+      faqTopiScreenController.isExpanded(-1);
       academicDrawerController.decrementDrawerIndex();
+      faqTopiScreenController.toggleExpansion(-1);
     }
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: _appBar(context, screenWidth, _scaffoldKey),
       body: _body(
-        courseId: widget.courseId,
-        languageName: widget.languageName,
-        context: context,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        titleOfChapter: widget.titleOfChapter,
-      ),
+          cardColor: widget.cardColor,
+          chapterId: widget.chapterId,
+          courseId: widget.courseId,
+          languageName: widget.languageName,
+          context: context,
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+          titleOfChapter: widget.titleOfChapter,
+          titleName: widget.titleName),
       drawer: DrawerOfAcademicCourse(
-        languageName: widget.languageName,
-        titleOfChapter: widget.titleOfChapter,
-        // menuStructure: menuStructure,
-        courseId: widget.courseId,
-      ),
+          titleOfChapter: widget.titleOfChapter,
+          // menuStructure: menuStructure,
+          courseId: widget.courseId,
+          languageName: widget.languageName),
     );
   }
 }
 
 AppBar _appBar(BuildContext context, double screenWidth,
     GlobalKey<ScaffoldState> _scaffoldKey) {
+  academicDrawerController.incrementDrawerIndex();
+  log('while reached on the chapter screen ${academicDrawerController.drawerIntex.value.toString()}');
+
   return AppBar(
       backgroundColor:
           languageController.currentTheme.value.scaffoldBackgroundColor,
@@ -120,12 +131,15 @@ Widget _body(
     required double screenWidth,
     required double screenHeight,
     required String titleOfChapter,
+    required String titleName,
     required String courseId,
+    required String chapterId,
+    required Color cardColor,
     required String languageName}) {
-  return FutureBuilder<List<ChapterModel>>(
-      future: academicChaptersServices.fetchCourseChapters(
-        courseId: courseId,
-        language: languageName,
+  log(courseId);
+  return FutureBuilder<List<ChapterSubTopicModel>>(
+      future: academicFaqServices.fetchChaptersSubtopics(
+        chapId: chapterId,
       ),
       builder: (context, snapshot) {
         // Handle different states of the Future
@@ -152,18 +166,32 @@ Widget _body(
               padding: EdgeInsets.all(screenWidth * .05),
               child: Column(
                 children: [
-                  chapterScreenChapterWidget.titleAndBackButton(
-                      context, screenWidth, titleOfChapter),
+                  faqTopicScreenWidget.titleAndBackButton(
+                      context, screenWidth, titleOfChapter, titleName),
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  chapterScreenChapterWidget.listOfChapters(
-                      courseId: courseId,
-                      titleOfChapter: titleOfChapter,
-                      chapters: chapters!,
-                      screenHeight: screenHeight,
-                      screenWidth: screenWidth,
-                      languageName: languageName)
+                  SizedBox(
+                    height: screenHeight * .01,
+                  ),
+                  faqTopicScreenWidget.languageChangeDropDownContainer(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
+                  SizedBox(
+                    height: screenHeight * .025,
+                  ),
+                  faqTopicScreenWidget.languageOptionsList(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
+                  faqTopicScreenWidget.typesOfNotes(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
+                  // faqTopicScreenWidget.languageChangeDropDown(screenHeight),
+                  faqTopicScreenWidget.listOfChapters(
+                    cardColor: cardColor,
+                    chapters: chapters!,
+                    screenHeight: screenHeight,
+                    screenWidth: screenWidth,
+                    languageName: languageName,
+                    titleOfChapter: titleOfChapter,
+                  )
                 ],
               ),
             ),

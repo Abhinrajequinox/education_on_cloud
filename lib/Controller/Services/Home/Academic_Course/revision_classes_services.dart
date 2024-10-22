@@ -13,7 +13,7 @@ class RevisionClassesServices {
         Uri.parse(revisionClassApi),
         body: {
           'chap_id': chaptId,
-          'lang':language
+          'lang':"English"
         },
       );
 

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Chapters/chapter_chaptes_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/FAQ/faq_chapters_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Revision_Classes/revision_chapter_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_chapters_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -150,8 +151,28 @@ class _DrawerOfAcademicCourseState extends State<DrawerOfAcademicCourse> {
               icon: 'lib/Assets/Home/Drawer_icon/chapters-img-icon.png',
             ),
             _customListTile(
-              onTap: () {
+             onTap: () {
                 _drawerKey.currentState?.closeDrawer();
+                log('when on tap on the list tile ${academicDrawerController.drawerIntex.value.toString()}');
+                for (int i = 0;
+                    i <= academicDrawerController.drawerIntex.value;
+                    i++) {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                }
+                academicDrawerController.drawerIntex.value = 0;
+                log('after on tap on the list tile ${academicDrawerController.drawerIntex.value.toString()}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FaqChaptersScreen(
+                        titleOfChapter: widget.titleOfChapter,
+                        courseId: widget.courseId,
+                        languageName: widget
+                            .languageName), // Replace with your new screen
+                  ),
+                );
               },
               title: 'FAQs',
               icon: 'lib/Assets/Home/Drawer_icon/FAQ-icon.png',

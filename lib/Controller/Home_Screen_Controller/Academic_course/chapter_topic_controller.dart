@@ -2,8 +2,6 @@ import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen
 import 'package:get/get.dart';
 
 class AcademicChapterTopicController extends GetxController {
-
-  
   // Controls whether the dropdown is expanded or not
   var isDropdownExpanded = false.obs;
 
@@ -13,16 +11,22 @@ class AcademicChapterTopicController extends GetxController {
   // Toggle function for dropdown and arrow animation
   void toggleDropdown() {
     isDropdownExpanded.value = !isDropdownExpanded.value;
-    iconRotation.value = isDropdownExpanded.value ? 0.5 : 0.0; // 180-degree rotation
+    iconRotation.value =
+        isDropdownExpanded.value ? 0.5 : 0.0; // 180-degree rotation
   }
 
   // Update language selection and collapse the dropdown
   void selectLanguage(String languageCode, String country) {
     // Call the language change logic here
     languageController.changeLanguage(languageCode, country);
-    
+
     // Collapse the dropdown and rotate the arrow back
     toggleDropdown();
   }
-}
 
+  var noteType = 'long'.obs;
+
+  void changeNoteType(String val) {
+    noteType.value = val;
+  }
+}

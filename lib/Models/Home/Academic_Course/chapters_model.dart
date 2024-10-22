@@ -36,3 +36,18 @@ class AcademicChaptersTopicsModel {
     );
   }
 }
+
+
+class AcademicChapterEnoteModel {
+  final List<String> sections;
+
+  AcademicChapterEnoteModel({required this.sections});
+
+  factory AcademicChapterEnoteModel.fromJson(Map<String, dynamic> json) {
+    return AcademicChapterEnoteModel(
+      sections: List<String>.from(json['sections']),
+    );
+  }
+
+}
+

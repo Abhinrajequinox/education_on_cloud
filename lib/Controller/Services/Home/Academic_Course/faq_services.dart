@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:education_on_cloud/Models/Home/Academic_Course/chapters_model.dart';
+import 'package:education_on_cloud/Apis/Academic_Course/faq_api.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/faq_model.dart';
+import 'package:http/http.dart'as http;
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
-import 'package:http/http.dart' as http;
-import 'package:education_on_cloud/Apis/Academic_Course/chapters_api.dart';
 
-class AcademicChaptersServices {
-
+class AcademicFaqServices {
 
    Future<List<ChapterModel>> fetchCourseChapters({
     required String courseId,
@@ -14,7 +13,7 @@ class AcademicChaptersServices {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse(academicChapterChaptersApi),
+        Uri.parse(academicFaqChapterApi),
         body: {
           'crs_id': courseId,
           'lang': language,
@@ -44,7 +43,7 @@ class AcademicChaptersServices {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse(academicChaptersSubtopicApi),
+        Uri.parse(acdemicFaqSubtopicApi),
         body: {
           'chap_id': chapId,
         },
@@ -76,8 +75,7 @@ class AcademicChaptersServices {
   }
 
 
-
-  Future<List<AcademicChapterEnoteModel>> fetchENotes({
+  Future<List<AcademicFaqEnoteModel>> fetchFaqs({
     required String id,
     required String noteType,
   }) async {
@@ -85,7 +83,7 @@ class AcademicChaptersServices {
       log(noteType);
       final response = await http.post(
         Uri.parse(
-            getAcademicChapterEnotesApi), // Replace with your actual API endpoint
+            acdemicFaqNotes), // Replace with your actual API endpoint
         body: {
           'id': id,
           'type': noteType,
@@ -103,7 +101,7 @@ class AcademicChaptersServices {
         if (jsonResponse.containsKey('sections')) {
           // Directly map the sections to the model
           return [
-            AcademicChapterEnoteModel.fromJson(jsonResponse)
+            AcademicFaqEnoteModel.fromJson(jsonResponse)
           ]; // Wrap it in a list since the model expects a List
         } else {
           throw Exception('No academic chapters data found in the response');
@@ -116,4 +114,5 @@ class AcademicChaptersServices {
       return []; // Return an empty list on error
     }
   }
+  
 }

@@ -58,6 +58,7 @@ class _ChaptersTopicScreenState extends State<ChaptersTopicScreen> {
       super.dispose();
       theoryChapterScreenController.isExpanded(-1);
       academicDrawerController.decrementDrawerIndex();
+      theoryChapterScreenController.toggleExpansion(-1);
     }
 
     return Scaffold(
@@ -143,7 +144,7 @@ Widget _body(
     required String languageName}) {
   log(courseId);
   return FutureBuilder<List<ChapterSubTopicModel>>(
-      future: academicChaptersServices.fetchCourseChapters(
+      future: academicChaptersServices.fetchChaptersSubtopics(
         chapId: chapterId,
       ),
       builder: (context, snapshot) {

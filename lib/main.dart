@@ -22,10 +22,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeScreenController _homeScreenController=HomeScreenController();
     final LanguageController languageController =
         Get.find<LanguageController>();
-        _homeScreenController.fetchCourses();
     return Obx(() {
       return GetMaterialApp(
         // translations: AppTranslations(),

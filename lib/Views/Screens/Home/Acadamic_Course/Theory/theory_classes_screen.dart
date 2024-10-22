@@ -136,10 +136,12 @@ Widget _body(
     required String chapterId,
     required String languageName,
     required Color cardColor}) {
+      log(languageName);
+      log(chapterId);
   return FutureBuilder<List<AcademicTheoryClassModel>>(
       future: academicCourseServices.fetchAcademicTheoryClass(
         chaptId: chapterId,
-        language: languageName,
+        language: 'English',
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

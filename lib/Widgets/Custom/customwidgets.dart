@@ -238,8 +238,9 @@ Widget customAlertBox(
     required String cancelText,
     required double screenHeight,
     required double screenWidth,
+    required BuildContext cancelContext,
    required void Function()? confirm,
-   required void Function()? cancel}) {
+   }) {
   return AlertDialog(
     content: CustomText(
       text: content,
@@ -251,13 +252,16 @@ Widget customAlertBox(
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           alerBoxButton(
-              onTap: confirm,
+              onTap: () {
+                Navigator.of(cancelContext).pop(); 
+              },
               screenHeight: screenHeight,
               screenWidth: screenWidth,
               buttonName: cancelText,
               bgColor: Colors.white),
           alerBoxButton(
-              onTap: cancel,
+              onTap: confirm
+               ,
               screenHeight: screenHeight,
               screenWidth: screenWidth,
               buttonName: confirmText,
@@ -275,7 +279,7 @@ Widget alerBoxButton(
     required Color bgColor,
     required void Function()? onTap}) {
   return GestureDetector(
-    onTap: () {},
+    onTap:  onTap,
     child: Container(
       height: screenHeight * 0.05,
       width: screenWidth * 0.31,

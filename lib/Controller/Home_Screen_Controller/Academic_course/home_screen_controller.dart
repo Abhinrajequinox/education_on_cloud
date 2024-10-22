@@ -1,11 +1,13 @@
 import 'dart:developer';
 
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
+import 'package:education_on_cloud/Functions/auth_functions.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:get/get.dart';
 
 class HomeScreenController extends GetxController {
-  final AcademicCourseServices academicCourseServices = AcademicCourseServices();
+  final AcademicCourseServices academicCourseServices =
+      AcademicCourseServices();
 
   RxBool categoryListOrGrid = true.obs;
 
@@ -14,7 +16,8 @@ class HomeScreenController extends GetxController {
   }
 
   var expandedIndex = (-1).obs; // -1 means no card is expanded
-  var toggleAnimations = <int, bool>{}.obs; // Keeps track of animation state for each index
+  var toggleAnimations =
+      <int, bool>{}.obs; // Keeps track of animation state for each index
 
   void toggleExpansion(int index) {
     // If we are expanding a new card
@@ -23,7 +26,7 @@ class HomeScreenController extends GetxController {
       if (expandedIndex.value != -1) {
         toggleAnimations[expandedIndex.value] = true; // Close previous one
       }
-      
+
       // Update the expanded index to the new card and start its animation
       expandedIndex.value = index;
       toggleAnimations[index] = false; // Open the new one
@@ -43,12 +46,12 @@ class HomeScreenController extends GetxController {
     return toggleAnimations[index] ?? true;
   }
 
+  RxList<CourseSectionModel> course_section = <CourseSectionModel>[].obs;
 
-RxList<CourseSectionModel> course_section = <CourseSectionModel>[].obs;
-
- void addCourseSection(CourseSectionModel courseSection) {
+  void addCourseSection(CourseSectionModel courseSection) {
     course_section.add(courseSection);
   }
+
   RxBool coursesBoardsListOrGrid = false.obs;
 
   void changeCoursesBoardsListOrGrid(bool val) {
@@ -71,17 +74,30 @@ RxList<CourseSectionModel> course_section = <CourseSectionModel>[].obs;
 
   Future<void> fetchCourses() async {
     log('brfore fetching the coursesession');
+    Map<String, String?> userDetails = await getUser();
+    var flagId = ''.obs;
+    if (userDetails['country'] == 'India') {
+      flagId.value = '0';
+    } else if (userDetails['country'] == 'Nepal') {
+      flagId.value = '1';
+    } else if (userDetails['country'] == 'Sri lanka') {
+      flagId.value = '2';
+    } else if (userDetails['country'] == 'Bangladesh') {
+      flagId.value = '3';
+    } else if (userDetails['country'] == 'Bhutan') {
+      flagId.value = '4';
+    }
     List<CourseSectionModel> fetchedCourses =
-        await academicCourseServices.fetchCoursesSection('0');
+        await academicCourseServices.fetchCoursesSection(flagId.value);
     log('Fetched Courses: ${fetchedCourses.length}');
     courseSessionList.value = fetchedCourses;
   }
 
   RxBool isLoadingOfcourseSessionList = true.obs;
 
-void changeisLoadingOfcourseSessionList(bool val){
-  isLoadingOfcourseSessionList.value=val;
-}
+  void changeisLoadingOfcourseSessionList(bool val) {
+    isLoadingOfcourseSessionList.value = val;
+  }
 
   void changeCourseSessionList(List<CourseSectionModel> coursesection) {
     // isLoadingOfcourseSessionList.value = false;
@@ -100,8 +116,9 @@ void changeisLoadingOfcourseSessionList(bool val){
   void changelanguageListVisibility(bool val) {
     languageListVisibility.value = val;
   }
-RxBool isLoadingcoursecategoryModel=true.obs;
-changeIsLoadingcourseCategoryModel(bool val){
-  isLoadingcoursecategoryModel.value=val;
-}
+
+  RxBool isLoadingcoursecategoryModel = true.obs;
+  changeIsLoadingcourseCategoryModel(bool val) {
+    isLoadingcoursecategoryModel.value = val;
+  }
 }

@@ -7,14 +7,10 @@ class LanguageTranslations {
   final Map<String, String> _dynamicTranslations = {};
 
   Future<String> translateDynamicText(String text, String languageCode) async {
-    if (_dynamicTranslations.containsKey(text)) {
-      return _dynamicTranslations[text]!;
-    } else {
-      var translation = await translator.translate(text, to: languageCode);
+     var translation = await translator.translate(text, to: languageCode);
       _dynamicTranslations[text] = translation.text;
       log(translation.text);
       log(languageCode);
       return translation.text;
-    }
   }
 }

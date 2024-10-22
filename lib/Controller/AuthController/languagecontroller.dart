@@ -15,10 +15,11 @@ class LanguageController extends GetxController {
   void onInit() {
     super.onInit();
     loadLanguage();
-    _loadThemeFromPrefs(); 
+    _loadThemeFromPrefs();
   }
 
-final StreamController<Locale> _languageController = StreamController<Locale>.broadcast();
+  final StreamController<Locale> _languageController =
+      StreamController<Locale>.broadcast();
   Stream<Locale> get languageStream => _languageController.stream;
 
   Future<void> changeLanguage(String code, String country) async {
@@ -33,36 +34,35 @@ final StreamController<Locale> _languageController = StreamController<Locale>.br
     log('Stored language code: $storedLang');
     Get.updateLocale(locale);
     Get.forceAppUpdate();
-    
   }
 
   Future<String> translateApiText(String apiText) async {
     log('the passed language code is ${currentLocale.value} ');
-        SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedLang = prefs.getString('languageCode');
     log('Stored language code: $storedLang');
 
-    String translatedText = await languageTranslations.translateDynamicText(
-        apiText, storedLang!);
+    String translatedText =
+        await languageTranslations.translateDynamicText(apiText, storedLang!);
     return translatedText;
   }
 
-
-  Future<void> loadLanguage() async {
-     
+  Future<String> getCurrentLanguageCode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? languageCode =
-        prefs.getString('languageCode') ?? 'en'; 
-    String? countryCode =
-        prefs.getString('countryCode') ?? 'US'; 
-    currentLocale.value = Locale(languageCode, countryCode);
-    Get.updateLocale(Locale(languageCode, countryCode)); 
+    String? storedLang = prefs.getString('languageCode');
+    return storedLang!;
   }
 
+  Future<void> loadLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? languageCode = prefs.getString('languageCode') ?? 'en';
+    String? countryCode = prefs.getString('countryCode') ?? 'US';
+    currentLocale.value = Locale(languageCode, countryCode);
+    Get.updateLocale(Locale(languageCode, countryCode));
+  }
 
   Rx<ThemeData> currentTheme = AppThemes.lightTheme.obs;
   RxString currentMode = 'Light Mode'.obs;
-
 
   void changeMode(String mode) async {
     log('Changing mode to: $mode');

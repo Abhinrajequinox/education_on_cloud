@@ -876,8 +876,21 @@ class HomeScreenWidgets {
               homeScreenController.changecourseAndBoardIndexForColor(index);
               homeScreenController.changeisLoadingOfcourseSessionList(false);
               homeScreenController.courseSessionList.clear();
-              var fetchedCourses =
-                  await academicCourseServices.fetchCoursesSection('0');
+              Map<String, String?> userDetails = await getUser();
+              var flagId = ''.obs;
+              if (userDetails['country'] == 'India') {
+                flagId.value = '0';
+              } else if (userDetails['country'] == 'Nepal') {
+                flagId.value = '1';
+              } else if (userDetails['country'] == 'Sri lanka') {
+                flagId.value = '2';
+              } else if (userDetails['country'] == 'Bangladesh') {
+                flagId.value = '3';
+              } else if (userDetails['country'] == 'Bhutan') {
+                flagId.value = '4';
+              }
+              var fetchedCourses = await academicCourseServices
+                  .fetchCoursesSection(flagId.value);
               homeScreenController.changeCourseSessionList(fetchedCourses);
               homeScreenController.changeisLoadingOfcourseSessionList(true);
             },
@@ -1006,50 +1019,29 @@ class HomeScreenWidgets {
                                     ),
                                     const SizedBox(width: 10),
                                     SizedBox(
-                                      width: 260,
-                                      child: FutureBuilder<String>(
-                                        future:
-                                            languageController.translateApiText(
-                                                course.sectionName),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const Text(
-                                                'Loading...'); // Placeholder while translating
-                                          } else if (snapshot.hasError) {
-                                            return Text(
-                                                'Error: ${snapshot.error}'); // Error handling
-                                          } else {
-                                            // Successfully translated
-                                            return SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                children: [
-                                                  CustomText(
-                                                    text: snapshot.data ??
-                                                        course
-                                                            .sectionName, // Use original text if translation fails
-                                                    textStyle:
-                                                        GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 14,
-                                                      color: homeScreenController
-                                                                  .categoryIndexForColor
-                                                                  .value ==
-                                                              index
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                    ),
-                                                    maxline: 1,
-                                                  ),
-                                                ],
+                                        width: 260,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              CustomText(
+                                                text: course
+                                                    .sectionName, // Use original text if translation fails
+                                                textStyle: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                  color: homeScreenController
+                                                              .categoryIndexForColor
+                                                              .value ==
+                                                          index
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                                maxline: 1,
                                               ),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ),
+                                            ],
+                                          ),
+                                        )),
                                     const Icon(Icons.arrow_forward_ios),
                                   ],
                                 ),
@@ -1636,7 +1628,7 @@ class HomeScreenWidgets {
                 return Card(
                   child: Container(
                     height: screenHeight * .2,
-                    width: screenWidth*.6,
+                    width: screenWidth * .6,
                     decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                         color: Colors.black),

@@ -1,11 +1,14 @@
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/chapter_topic_controller.dart';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/faq_topi_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Models/Home/Academic_Course/chapters_model.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/faq_model.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Chapters/chapters_topic_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/FAQ/faq_chapters_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/course_category_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_classes_screen.dart';
@@ -15,14 +18,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChaptersTopicsWidget {
+class FaqTopicScreenWidget {
   // List<AcademicTheoryClassModel> theoryClass = [];
-  final TheoryChapterScreenController theorychapterScreenController =
-      TheoryChapterScreenController();
-  final AcademicCourseServices academicCourseServices =
-      AcademicCourseServices();
-  final AcademicChapterTopicController academicChapterTopicController =
-      AcademicChapterTopicController();
+  // final TheoryChapterScreenController theorychapterScreenController =
+  //     TheoryChapterScreenController();
+  final FaqTopiScreenController faqTopiScreenController =
+      FaqTopiScreenController();
+  // final AcademicCourseServices academicCourseServices =
+  //     AcademicCourseServices();
+  // final AcademicChapterTopicController academicChapterTopicController =
+  //     AcademicChapterTopicController();
   Widget titleAndBackButton(BuildContext context, double screenWidth,
       String titleOfChapter, String titleName) {
     return SingleChildScrollView(
@@ -55,7 +60,7 @@ class ChaptersTopicsWidget {
               SizedBox(
                 width: screenWidth * .7,
                 child: CustomText(
-                    text: '$titleName Chapters Notes',
+                    text: '$titleName - FAQ’s',
                     textStyle: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -78,23 +83,22 @@ class ChaptersTopicsWidget {
           children: [
             GestureDetector(
               onTap: () {
-                academicChapterTopicController.changeNoteType('long');
+                faqTopiScreenController.changeNoteType('long');
               },
               child: Stack(
                 children: [
                   SizedBox(
                     height: screenHeight * 0.038,
                     width: screenWidth * 0.28,
-                    child:
-                        academicChapterTopicController.noteType.value == 'long'
-                            ? Image.asset(
-                                'lib/Assets/Home/Buttons/E-note-button-choose.png',
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'lib/Assets/Home/Buttons/E-note-button.png',
-                                fit: BoxFit.cover,
-                              ),
+                    child: faqTopiScreenController.noteType.value == 'long'
+                        ? Image.asset(
+                            'lib/Assets/Home/Buttons/E-note-button-choose.png',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'lib/Assets/Home/Buttons/E-note-button.png',
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Positioned(
                       left: screenWidth * 0.07,
@@ -109,23 +113,22 @@ class ChaptersTopicsWidget {
             ),
             GestureDetector(
               onTap: () {
-                academicChapterTopicController.changeNoteType('short');
+                faqTopiScreenController.changeNoteType('short');
               },
               child: Stack(
                 children: [
                   SizedBox(
                     height: screenHeight * 0.038,
                     width: screenWidth * 0.28,
-                    child:
-                        academicChapterTopicController.noteType.value == 'short'
-                            ? Image.asset(
-                                'lib/Assets/Home/Buttons/E-note-button-choose.png',
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'lib/Assets/Home/Buttons/E-note-button.png',
-                                fit: BoxFit.cover,
-                              ),
+                    child: faqTopiScreenController.noteType.value == 'short'
+                        ? Image.asset(
+                            'lib/Assets/Home/Buttons/E-note-button-choose.png',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'lib/Assets/Home/Buttons/E-note-button.png',
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Positioned(
                       left: screenWidth * 0.07,
@@ -140,23 +143,22 @@ class ChaptersTopicsWidget {
             ),
             GestureDetector(
               onTap: () {
-                academicChapterTopicController.changeNoteType('quick');
+                faqTopiScreenController.changeNoteType('quick');
               },
               child: Stack(
                 children: [
                   SizedBox(
                     height: screenHeight * 0.038,
                     width: screenWidth * 0.28,
-                    child:
-                        academicChapterTopicController.noteType.value == 'quick'
-                            ? Image.asset(
-                                'lib/Assets/Home/Buttons/E-note-button-choose.png',
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'lib/Assets/Home/Buttons/E-note-button.png',
-                                fit: BoxFit.cover,
-                              ),
+                    child: faqTopiScreenController.noteType.value == 'quick'
+                        ? Image.asset(
+                            'lib/Assets/Home/Buttons/E-note-button-choose.png',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'lib/Assets/Home/Buttons/E-note-button.png',
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Positioned(
                       left: screenWidth * 0.07,
@@ -183,7 +185,7 @@ class ChaptersTopicsWidget {
       return GestureDetector(
         onTap: () {
           // Toggle the dropdown expansion and arrow animation
-          academicChapterTopicController.toggleDropdown();
+          faqTopiScreenController.toggleDropdown();
         },
         child: Container(
           decoration: BoxDecoration(
@@ -206,7 +208,7 @@ class ChaptersTopicsWidget {
               ),
               const SizedBox(width: 16), // Adjust space if needed
               AnimatedRotation(
-                turns: academicChapterTopicController.iconRotation.value,
+                turns: faqTopiScreenController.iconRotation.value,
                 duration: const Duration(milliseconds: 300),
                 child: const Icon(Icons.keyboard_arrow_down_outlined),
               ),
@@ -222,7 +224,7 @@ class ChaptersTopicsWidget {
     required double screenWidth,
   }) {
     return Obx(() {
-      return academicChapterTopicController.isDropdownExpanded.value
+      return faqTopiScreenController.isDropdownExpanded.value
           ? FutureBuilder<String>(
               future: languageController.getCurrentLanguageCode(),
               builder: (context, snapshot) {
@@ -255,14 +257,13 @@ class ChaptersTopicsWidget {
                                     confirm: () {
                                       Navigator.pop(context);
                                       // Call selectLanguage with language code and country
-                                      academicChapterTopicController
-                                          .selectLanguage(
+                                      faqTopiScreenController.selectLanguage(
                                         language[
                                             "code"]!, // Pass the correct language code
                                         language[
                                             "country"]!, // Pass the country code
                                       );
-                                      theorychapterScreenController
+                                      faqTopiScreenController
                                           .toggleExpansion(-1);
                                     },
                                     content:
@@ -359,18 +360,7 @@ class ChaptersTopicsWidget {
               padding: const EdgeInsets.only(top: 8),
               child: GestureDetector(
                 onTap: () {
-                  theorychapterScreenController.toggleExpansion(index);
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => AcademicCourseTheoryClass(
-                  //           drawerCourseId: chapter.courseId,
-                  //           drawertitleOfChapter: titleOfChapter,
-                  //           languageName: languageName,
-                  //           chapterId: chapter.id,
-                  //           titleName: chapter.chapterName,
-                  //           cardColor: cardColor),
-                  //     ));
+                  faqTopiScreenController.toggleExpansion(index);
                 },
                 child: Card(
                   elevation: 3,
@@ -429,7 +419,7 @@ class ChaptersTopicsWidget {
                                 color: Color.fromRGBO(30, 117, 229, 1)),
                             child: Center(
                               child: CustomText(
-                                text: 'Get Notes',
+                                text: 'Get FAQ’s',
                                 textStyle: GoogleFonts.mulish(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 13,
@@ -442,7 +432,7 @@ class ChaptersTopicsWidget {
                           ),
                           Obx(
                             () => AnimatedRotation(
-                              turns: theorychapterScreenController
+                              turns: faqTopiScreenController
                                       .getRotationState(index)
                                   ? 0
                                   : 0.5, // Rotate 180 degrees when expanded
@@ -450,7 +440,7 @@ class ChaptersTopicsWidget {
                               curve: Curves.easeInOut,
                               child: GestureDetector(
                                 onTap: () async {
-                                  theorychapterScreenController
+                                  faqTopiScreenController
                                       .toggleExpansion(index);
                                 },
                                 child: const ImageIcon(
@@ -468,7 +458,7 @@ class ChaptersTopicsWidget {
               ),
             ),
             Obx(() {
-              if (theorychapterScreenController.isExpanded(index)) {
+              if (faqTopiScreenController.isExpanded(index)) {
                 log(chapter.id);
                 return Container(
                   decoration: const BoxDecoration(
@@ -482,14 +472,13 @@ class ChaptersTopicsWidget {
                   width: screenWidth * 0.9, // Adjust based on content
                   child: Card(
                     elevation: 3,
-                    child: FutureBuilder<List<AcademicChapterEnoteModel>>(
-                      future: academicChaptersServices.fetchENotes(
+                    child: FutureBuilder<List<AcademicFaqEnoteModel>>(
+                      future: academicFaqServices.fetchFaqs(
                         id: chapter.id,
-                        noteType: academicChapterTopicController.noteType.value,
+                        noteType: faqTopiScreenController.noteType.value,
                       ),
                       builder: (BuildContext context,
-                          AsyncSnapshot<List<AcademicChapterEnoteModel>>
-                              snapshot) {
+                          AsyncSnapshot<List<AcademicFaqEnoteModel>> snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
@@ -502,8 +491,7 @@ class ChaptersTopicsWidget {
                           return const Center(
                               child: Text('No Notes available'));
                         } else {
-                          List<AcademicChapterEnoteModel> chapters =
-                              snapshot.data!;
+                          List<AcademicFaqEnoteModel> chapters = snapshot.data!;
                           return ListView.builder(
                             shrinkWrap: true,
                             itemCount: chapters.length,
@@ -588,51 +576,73 @@ class ChaptersTopicsWidget {
   }
 
   List<TextSpan> _processText(String text) {
-    // Split the text by new lines
+    // Split the text by new lines (double line breaks for paragraphs)
     List<String> lines = text.split('\n\n');
     List<TextSpan> spans = [];
 
     for (String line in lines) {
-      // Check for heading (any number of #)
+      // Check for heading with #
       if (line.startsWith('#')) {
-        // Remove leading '#' characters and trim whitespace
-        String headingText = line.replaceAll(RegExp(r'^#+\s*'), '');
-        spans.add(TextSpan(
-            text: headingText, // Heading text without '#'
+        // Detect and style heading based on # count
+        if (line.startsWith('##')) {
+          // Sub-heading (##)
+          String subheadingText = line.replaceAll(RegExp(r'^##\s*'), '');
+          spans.add(TextSpan(
+            text: subheadingText,
             style: GoogleFonts.kalam(
-                color: Colors.black,
-                fontWeight: FontWeight.w400, // FontWeight 400
-                fontSize: 14)));
-        spans.add(const TextSpan(text: '\n\n')); // Add spacing between sections
+              color: Colors.black,
+              fontWeight: FontWeight.w600, // Sub-heading style
+              fontSize: 16, // Adjust the font size for sub-heading
+            ),
+          ));
+        } else {
+          // Main heading (#)
+          String headingText = line.replaceAll(RegExp(r'^#\s*'), '');
+          spans.add(TextSpan(
+            text: headingText,
+            style: GoogleFonts.kalam(
+              color: Colors.black,
+              fontWeight: FontWeight.w700, // Main heading style
+              fontSize: 18, // Adjust the font size for heading
+            ),
+          ));
+        }
+        spans
+            .add(const TextSpan(text: '\n\n')); // Add spacing after the heading
       } else {
-        // For regular text, process **bold**
+        // For regular text, process **bold** by replacing it and applying styles
         String processedLine = line;
-        RegExp boldRegex = RegExp(r'\*\*(.*?)\*\*');
+        RegExp boldRegex =
+            RegExp(r'\*\*(.*?)\*\*'); // Regex to detect **bold** text
 
-        // Find and replace **bold** text
-        processedLine = processedLine.replaceAllMapped(boldRegex, (match) {
-          return '**${match.group(1)}**';
-        });
-
-        // Split further by ** to style text accordingly
-        List<String> parts = processedLine.split(RegExp(r'\*\*'));
+        // Split the line by the ** markers to identify and style bold text
+        List<String> parts = processedLine.split(boldRegex);
         for (int i = 0; i < parts.length; i++) {
           String part = parts[i];
+
           if (i % 2 == 1) {
-            // Bold part
+            // This is the bold part
             spans.add(TextSpan(
-                text: part,
-                style: GoogleFonts.kalam(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w300) // FontWeight 300
-                ));
+              text: part,
+              style: GoogleFonts.kalam(
+                color: Colors.black,
+                fontWeight: FontWeight.w700, // Bold text style
+                fontSize: 14, // Font size for bold text
+              ),
+            ));
           } else {
-            // Regular part
+            // This is the regular part
             spans.add(TextSpan(
-                text: part, style: GoogleFonts.kalam(color: Colors.black)));
+              text: part,
+              style: GoogleFonts.kalam(
+                color: Colors.black, // Regular text style
+                fontSize: 14, // Font size for regular text
+              ),
+            ));
           }
         }
-        spans.add(const TextSpan(text: '\n\n')); // Add spacing between sections
+        spans.add(
+            const TextSpan(text: '\n\n')); // Add spacing after the regular text
       }
     }
 

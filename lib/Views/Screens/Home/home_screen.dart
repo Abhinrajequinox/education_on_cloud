@@ -27,7 +27,9 @@ final LoginServices loginServices = LoginServices();
 class _HomeScreenState extends State<HomeScreen> {
   // @override
   void initState() {
+    log('on the initstate of home screen');
     homeScreenController.fetchCourses();
+    log('after the initstate of home screen');
     super.initState();
   }
 

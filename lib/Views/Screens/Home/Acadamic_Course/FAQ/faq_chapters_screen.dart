@@ -1,35 +1,33 @@
 import 'dart:developer';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_chapter_screen_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/chapters_services.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/faq_services.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Chapters/chapter_chapters_widget.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Revision_classes/revision_chapter_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/FAQ/faq_chapter_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChapterScreenChapter extends StatefulWidget {
+class FaqChaptersScreen extends StatefulWidget {
   final String titleOfChapter;
   final String courseId;
   final String languageName;
-  const ChapterScreenChapter(
+  const FaqChaptersScreen(
       {super.key,
       required this.titleOfChapter,
       required this.courseId,
       required this.languageName});
 
   @override
-  State<ChapterScreenChapter> createState() => _ChapterScreenChapterState();
+  State<FaqChaptersScreen> createState() => _FaqChaptersScreenState();
 }
 
-final ChapterScreenChapterWidget chapterScreenChapterWidget =
-    ChapterScreenChapterWidget();
-final TheoryChapterScreenController theoryChapterScreenController =
-    TheoryChapterScreenController();
-final AcademicChaptersServices academicChaptersServices=AcademicChaptersServices();
-class _ChapterScreenChapterState extends State<ChapterScreenChapter> {
+final FaqChapterScreenWidget faqChapterScreenWidget=FaqChapterScreenWidget();
+// final TheoryChapterScreenController theoryChapterScreenController =
+//     TheoryChapterScreenController();
+final AcademicFaqServices academicFaqServices=AcademicFaqServices();
+
+class _FaqChaptersScreenState extends State<FaqChaptersScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -123,7 +121,7 @@ Widget _body(
     required String courseId,
     required String languageName}) {
   return FutureBuilder<List<ChapterModel>>(
-      future: academicChaptersServices.fetchCourseChapters(
+      future: academicFaqServices.fetchCourseChapters(
         courseId: courseId,
         language: languageName,
       ),
@@ -152,12 +150,12 @@ Widget _body(
               padding: EdgeInsets.all(screenWidth * .05),
               child: Column(
                 children: [
-                  chapterScreenChapterWidget.titleAndBackButton(
+                  faqChapterScreenWidget.titleAndBackButton(
                       context, screenWidth, titleOfChapter),
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  chapterScreenChapterWidget.listOfChapters(
+                  faqChapterScreenWidget.listOfChapters(
                       courseId: courseId,
                       titleOfChapter: titleOfChapter,
                       chapters: chapters!,
