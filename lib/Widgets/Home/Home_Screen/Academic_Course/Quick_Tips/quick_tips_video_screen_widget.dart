@@ -1,20 +1,21 @@
 import 'dart:developer';
+import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/quick_tips_video_controller.dart';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/Revision_classes_model.dart';
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
-import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_classes_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:get/get.dart'; 
+import 'package:get/get.dart'; // Import GetX package
 
 
-class AcademicTheoryClassWidget {
+class AcdemicQucikTipsVideoClasssWidget {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   // Create an instance of the GetX Controller
-  final TheoryVideoController theoryVideoController = TheoryVideoController();
+  final AcademicQuickTipsVideoController academicQuickTipsVideoController=AcademicQuickTipsVideoController();
 
   Widget titleAndBackButton(
       BuildContext context, double screenWidth, String titleOfChapter) {
@@ -63,7 +64,7 @@ class AcademicTheoryClassWidget {
   }
 
   Widget listOfClass({
-    required List<AcademicTheoryClassModel> classes,
+    required List<AcademicTheoryChapterModelClass> classes,
     required double screenHeight,
     required double screenWidth,
     required String languageName,
@@ -71,18 +72,18 @@ class AcademicTheoryClassWidget {
     required Color cardColor,
   }) {
     // Define currentClasses here
-    List<AcademicTheoryClassModel> currentClasses =
+    List<AcademicTheoryChapterModelClass> currentClasses =
         List.from(classes); // Clone the original list
 
     return Column(
       children: [
         // Display the video player with reactive URL and name
         Obx(() {
-          if (theoryVideoController.currentVideoUrl.value.isNotEmpty) {
+          if (academicQuickTipsVideoController.currentVideoUrl.value.isNotEmpty) {
             return SizedBox(
               child: _buildWebViewVideoPlayer(
-                videoUrl: theoryVideoController.currentVideoUrl.value,
-                videoName: theoryVideoController.currentVideoName.value,
+                videoUrl: academicQuickTipsVideoController.currentVideoUrl.value,
+                videoName: academicQuickTipsVideoController.currentVideoName.value,
                 screenHeight: screenHeight,
                 screenWidth: screenWidth,
               ),
@@ -115,13 +116,13 @@ class AcademicTheoryClassWidget {
   Widget _buildClassCard(
       BuildContext context,
       int index,
-      AcademicTheoryClassModel theoryClass,
+      AcademicTheoryChapterModelClass theoryClass,
       Animation<double> animation,
       double screenHeight,
       double screenWidth,
       String titleOfClass,
       Color cardColor,
-      List<AcademicTheoryClassModel> currentClasses) {
+      List<AcademicTheoryChapterModelClass> currentClasses) {
     return FadeTransition(
       opacity: animation,
       child: SlideTransition(
@@ -134,10 +135,10 @@ class AcademicTheoryClassWidget {
             String videoUrl = theoryClass.vidUrl;
             if (videoUrl.isNotEmpty) {
               // Update the currently playing video URL and name in the controller
-              theoryVideoController.updateVideo(videoUrl,
-                  '$titleOfClass :- Theory Class ${theoryClass.part}');
-              theoryVideoController.changeFavIcon(true);
-              theoryVideoController.changeTakeNote(false);
+              academicQuickTipsVideoController.updateVideo(videoUrl,
+                  '$titleOfClass :- QuickTips ${theoryClass.part}');
+              academicQuickTipsVideoController.changeFavIcon(true);
+              academicQuickTipsVideoController.changeTakeNote(false);
               if (index != 0) {
                 // Only update if it's not already the first item
                 _listKey.currentState?.removeItem(
@@ -189,13 +190,16 @@ class AcademicTheoryClassWidget {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[50],
+                          color: Colors.grey[100],
                           borderRadius:
                               const BorderRadius.all(Radius.circular(12)),
                         ),
                         width: screenWidth * .2,
-                        child: Image.asset(
-                            'lib/Assets/Home/video-thumbnail-img.png'),
+                        child: ClipRRect(borderRadius:
+                              const BorderRadius.all(Radius.circular(3)),
+                          child: Image.network(
+                              theoryClass.thumbnail),
+                        ),
                       ),
                       SizedBox(width: screenWidth * .02),
                       Column(
@@ -227,7 +231,7 @@ class AcademicTheoryClassWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomText(
-                                  text: 'Theory - ${theoryClass.part}',
+                                  text: 'QuickTips - ${theoryClass.part}',
                                   textStyle: GoogleFonts.inter(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 12,
@@ -265,7 +269,7 @@ class AcademicTheoryClassWidget {
                 () => Positioned(
                     top: -5,
                     left: 310,
-                    child: theoryVideoController.favIcon.value == true
+                    child: academicQuickTipsVideoController.favIcon.value == true
                         ? IconButton(
                             onPressed: () {},
                             icon: const Icon(Icons.favorite_border))
@@ -337,10 +341,10 @@ class AcademicTheoryClassWidget {
                     () => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        theoryVideoController.takeNote.value == false
+                        academicQuickTipsVideoController.takeNote.value == false
                             ? GestureDetector(
                                 onTap: () {
-                                  theoryVideoController.changeTakeNote(true);
+                                  academicQuickTipsVideoController.changeTakeNote(true);
                                 },
                                 child: Row(
                                   children: [
@@ -397,7 +401,7 @@ class AcademicTheoryClassWidget {
                                   )
                                 ],
                               ),
-                        theoryVideoController.takeNote.value == true
+                        academicQuickTipsVideoController.takeNote.value == true
                             ? TextFormField(
                                 decoration: const InputDecoration(
                                     border: UnderlineInputBorder(

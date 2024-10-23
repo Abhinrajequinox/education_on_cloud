@@ -1,71 +1,64 @@
-import 'dart:developer';
-
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
-import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/revision_classes_services.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/Revision_classes_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_class_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Quick_Tips/quick_tips_video_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AcademicCourseTheoryClass extends StatefulWidget {
+class AcademicQuickTipsVideoClassScreen extends StatefulWidget {
   final String titleName;
   final String languageName;
-  final String drawerCourseId;
-  final String drawertitleOfChapter;
   final String chapterId;
   final Color cardColor;
-  const AcademicCourseTheoryClass(
+  final String titleOfChapter;
+  final String courseId;
+  const AcademicQuickTipsVideoClassScreen(
       {super.key,
       required this.titleName,
       required this.languageName,
       required this.cardColor,
       required this.chapterId,
-      required this.drawerCourseId,
-      required this.drawertitleOfChapter});
+      required this.titleOfChapter,
+      required this.courseId});
 
   @override
-  State<AcademicCourseTheoryClass> createState() =>
-      _AcademicCourseTheoryClassState();
+  State<AcademicQuickTipsVideoClassScreen> createState() =>
+      _AcademicQuickTipsVideoClassScreenState();
 }
 
-final AcademicTheoryClassWidget academicTheoryClassWidget =
-    AcademicTheoryClassWidget();
-final AcademicCourseServices academicCourseServices = AcademicCourseServices();
+final AcdemicQucikTipsVideoClasssWidget acdemicQucikTipsVideoClasssWidget=AcdemicQucikTipsVideoClasssWidget();
+final RevisionClassesServices revisionClassesServices =
+    RevisionClassesServices();
 // final TheoryVideoController theoryVideoController = TheoryVideoController();
 
-class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
+class _AcademicQuickTipsVideoClassScreenState
+    extends State<AcademicQuickTipsVideoClassScreen> {
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     academicDrawerController.incrementDrawerIndex();
+    super.initState();
   }
 
   @override
   void dispose() {
     // Call the resetVideo method to clean up when the widget is disposed
-    academicTheoryClassWidget.theoryVideoController.resetVideo();
-   academicTheoryClassWidget.theoryVideoController.changeFavIcon(false);
+    acdemicQucikTipsVideoClasssWidget.academicQuickTipsVideoController.resetVideo();
+    acdemicQucikTipsVideoClasssWidget.academicQuickTipsVideoController.changeFavIcon(false);
     academicDrawerController.decrementDrawerIndex();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    log('while reached on the video screen ${academicDrawerController.drawerIntex.value.toString()}');
-
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      key: scaffoldKey,
-      appBar: _appBar(context, screenWidth, scaffoldKey),
+      key: _scaffoldKey,
+      appBar: _appBar(context, screenWidth, _scaffoldKey),
       body: _body(
           context: context,
           screenWidth: screenWidth,
@@ -75,15 +68,15 @@ class _AcademicCourseTheoryClassState extends State<AcademicCourseTheoryClass> {
           languageName: widget.languageName,
           cardColor: widget.cardColor),
       drawer: DrawerOfAcademicCourse(
-          courseId: widget.drawerCourseId,
-          titleOfChapter: widget.drawertitleOfChapter,
+          courseId: widget.courseId,
+          titleOfChapter: widget.titleOfChapter,
           languageName: widget.languageName),
     );
   }
 }
 
 AppBar _appBar(BuildContext context, double screenWidth,
-    GlobalKey<ScaffoldState> scaffoldKey) {
+    GlobalKey<ScaffoldState> _scaffoldKey) {
   return AppBar(
       backgroundColor:
           languageController.currentTheme.value.scaffoldBackgroundColor,
@@ -91,7 +84,7 @@ AppBar _appBar(BuildContext context, double screenWidth,
         SizedBox(width: screenWidth * 0.05),
         IconButton(
             onPressed: () {
-              scaffoldKey.currentState?.openDrawer();
+              _scaffoldKey.currentState?.openDrawer();
             },
             icon: Icon(Icons.list_outlined,
                 color: Colors.black, size: screenWidth * 0.09)),
@@ -136,12 +129,10 @@ Widget _body(
     required String chapterId,
     required String languageName,
     required Color cardColor}) {
-      log(languageName);
-      log(chapterId);
-  return FutureBuilder<List<AcademicTheoryClassModel>>(
-      future: academicCourseServices.fetchAcademicTheoryClass(
+  return FutureBuilder<List<AcademicTheoryChapterModelClass>>(
+      future: revisionClassesServices.fetchAcademicTheoryClass(
         chaptId: chapterId,
-        language: 'English',
+        language: languageName,
       ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -155,7 +146,7 @@ Widget _body(
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           // If there's no data or the data is empty, show a message
-          return const Center(child: Text('No theory classes found'));
+          return const Center(child: Text('No quick tips classes found'));
         } else {
           var chapters = snapshot.data!;
           return SingleChildScrollView(
@@ -163,12 +154,12 @@ Widget _body(
               padding: EdgeInsets.all(screenWidth * .05),
               child: Column(
                 children: [
-                  academicTheoryClassWidget.titleAndBackButton(
+                  acdemicQucikTipsVideoClasssWidget.titleAndBackButton(
                       context, screenWidth, titleOfChapter),
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  academicTheoryClassWidget.listOfClass(
+                  acdemicQucikTipsVideoClasssWidget.listOfClass(
                       titleOfClass: titleOfChapter,
                       classes: chapters,
                       screenHeight: screenHeight,

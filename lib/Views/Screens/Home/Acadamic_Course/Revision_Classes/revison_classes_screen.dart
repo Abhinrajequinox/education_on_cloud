@@ -1,14 +1,9 @@
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
-import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/academic_course_services.dart';
 import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/revision_classes_services.dart';
 import 'package:education_on_cloud/Models/Home/Academic_Course/Revision_classes_model.dart';
-import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Revision_classes/revision_video_classs_widget.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_chapter_screen_widget.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Theory/theory_class_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
