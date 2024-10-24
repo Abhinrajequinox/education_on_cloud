@@ -1,4 +1,6 @@
-import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
+import 'dart:developer';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/quick_tips_services.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/quick_tips_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
@@ -21,7 +23,7 @@ class AcdemicQuickTipsChapterScreen extends StatefulWidget {
 }
 
 final AcademicQuickTipsChapterScreenWidget academicQuickTipsChapterScreenWidget=AcademicQuickTipsChapterScreenWidget();
-   
+final AcademicQuickTipsServices academicQuickTipsServices=AcademicQuickTipsServices();
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -117,10 +119,10 @@ Widget _body(
     required String titleOfChapter,
     required String courseId,
     required String languageName}) {
-  return FutureBuilder<List<ChapterModel>>(
-      future: academicCourseServices.fetchCourseChapters(
+      log('the course id is ${courseId.toString()}');
+  return FutureBuilder<List<AcademicQuickTipsModelClass>>(
+      future: academicQuickTipsServices.fetchCourseChapters(
         courseId: courseId,
-        language: languageName,
       ),
       builder: (context, snapshot) {
         // Handle different states of the Future

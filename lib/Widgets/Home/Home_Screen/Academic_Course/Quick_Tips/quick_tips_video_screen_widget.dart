@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/quick_tips_video_controller.dart';
-import 'package:education_on_cloud/Controller/Home_Screen_Controller/Academic_course/theory_video_controller.dart';
-import 'package:education_on_cloud/Models/Home/Academic_Course/Revision_classes_model.dart';
-import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/quick_tips_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
@@ -64,15 +62,16 @@ class AcdemicQucikTipsVideoClasssWidget {
   }
 
   Widget listOfClass({
-    required List<AcademicTheoryChapterModelClass> classes,
+    required List<AcademicQuickTipsVideoClassModel> classes,
     required double screenHeight,
     required double screenWidth,
     required String languageName,
     required String titleOfClass,
     required Color cardColor,
   }) {
+   
     // Define currentClasses here
-    List<AcademicTheoryChapterModelClass> currentClasses =
+    List<AcademicQuickTipsVideoClassModel> currentClasses =
         List.from(classes); // Clone the original list
 
     return Column(
@@ -97,6 +96,7 @@ class AcdemicQucikTipsVideoClasssWidget {
           physics: const NeverScrollableScrollPhysics(),
           initialItemCount: currentClasses.length,
           itemBuilder: (context, index, animation) {
+             log('the main video id is ${currentClasses[index].chapterId}');
             return _buildClassCard(
                 context,
                 index,
@@ -116,13 +116,13 @@ class AcdemicQucikTipsVideoClasssWidget {
   Widget _buildClassCard(
       BuildContext context,
       int index,
-      AcademicTheoryChapterModelClass theoryClass,
+      AcademicQuickTipsVideoClassModel theoryClass,
       Animation<double> animation,
       double screenHeight,
       double screenWidth,
       String titleOfClass,
       Color cardColor,
-      List<AcademicTheoryChapterModelClass> currentClasses) {
+      List<AcademicQuickTipsVideoClassModel> currentClasses) {
     return FadeTransition(
       opacity: animation,
       child: SlideTransition(
@@ -163,7 +163,7 @@ class AcdemicQucikTipsVideoClasssWidget {
               }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Video URL not available')),
+              const  SnackBar(content: Text('Video URL not available')),
               );
             }
           },
@@ -197,8 +197,7 @@ class AcdemicQucikTipsVideoClasssWidget {
                         width: screenWidth * .2,
                         child: ClipRRect(borderRadius:
                               const BorderRadius.all(Radius.circular(3)),
-                          child: Image.network(
-                              theoryClass.thumbnail),
+                          child: Image.asset('lib/Assets/Home/video-thumbnail-img.png'),
                         ),
                       ),
                       SizedBox(width: screenWidth * .02),
@@ -238,7 +237,7 @@ class AcdemicQucikTipsVideoClasssWidget {
                                       color:
                                           const Color.fromRGBO(0, 56, 255, 1)),
                                 ),
-                                SizedBox(width: screenWidth * .07),
+                                SizedBox(width: screenWidth * .06),
                                 Container(
                                   width: screenWidth * .23,
                                   height: screenHeight * .025,

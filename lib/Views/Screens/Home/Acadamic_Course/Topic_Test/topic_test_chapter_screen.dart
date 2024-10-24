@@ -1,83 +1,73 @@
-import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/quick_tips_services.dart';
-import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/revision_classes_services.dart';
-import 'package:education_on_cloud/Models/Home/Academic_Course/Revision_classes_model.dart';
-import 'package:education_on_cloud/Models/Home/Academic_Course/quick_tips_model.dart';
+import 'dart:developer';
+import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/topic_test_services.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/topic_test_model.dart';
 import 'package:education_on_cloud/Views/Screens/Authentication/choosemodescreen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/drawer_of_academic_course.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
-import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Quick_Tips/quick_tips_video_screen_widget.dart';
+import 'package:education_on_cloud/Widgets/Home/Home_Screen/Academic_Course/Topic_Test/topic_test_chapter_screen_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AcademicQuickTipsVideoClassScreen extends StatefulWidget {
-  final String titleName;
-  final String languageName;
-  final String chapterId;
-  final Color cardColor;
+class AcdemicTopicTestChapterScreen extends StatefulWidget {
   final String titleOfChapter;
   final String courseId;
-  const AcademicQuickTipsVideoClassScreen(
+  final String languageName;
+  const AcdemicTopicTestChapterScreen(
       {super.key,
-      required this.titleName,
-      required this.languageName,
-      required this.cardColor,
-      required this.chapterId,
       required this.titleOfChapter,
-      required this.courseId});
+      required this.courseId,
+      required this.languageName});
 
   @override
-  State<AcademicQuickTipsVideoClassScreen> createState() =>
-      _AcademicQuickTipsVideoClassScreenState();
+  State<AcdemicTopicTestChapterScreen> createState() => _AcdemicTopicTestChapterScreenState();
 }
 
-final AcdemicQucikTipsVideoClasssWidget acdemicQucikTipsVideoClasssWidget=AcdemicQucikTipsVideoClasssWidget();
-final AcademicQuickTipsServices academicQuickTipsServices=AcademicQuickTipsServices();
-// final TheoryVideoController theoryVideoController = TheoryVideoController();
+final AcademicTopicTestChapterScreenWidget academicTopicTestChapterScreenWidget=AcademicTopicTestChapterScreenWidget();
+final AcdemicTopicTestServices acdemicTopicTestServices=AcdemicTopicTestServices();
 
-class _AcademicQuickTipsVideoClassScreenState
-    extends State<AcademicQuickTipsVideoClassScreen> {
-  @override
-  void initState() {
-    academicDrawerController.incrementDrawerIndex();
-    super.initState();
-  }
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void dispose() {
-    // Call the resetVideo method to clean up when the widget is disposed
-    acdemicQucikTipsVideoClasssWidget.academicQuickTipsVideoController.resetVideo();
-    acdemicQucikTipsVideoClasssWidget.academicQuickTipsVideoController.changeFavIcon(false);
-    academicDrawerController.decrementDrawerIndex();
-    super.dispose();
-  }
-
+class _AcdemicTopicTestChapterScreenState extends State<AcdemicTopicTestChapterScreen> {
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    @override
+    void initState() {
+      // TODO: implement initState
+      super.initState();
+      academicDrawerController.incrementDrawerIndex();
+    }
+
+    @override
+    void dispose() {
+      super.dispose();
+      academicDrawerController.decrementDrawerIndex();
+    }
+
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _appBar(context, screenWidth, _scaffoldKey),
+      appBar: _appBar(context, screenWidth),
       body: _body(
-          context: context,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          titleOfChapter: widget.titleName,
-          chapterId: widget.chapterId,
-          languageName: widget.languageName,
-          cardColor: widget.cardColor),
+        courseId: widget.courseId,
+        languageName: widget.languageName,
+        context: context,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        titleOfChapter: widget.titleOfChapter,
+      ),
       drawer: DrawerOfAcademicCourse(
-          courseId: widget.courseId,
-          titleOfChapter: widget.titleOfChapter,
-          languageName: widget.languageName),
+        languageName: widget.languageName,
+        titleOfChapter: widget.titleOfChapter,
+        // menuStructure: menuStructure,
+        courseId: widget.courseId,
+      ),
     );
   }
 }
 
-AppBar _appBar(BuildContext context, double screenWidth,
-    GlobalKey<ScaffoldState> _scaffoldKey) {
+AppBar _appBar(BuildContext context, double screenWidth) {
   return AppBar(
       backgroundColor:
           languageController.currentTheme.value.scaffoldBackgroundColor,
@@ -127,15 +117,15 @@ Widget _body(
     required double screenWidth,
     required double screenHeight,
     required String titleOfChapter,
-    required String chapterId,
-    required String languageName,
-    required Color cardColor}) {
-  return FutureBuilder<List<AcademicQuickTipsVideoClassModel>>(
-      future: academicQuickTipsServices.fetchAcademicTheoryClass(
-        chaptId: chapterId,
-        language: languageName,
+    required String courseId,
+    required String languageName}) {
+      log('the course id is ${courseId.toString()}');
+  return FutureBuilder<List<AcademicTopiTestChapterModel>>(
+      future: acdemicTopicTestServices.fetchCourseChapters(
+        courseId: courseId,
       ),
       builder: (context, snapshot) {
+        // Handle different states of the Future
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While waiting for the future to complete, show a loading indicator
           return Padding(
@@ -144,29 +134,33 @@ Widget _body(
           );
         } else if (snapshot.hasError) {
           // If there's an error, display an error message
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           // If there's no data or the data is empty, show a message
-          return const Center(child: Text('No quick tips classes found'));
+          return const Center(
+            child: Text('No chapters found'),
+          );
         } else {
-          var chapters = snapshot.data!;
+          var chapters = snapshot.data;
           return SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(screenWidth * .05),
               child: Column(
                 children: [
-                  acdemicQucikTipsVideoClasssWidget.titleAndBackButton(
+                  academicTopicTestChapterScreenWidget.titleAndBackButton(
                       context, screenWidth, titleOfChapter),
                   SizedBox(
                     height: screenHeight * .01,
                   ),
-                  acdemicQucikTipsVideoClasssWidget.listOfClass(
-                      titleOfClass: titleOfChapter,
-                      classes: chapters,
+                  academicTopicTestChapterScreenWidget.listOfChapters(
+                      courseId: courseId,
+                      titleOfChapter: titleOfChapter,
+                      chapters: chapters!,
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
-                      languageName: languageName,
-                      cardColor: cardColor)
+                      languageName: languageName)
                 ],
               ),
             ),

@@ -4,8 +4,10 @@ import 'package:education_on_cloud/Controller/Services/Home/Academic_Course/acad
 import 'package:education_on_cloud/Models/Home/academic_course_model.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Chapters/chapter_chaptes_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/FAQ/faq_chapters_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Quick_Tips/quick_tips_chapter_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Revision_Classes/revision_chapter_screen.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Theory/theory_chapters_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Topic_Test/topic_test_chapter_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -179,7 +181,27 @@ class _DrawerOfAcademicCourseState extends State<DrawerOfAcademicCourse> {
             ),
             _customListTile(
               onTap: () {
-                _drawerKey.currentState?.closeDrawer();
+                 _drawerKey.currentState?.closeDrawer();
+                log('when on tap on the list tile ${academicDrawerController.drawerIntex.value.toString()}');
+                for (int i = 0;
+                    i <= academicDrawerController.drawerIntex.value;
+                    i++) {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                }
+                academicDrawerController.drawerIntex.value = 0;
+                log('after on tap on the list tile ${academicDrawerController.drawerIntex.value.toString()}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AcdemicQuickTipsChapterScreen(
+                        titleOfChapter: widget.titleOfChapter,
+                        courseId: widget.courseId,
+                        languageName: widget
+                            .languageName), // Replace with your new screen
+                  ),
+                );
               },
               title: 'Quick Tips',
               icon: 'lib/Assets/Home/Drawer_icon/quick-tip-img-icon.png',
@@ -193,7 +215,26 @@ class _DrawerOfAcademicCourseState extends State<DrawerOfAcademicCourse> {
             ),
             _customListTile(
               onTap: () {
-                _drawerKey.currentState?.closeDrawer();
+                log('when on tap on the list tile ${academicDrawerController.drawerIntex.value.toString()}');
+                for (int i = 0;
+                    i <= academicDrawerController.drawerIntex.value;
+                    i++) {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                }
+                academicDrawerController.drawerIntex.value = 0;
+                log('after on tap on the list tile ${academicDrawerController.drawerIntex.value.toString()}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AcdemicTopicTestChapterScreen(
+                        titleOfChapter: widget.titleOfChapter,
+                        courseId: widget.courseId,
+                        languageName: widget
+                            .languageName), // Replace with your new screen
+                  ),
+                );
               },
               title: 'Topic Test',
               icon: 'lib/Assets/Home/Drawer_icon/topic-test-img-icon.png',

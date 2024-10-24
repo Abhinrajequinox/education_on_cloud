@@ -1,12 +1,12 @@
-import 'package:education_on_cloud/Models/Home/Academic_Course/quick_tips_model.dart';
+import 'package:education_on_cloud/Models/Home/Academic_Course/topic_test_model.dart';
 import 'package:education_on_cloud/Utilities/constvalues.dart';
 import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Quick_Tips/quick_tips_video_class_screen.dart';
+import 'package:education_on_cloud/Views/Screens/Home/Acadamic_Course/Topic_Test/topic_test_subtopic_screen.dart';
 import 'package:education_on_cloud/Widgets/Custom/customwidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AcademicQuickTipsChapterScreenWidget {
- 
+class AcademicTopicTestChapterScreenWidget {
   Widget titleAndBackButton(
       BuildContext context, double screenWidth, String titleOfChapter) {
     return SingleChildScrollView(
@@ -39,7 +39,7 @@ class AcademicQuickTipsChapterScreenWidget {
               SizedBox(
                 width: screenWidth * .7,
                 child: CustomText(
-                    text: '$titleOfChapter - Quick Tips',
+                    text: '$titleOfChapter - Topic Test',
                     textStyle: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
@@ -54,7 +54,7 @@ class AcademicQuickTipsChapterScreenWidget {
   }
 
   Widget listOfChapters({
-    required List<AcademicQuickTipsModelClass> chapters,
+    required List<AcademicTopiTestChapterModel> chapters,
     required double screenHeight,
     required double screenWidth,
     required String languageName,
@@ -76,7 +76,8 @@ class AcademicQuickTipsChapterScreenWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AcademicQuickTipsVideoClassScreen(
+                        builder: (context) => AcdemicTopicTestSubTopicScreen(
+                            chapterIcon: chapter.chapterIcon,
                             courseId: courseId,
                             titleOfChapter: titleOfChapter,
                             languageName: languageName,
@@ -105,15 +106,15 @@ class AcademicQuickTipsChapterScreenWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            height: screenHeight * .03,
-                            child: Image.asset(
-                                'lib/Assets/Home/Drawer_icon/quick-tip-img-icon.png'),
+                            height: screenHeight * .04,
+                            child: Image.network(
+                                'https://thelearnyn1.s3.ap-south-1.amazonaws.com/chap_imgs/chap_imgs/${chapter.chapterIcon}'),
                           ),
                           SizedBox(
                             width: screenWidth * .02,
                           ),
                           SizedBox(
-                            width: screenWidth * .39,
+                            width: screenWidth * .42,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
@@ -135,7 +136,7 @@ class AcademicQuickTipsChapterScreenWidget {
                             width: screenWidth * .03,
                           ),
                           Container(
-                            width: screenWidth * .28,
+                            width: screenWidth * .22,
                             height: screenHeight * .03,
                             decoration: const BoxDecoration(
                                 borderRadius:
@@ -143,7 +144,7 @@ class AcademicQuickTipsChapterScreenWidget {
                                 color: Color.fromRGBO(30, 117, 229, 1)),
                             child: Center(
                               child: CustomText(
-                                text: 'Quick Tips',
+                                text: 'Topic',
                                 textStyle: GoogleFonts.mulish(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 13,
